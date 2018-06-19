@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfDispecer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Dispecer>
+    <KorisnickoIme>admin</KorisnickoIme>
+    <Lozinka>admin</Lozinka>
+    <Ime>Pera</Ime>
+    <Prezime>Peric</Prezime>
+    <Pol>Muski</Pol>
+    <Jmbg>48788968</Jmbg>
+    <KontaktTelefon>06499965</KontaktTelefon>
+    <Email>pera@yahoo.com</Email>
+    <Uloga>Dispecer</Uloga>
+    <Voznje />
+  </Dispecer>
+  <Dispecer>
+    <KorisnickoIme>admin1</KorisnickoIme>
+    <Lozinka>admin1</Lozinka>
+    <Ime>Mika</Ime>
+    <Prezime>Mikic</Prezime>
+    <Pol>Zenski</Pol>
+    <Jmbg>487968</Jmbg>
+    <KontaktTelefon>064686465</KontaktTelefon>
+    <Email>mika@yahoo.com</Email>
+    <Uloga>Dispecer</Uloga>
+    <Voznje />
+  </Dispecer>
+  <Dispecer>
+    <KorisnickoIme>admin2</KorisnickoIme>
+    <Lozinka>admin2</Lozinka>
+    <Ime>Zika</Ime>
+    <Prezime>Zikic</Prezime>
+    <Pol>Muski</Pol>
+    <Jmbg>484658</Jmbg>
+    <KontaktTelefon>064686765</KontaktTelefon>
+    <Email>zika@yahoo.com</Email>
+    <Uloga>Dispecer</Uloga>
+    <Voznje />
+  </Dispecer>
+</ArrayOfDispecer>
