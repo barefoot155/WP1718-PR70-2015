@@ -18,7 +18,11 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#btnLogout").click(function () {
-                $.get("/api/Login");
+                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
+                    .fail(function () {
+                        alert(`greskaaaaaa`);
+                    });
+
                 location.href = "Login.html";
             });
             let korisnik = ``;
@@ -88,7 +92,14 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-    
+    <div id="dugmad">        
+        <button id="IspisiVoznje" type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve kreirane voznje
+        </button>
+        <button id="IspisiMojeVoznje" type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-arrow-down"></span> Ispisi moje voznje
+        </button>
+    </div>
     <div id="prikazPodataka">
         <h2>Dobrodosli na Taxi servis</h2>        
     </div>

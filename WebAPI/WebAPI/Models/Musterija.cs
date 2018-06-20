@@ -7,5 +7,9 @@ namespace WebAPI.Models
 {
     public class Musterija:Korisnik
     {
+        public Musterija()
+        {
+            Voznje = new List<Voznja>();
+        }
     }
 }

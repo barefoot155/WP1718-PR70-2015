@@ -7,7 +7,15 @@ namespace WebAPI.Models
 {
     public class Vozac:Korisnik
     {
+        public Vozac()
+        {
+            Lokacija = new Lokacija();
+            Automobil = new Automobil();
+            Voznje = new List<Voznja>();
+            Zauzet = false;
+        }
         public Lokacija Lokacija { get; set; }
         public Automobil Automobil { get; set; }
+        public bool Zauzet { get; set; }
     }
 }

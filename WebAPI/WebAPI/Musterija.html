@@ -11,7 +11,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#btnLogout").click(function () {
-                $.get("/api/Login");
+                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); }).fail(function () { alert(`greska`); });
                 location.href = "Login.html";
             });
             let korisnik = ``;
@@ -25,7 +25,7 @@
                 });
             });
             $("#IspisiVoznje").click(function () {
-                alert("ispisi voznje")
+                //alert("ispisi voznje")
                 $.get("api/Musterija", { korIme: korisnik.KorisnickoIme }, function (data) {
                     //alert("iz geta");
                     IspisiVoznje(data);

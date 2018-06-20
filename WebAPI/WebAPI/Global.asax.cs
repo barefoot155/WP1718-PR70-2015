@@ -21,7 +21,8 @@ namespace WebAPI
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             //HttpContext.Current.SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior.Required);
-            Korisnici korisnici = new Korisnici((@"C:\Users\BosaBratic\Downloads\WebAPI_AJAX\WebAPI\WebAPI\App_Data\Adminitratori.xml"));
+            string path = Server.MapPath("~/App_Data/Adminitratori.xml");
+            Korisnici korisnici = new Korisnici(path);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             
         }

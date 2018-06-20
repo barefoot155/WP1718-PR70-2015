@@ -11,7 +11,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#btnLogout").click(function () {
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno`); })
+                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
                     .fail(function ()
                     {
                         alert(`greskaaaaaa`);
@@ -21,9 +21,13 @@
             });
             let korisnik = ``;
             $.get("/api/Dispecer", function (data) {
-                alert(data.KorisnickoIme);
+                //alert(data.KorisnickoIme);
                 korisnik = data;
                 $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
+                $.get("api/Dispecer", { korIme: data.KorisnickoIme }, function (data1) {
+                    //alert("iz geta");
+                    IspisiVoznje(data1);
+                });
             });
             $("#prikaziPodatke").click(function () {
                 IspisiPodatke(korisnik);                
@@ -35,14 +39,27 @@
                 IzmijeniSifru(korisnik);
             });
             $("#kreirajVoznju").click(function () {
-                KreiranjeVoznje(korisnik);
-            });
-            $("#IspisiMojeVoznje").click(function () {
-                alert("ispisi voznje")
-                $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
-                    alert("iz geta");
-                    IspisiVoznje(data);
+                $.get("/api/Dispecer/VratiSlobodneVozace", function (data1) {                    
+                    alert(data1[0].KorisnickoIme);
+                    KreiranjeVoznjeDisp(korisnik, data1);
                 });
+                
+            });
+            $("#IspisiMojeVoznje").click(function () {//ispisuje njegove
+                //alert("ispisi voznje")
+                $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
+                    IspisiVoznjeDisp(data, korisnik.KorisnickoIme);                    
+                });
+            });
+            $("#IspisiVoznje").click(function () {//ispisuje opet njegove, treba sve iz sistema
+                //alert("ispisi voznje")
+                
+                $.get("api/Dispecer/VratiSveVoznje", function (data) {
+                    //alert("iz geta");
+                    //alert(data[0].Id);
+                    IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
+                });
+                //$("#btnIzmijeniVoznju").hide();
             });
         });
     </script>

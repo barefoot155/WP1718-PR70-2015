@@ -32,6 +32,7 @@ namespace WebAPI.Models
             }*/
             //deserijalizacija
             ListaDispecera = new List<Dispecer>();
+
             if (File.Exists(putanja))
             {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Dispecer>));
@@ -41,6 +42,9 @@ namespace WebAPI.Models
                 }
                 
             }
+            //string s = Directory.GetCurrentDirectory();
+            
+
             ListaVozaca = new List<Vozac>();
             Voznja v = new Voznja() {Musterija="musterija", DatumIVrijemePorudzbe = new DateTime(2010, 10, 10), Iznos = 5, Lokacija = new Lokacija() { Adresa = new Adresa() { Ulica = "kralja petra" } }, Komentar = new Komentar() { Opis = "kom" }, TipAutomobila = TipoviAutomobila.PutnickiAutomobil, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Vozac = "vozac", Odrediste = new Lokacija() { Adresa = new Adresa() { Ulica = "ulica" } } };
             Voznja v2 = new Voznja() { Musterija="musterija", DatumIVrijemePorudzbe = new DateTime(2016, 10, 10), Iznos = 5, Lokacija = new Lokacija() { Adresa = new Adresa() { Ulica = "kralja petra" } }, Komentar = new Komentar() { Opis = "kom" }, TipAutomobila = TipoviAutomobila.PutnickiAutomobil, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Vozac = "vozac", Odrediste = new Lokacija() { Adresa = new Adresa() { Ulica = "ulica" } } };

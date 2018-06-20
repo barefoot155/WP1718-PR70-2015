@@ -9,6 +9,7 @@ namespace WebAPI.Models
     {
         public Dispecer()
         {
+            Voznje = new List<Voznja>();
         }
     }
 }

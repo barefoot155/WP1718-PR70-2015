@@ -7,9 +7,12 @@ namespace WebAPI.Models
 {
     public class Lokacija
     {
+        public Lokacija()
+        {
+            Adresa = new Adresa();
+        }
         public String KoordinataX { get; set; }
         public String KoordinataY { get; set; }
-        public Adresa Adresa { get; set; }
-       
+        public Adresa Adresa { get; set; }       
     }
 }

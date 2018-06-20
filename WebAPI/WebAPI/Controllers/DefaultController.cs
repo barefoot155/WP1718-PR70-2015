@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
                     //HttpCookie myCookie = Request.Cookies["mojCookie"];
                     //System.Web.HttpContext.Current.SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior.Required);
                     //System.Web.HttpContext.Current.Session["mojaSesija"] = new Dispecer();
-                    //System.Web.HttpContext.Current.Session["mojaSesija"] = (Dispecer)korisnik;
+                    System.Web.HttpContext.Current.Session["mojaSesija"] = (Dispecer)korisnik;
                     return Redirect(requestUri.AbsoluteUri + "Dispecer.html");
                     //return korisnik.Uloga.ToString();
                 }

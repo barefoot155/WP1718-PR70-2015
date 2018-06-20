@@ -13,7 +13,8 @@ namespace WebAPI
         {
             // Web API configuration and services
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
-            Korisnici korisnici = new Korisnici("~/App_Data/Administratori.xml");
+            //string path = Server.MapPath("~/App_Data/Administratori.xml");
+            //Korisnici korisnici = new Korisnici("~/App_Data/Adminitratori.xml");
 
             // Web API routes
             config.MapHttpAttributeRoutes();

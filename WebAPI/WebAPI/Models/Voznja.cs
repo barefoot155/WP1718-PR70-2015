@@ -10,6 +10,9 @@ namespace WebAPI.Models
         private static int brojac = 0;
         public Voznja()
         {
+            Lokacija = new Lokacija();
+            Odrediste = new Lokacija();
+            Komentar = new Komentar();
             Id = brojac;
             brojac++;
         }
@@ -25,5 +28,17 @@ namespace WebAPI.Models
         public Double Iznos { get; set; }
         public Komentar Komentar { get; set; }
         public StatusiVoznje StatusVoznje { get; set; }
+        public override bool Equals(object obj)
+        {
+            if(obj.GetType()!=GetType() || obj == null)
+            {
+                return false;
+            }
+            return Id==((Voznja)obj).Id;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

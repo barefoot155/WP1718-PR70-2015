@@ -26,7 +26,8 @@ namespace WebAPI.Controllers
             if(cookie!=null)
             {
                 cookie.Expires = DateTimeOffset.Now.AddDays(-5);
-                mess.Headers.AddCookies(new CookieHeaderValue[] { cookie });            
+                mess.Headers.AddCookies(new CookieHeaderValue[] { cookie }); 
+                
             }
             mess.StatusCode = HttpStatusCode.OK;
             return mess;
