@@ -639,3 +639,74 @@ let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. 
         })
     });
 };
+
+let IspisiVoznjeVozac = function (dataVoz) {
+    let temp = ``;
+    data = dataVoz.Voznje;
+    //alert(dataVoz.KorisnickoIme + "ovo je kod ispisa");
+    for (drive in data) {
+        temp += `<tr>`;
+        temp += (`<td>${data[drive].DatumIVrijemePorudzbe}</td>`);
+        //alert(data[drive].DatumIVrijemePorudzbe + "ovo je kod ispisa");
+        temp += (`<td>${data[drive].Musterija}</td>`);
+        //alert(data[drive].Musterija + "ovo je kod ispisa");
+        temp += (`<td>${data[drive].Dispecer}</td>`);
+        //alert(data[drive].Dispecer + "ovo je kod ispisa");
+        temp += (`<td>${data[drive].Vozac}</td>`);
+        //alert(data[drive].Vozac + "ovo je kod ispisa");
+        temp += (`<td>${data[drive].StatusVoznje}</td>`);
+        //alert(data.KorisnickoIme + "ovo je kod ispisa");
+        temp += (`<td>${data[drive].TipAutomobila}</td>`);
+        //alert(data.KorisnickoIme + "ovo je kod ispisa");
+        temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
+        temp += (`<td>${data[drive].Odrediste}</td>`);
+        temp += (`<td>${data[drive].Iznos}</td>`);
+        temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        temp += (data[drive].StatusVoznje == 0) ? (`<td><input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : `<td>` + `</td>`;
+        temp += `</tr>`;
+    }
+
+    $("#prikazPodataka").html(`<table class="table table - bordered">
+        <thead>
+        <tr class="success">
+            <th colspan="10" style="text-align:center">
+                Korisnikove voznje
+            </th>
+        </tr>
+        <tr>    
+            <th class="success">Datum i vrijeme</th>
+            <th class="success">Musterija</th>
+            <th class="success">Dispecer</th>
+            <th class="success">Vozac</th>
+            <th class="success">StatusVoznje</th>
+            <th class="success">TipAutomobila</th>
+            <th class="success">Ulica</th>
+            <th class="success">Odrediste</th>
+            <th class="success">Iznos</th>
+            <th class="success">Komentar</th>
+            <th class="success">Opcije</th>
+        </tr>
+        </thead>
+        <tbody>${temp}        
+        </tbody>
+    </table>`);
+    $("input:button[name=otkazi]").click(function () {
+        //alert(this.id);//uzmi id tog dugmeta
+        ulogaKorisnika(`2`);
+        var ppp = this.id;
+        //alert(`uloga prije geta` + ul + this.id + data[0].Musterija);
+        /*$.get("/api/" + ul, { id: this.id, korIme: data[0].Musterija }, function () {
+            Komentarisanje(ppp, data[0].Musterija);
+            //location.href = (ul + `.html`);
+        });*/
+
+    });
+    $("input:button[name=izmijeni]").click(function () {
+        //alert(this.id);//uzmi id tog dugmeta
+        ulogaKorisnika(`2`);
+        /*$.get("/api/" + ul + "/VratiVoznju/", { id: this.id, korIme: data[0].Musterija }, function (voznja) {
+            IzmijeniVoznju(voznja);
+            //location.href = (ul + `.html`);
+        });*/
+    });
+};

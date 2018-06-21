@@ -10,6 +10,8 @@ namespace WebAPI.Models
         public Lokacija()
         {
             Adresa = new Adresa();
+            KoordinataX = "";
+            KoordinataY = "";
         }
         public String KoordinataX { get; set; }
         public String KoordinataY { get; set; }

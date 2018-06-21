@@ -55,6 +55,7 @@ namespace WebAPI.Controllers
             voznja.Dispecer = korImeDisp;
             voznja.Vozac = vozac;
             Korisnici.ListaDispecera.FirstOrDefault(d => d.KorisnickoIme == korImeDisp).Voznje.Add(voznja);
+            Korisnici.ListaVozaca.FirstOrDefault(d => d.KorisnickoIme == vozac).Voznje.Add(voznja);
         }
         [HttpPost]
         [Route("api/Dispecer/DodajVozaca/")]
