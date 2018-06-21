@@ -42,8 +42,14 @@
                 $.get("/api/Dispecer/VratiSlobodneVozace", function (data1) {                    
                     alert(data1[0].KorisnickoIme);
                     KreiranjeVoznjeDisp(korisnik, data1);
-                });
-                
+                });                
+            });
+            $("#kreirajVozaca").click(function () {
+                /*$.get("/api/Dispecer/VratiSlobodneVozace", function (data1) {
+                    alert(data1[0].KorisnickoIme);
+                    KreiranjeVoznjeDisp(korisnik, data1);
+                });*/
+                KreirajVozaca(korisnik);
             });
             $("#IspisiMojeVoznje").click(function () {//ispisuje njegove
                 //alert("ispisi voznje")
@@ -110,6 +116,9 @@
     <div id="dugmad">
         <button id="kreirajVoznju" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-plus-sign"></span> Kreiraj voznju
+        </button>
+        <button id="kreirajVozaca" type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-plus-sign"></span> Kreiraj vozaca
         </button>
         <button id="IspisiVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve voznje

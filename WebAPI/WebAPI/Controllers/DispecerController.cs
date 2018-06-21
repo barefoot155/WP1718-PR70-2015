@@ -37,10 +37,8 @@ namespace WebAPI.Controllers
         [Route("api/Dispecer/VratiSlobodneVozace")]
         public List<Vozac> VratiSlobodneVozace()
         {
-            //Dispecer k = (Dispecer)System.Web.HttpContext.Current.Session["mojaSesija"];
-            //List<Vozac> ret = new List<Vozac>();
-            var l = Korisnici.ListaVozaca.Where(v => !v.Zauzet).ToList();
-            return l;
+            var ret = Korisnici.ListaVozaca.Where(v => !v.Zauzet).ToList();
+            return ret;
         }
         [HttpGet]
         [Route("api/Dispecer/ObradiVoznju/")]
@@ -57,6 +55,29 @@ namespace WebAPI.Controllers
             voznja.Dispecer = korImeDisp;
             voznja.Vozac = vozac;
             Korisnici.ListaDispecera.FirstOrDefault(d => d.KorisnickoIme == korImeDisp).Voznje.Add(voznja);
+        }
+        [HttpPost]
+        [Route("api/Dispecer/DodajVozaca/")]
+        public HttpResponseMessage DodajVozaca([FromBody]Vozac voz)//from body?
+        {
+            string ime = voz.Ime;
+            HttpResponseMessage mess = new HttpResponseMessage();
+            //Musterija m = musterija;
+            if (Korisnici.ListaDispecera.FirstOrDefault(dispecer => dispecer.KorisnickoIme == voz.KorisnickoIme) == null && Korisnici.ListaVozaca.FirstOrDefault(dispecer => dispecer.KorisnickoIme == voz.KorisnickoIme) == null && Korisnici.ListaMusterija.FirstOrDefault(dispecer => dispecer.KorisnickoIme == voz.KorisnickoIme) == null)
+            {
+                //ne postoji korisnicko ime do sad
+                voz.Uloga = Uloge.Vozac;
+                voz.Voznje = new List<Voznja>();
+                Korisnici.ListaVozaca.Add(voz);
+                mess.StatusCode = HttpStatusCode.OK;
+                return mess;
+            }
+            else
+            {
+                // postoji korisnicko ime vec
+                mess.StatusCode = HttpStatusCode.NotAcceptable;
+                return mess;
+            }
         }
         public List<Voznja> Get(string korIme)
         {

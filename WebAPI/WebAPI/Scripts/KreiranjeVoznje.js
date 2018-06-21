@@ -548,7 +548,94 @@ let ObradjivanjeVoznje = function (data1, data2, data3) {
             });
         });
     });
-    //var tipAutomobila = $("#tipAuta").val();
-    
-    
+    //var tipAutomobila = $("#tipAuta").val();   
+};
+let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. taj disp kreira novog vozaca
+    $("#prikazPodataka").html(`<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">
+                    Kreiranje novog vozaca                    
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Korisnicko ime:</td>
+                <td>
+                    <input type="text" id="txtUsername" placeholder="Korisnicko ime..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Sifra:</td>
+                <td>
+                    <input type="password" id="txtPassword"
+                           placeholder="Sifra..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Ime:</td>
+                <td>
+                    <input type="text" id="txtIme"
+                           placeholder="Ime..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Prezime:</td>
+                <td>
+                    <input type="text" id="txtPrezime"
+                           placeholder="Prezime..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Kontakt telefon:</td>
+                <td>
+                    <input type="text" id="txtTelefon"
+                           placeholder="Broj telefona..." />
+                </td>
+            </tr>
+            <tr>
+                <td>JMBG:</td>
+                <td>
+                    <input type="text" id="txtJMBG"
+                           placeholder="Maticni broj..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Pol:</td>
+                <td>
+                    <input type="radio"  name="pol" value="0"> Muski
+                    <input type="radio"  name="pol" value="1" checked="checked"> Zenski
+                </td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>
+                    <input type="email" id="txtEmail" placeholder="Email..." />
+                </td>
+            </tr>
+            <tr class="success">
+                <td colspan="2">
+                    <input id="btnKreiraj" class="btn btn-success" type="button"
+                           value="Kreiraj vozaca" />
+                </td>
+            </tr>
+        </tbody>
+    </table>`);
+    $("#btnKreiraj").click(function () {
+        //pozovi neki get u disp kontroleru
+        var KorisnickoIme = $("#txtUsername").val();
+        var Lozinka = $("#txtPassword").val();
+        var Email = $("#txtEmail").val();
+        var Jmbg = $("#txtJMBG").val();
+        var KontaktTelefon = $("#txtTelefon").val();
+        var Ime = $("#txtIme").val();
+        var Prezime = $("#txtPrezime").val();
+        var Pol = $("input:radio[name=pol]:checked").val();
+        $.post("/api/Dispecer/DodajVozaca/", { KorisnickoIme: KorisnickoIme, Lozinka: Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
+            alert(KorisnickoIme);
+            location.href = `Dispecer.html`;
+            //alert(data);
+        })
+    });
 };
