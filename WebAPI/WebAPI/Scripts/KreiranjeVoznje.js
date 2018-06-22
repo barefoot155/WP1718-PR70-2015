@@ -142,6 +142,8 @@ let IspisiVoznje = function (data) {
         temp += (`<td>${data[drive].Iznos}</td>`);
         temp += (`<td>${data[drive].Komentar.Opis}</td>`);
         temp += (data[drive].StatusVoznje == 0) ? (`<td><input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : `<td>` + `</td>`;
+        //dodaj za status voznje Uspjesno komentar
+        //temp += (data[drive].StatusVoznje == 6) ? (`<td><input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : `<td>` + `</td>`;
        temp += `</tr>`;
     }
 
@@ -340,12 +342,7 @@ let Komentarisanje = function (idVoz, idKor) {
         //alert(uloga);
         var ocj = $("#ocjena").val();
         var koment = $("#txtKom").val();
-        //alert(`prije geta` + ocj + koment + idKor + idVoz);
         
-        /*$.get("/api/" + uloga, { x: x, y: y, tip: tipAutomobila, ulica: ulica, broj: broj, posta: postanskiBr, grad: grad, korIme: korIme }, function () {
-            //alert(`iz geta`);
-            location.href = uloga + `.html`;
-        });*/
         //idKor i idVoz
         $.get("/api/" + uloga + "/OstaviKomentar/", { Opis: koment, Ocjena: ocj, Korisnik: idKor, Voznja: idVoz }, function () {
             //alert(`komeeeeeentaaar`);

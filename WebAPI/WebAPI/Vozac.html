@@ -32,6 +32,8 @@
                 //alert(data.KorisnickoIme);
                 korisnik = data;
                 $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
+                IspisiVoznjeVozac(korisnik.Voznje, korisnik.KorisnickoIme);
+                $("#prikazPodatakaDrugi").html(``);
             });
             
             $("#prikaziPodatke").click(function () {
