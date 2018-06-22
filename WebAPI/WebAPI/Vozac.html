@@ -19,6 +19,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#btnLogout").click(function () {
+                $("#prikazPodatakaDrugi").html(``);
                 $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
                     .fail(function () {
                         alert(`greskaaaaaa`);
@@ -28,33 +29,48 @@
             });
             let korisnik = ``;
             $.get("/api/Vozac", function (data) {
-                alert(data.KorisnickoIme);
+                //alert(data.KorisnickoIme);
                 korisnik = data;
                 $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
             });
             
             $("#prikaziPodatke").click(function () {
                 IspisiPodatke(korisnik);
+                $("#prikazPodatakaDrugi").html(``);
                 //$("#prikazPodataka").html(`<table class="table table-bordered"><thead><tr class="success"><th colspan="2">Moji podaci</th></tr></thead><tbody><tr><td>Korisnicko ime:</td><td>korisnik.KorisnickoIme</td></tr><tr><td>Sifra:</td><td>korisnik.Lozinka</td></tr><tr><td>Ime:</td><td>korisnik.Ime</td></tr><tr><td>Prezime:</td><td>korisnik.Prezime</td></tr><tr><td>Kontakt telefon:</td><td>korisnik.KontaktTelefon</td></tr><tr><td>JMBG:</td><td>korisnik.Jmbg</td></tr><tr><td>Pol:</td><td>korisnik.Pol</td></tr><tr><td>Email:</td> <td>korisnik.Email</td></tr></tbody></table>`
                 //);
             });
             $("#izmijeniPodatke").click(function () {
                 IzmijeniPodatke3(korisnik);
+                $("#prikazPodatakaDrugi").html(``);
             });
             $("#promijeniSifru").click(function () {
+                $("#prikazPodatakaDrugi").html(``);
                 IzmijeniSifru3(korisnik);
             });
             $("#lokacija").click(function () {
+                $("#prikazPodatakaDrugi").html(``);
                 PrikaziMapu();
             });
-            $("#IspisiVoznje").click(function () {
-                //PrikaziMapu();
+            $("#IspisiKreiraneVoznje").click(function () {
+                $("#prikazPodatakaDrugi").html(``);
+                $.get("/api/Vozac/VratiKreirane", function (data) {
+                    //alert(data[0].Vozac);
+                    IspisiVoznjeVozac(data, korisnik.KorisnickoIme);                    
+                });
             });
-            $("#IspisiMojeVoznje").click(function () {                
-                IspisiVoznjeVozac(korisnik);
+            $("#IspisiMojeVoznje").click(function () {
+                $("#prikazPodatakaDrugi").html(``);
+                $.get("/api/Vozac", function (data) {
+                    //alert(data.KorisnickoIme);
+                    korisnik = data;
+                    $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
+                    IspisiVoznjeVozac(korisnik.Voznje, korisnik.KorisnickoIme);
+                });                
             });
             $("#PromijeniLokaciju").click(function () {
                 //PrikaziMapu();
+                $("#prikazPodatakaDrugi").html(``);
             });
         });
     </script>
@@ -102,8 +118,8 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-    <div id="dugmad">        
-        <button id="IspisiVoznje" type="button" class="btn btn-default btn-sm">
+    <div id="dugmad">
+        <button id="IspisiKreiraneVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve kreirane voznje
         </button>
         <button id="IspisiMojeVoznje" type="button" class="btn btn-default btn-sm">
@@ -115,6 +131,9 @@
     </div>
     <div id="prikazPodataka">
         <h2>Dobrodosli na Taxi servis</h2>        
+    </div>
+    <div id="prikazPodatakaDrugi">
+        <h2>Drugi div</h2>
     </div>
 </body>
 </html>

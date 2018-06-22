@@ -331,7 +331,7 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
     var listaVozaca;
     let temp = ``;
     for (v in data1) {
-        temp += `<option value="${data1[0].KorisnickoIme}">${data1[0].KorisnickoIme}</option>`;
+        temp += `<option value="${data1[v].KorisnickoIme}">${data1[v].KorisnickoIme}</option>`;
     }
     
     $("#prikazPodataka").html(`<table class="table table-bordered">
@@ -512,7 +512,7 @@ let ObradjivanjeVoznje = function (data1, data2, data3) {
         alert(data4[0].KorisnickoIme);
         voznje = data4;
         for (v in data4) {
-            temp += `<option value="${data4[0].KorisnickoIme}">${data4[0].KorisnickoIme}</option>`;
+            temp += `<option value="${data4[v].KorisnickoIme}">${data4[v].KorisnickoIme}</option>`;
         }
         $("#prikazPodataka").html(`<table class="table table - bordered">
         <thead>
@@ -640,29 +640,25 @@ let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. 
     });
 };
 
-let IspisiVoznjeVozac = function (dataVoz) {
+let IspisiVoznjeVozac = function (dataVoz,idVoz) {
     let temp = ``;
-    data = dataVoz.Voznje;
-    //alert(dataVoz.KorisnickoIme + "ovo je kod ispisa");
+    data = dataVoz;
     for (drive in data) {
         temp += `<tr>`;
         temp += (`<td>${data[drive].DatumIVrijemePorudzbe}</td>`);
-        //alert(data[drive].DatumIVrijemePorudzbe + "ovo je kod ispisa");
         temp += (`<td>${data[drive].Musterija}</td>`);
-        //alert(data[drive].Musterija + "ovo je kod ispisa");
         temp += (`<td>${data[drive].Dispecer}</td>`);
-        //alert(data[drive].Dispecer + "ovo je kod ispisa");
         temp += (`<td>${data[drive].Vozac}</td>`);
-        //alert(data[drive].Vozac + "ovo je kod ispisa");
         temp += (`<td>${data[drive].StatusVoznje}</td>`);
-        //alert(data.KorisnickoIme + "ovo je kod ispisa");
         temp += (`<td>${data[drive].TipAutomobila}</td>`);
-        //alert(data.KorisnickoIme + "ovo je kod ispisa");
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
         temp += (`<td>${data[drive].Komentar.Opis}</td>`);
-        temp += (data[drive].StatusVoznje == 0) ? (`<td><input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : `<td>` + `</td>`;
+        temp += `<td>`;
+        temp += (data[drive].StatusVoznje == 0) ? (`<input name="prihvati" id="btnPrihvati` + data[drive].Id + `" class="btn btn-success" type="button" value="Prihvati voznju">`) : ``;
+        temp += (data[drive].StatusVoznje == 2 || data[drive].StatusVoznje == 3 || data[drive].StatusVoznje == 4) ? (`<input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Promijeni status voznje">`) : ``;
+        temp += `</td>`;
         temp += `</tr>`;
     }
 
@@ -690,23 +686,172 @@ let IspisiVoznjeVozac = function (dataVoz) {
         <tbody>${temp}        
         </tbody>
     </table>`);
-    $("input:button[name=otkazi]").click(function () {
+    
+    $("input:button[name=prihvati]").click(function () {
         //alert(this.id);//uzmi id tog dugmeta
         ulogaKorisnika(`2`);
         var ppp = this.id;
+        $.get("/api/Vozac/PrihvatiVoznju/", { idVoznje: ppp, idVozaca:idVoz}, function () {
+            alert(`prihvacena`);
+            location.href = "Vozac.html";
+        });
         //alert(`uloga prije geta` + ul + this.id + data[0].Musterija);
         /*$.get("/api/" + ul, { id: this.id, korIme: data[0].Musterija }, function () {
             Komentarisanje(ppp, data[0].Musterija);
             //location.href = (ul + `.html`);
         });*/
-
     });
-    $("input:button[name=izmijeni]").click(function () {
+    $("input:button[name=obradi]").click(function () {
         //alert(this.id);//uzmi id tog dugmeta
         ulogaKorisnika(`2`);
-        /*$.get("/api/" + ul + "/VratiVoznju/", { id: this.id, korIme: data[0].Musterija }, function (voznja) {
-            IzmijeniVoznju(voznja);
-            //location.href = (ul + `.html`);
-        });*/
+        var ppp = this.id;
+        ObradjivanjeVoznjeVozac(ppp,idVoz);        
     });
+};
+
+let ObradjivanjeVoznjeVozac = function (data1, data2) {// data1 id voznje tj buttona,data2 idVozaca
+    //let voznje = null;
+    let htmlKodOdredisteIIznos = `<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">
+                    Lokacija i iznos
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Iznos:</td>                
+                <td>
+                    <input type="text" id="txtIznos" placeholder="Unesi iznos..." />
+                </td>                
+            </tr>
+            <tr>
+                <td>Adresa na koju taksi dolazi:</td>                
+            </tr>
+            <tr>
+                <td>Ulica:</td>
+                <td>
+                    <input type="text" id="txtUlica" placeholder="Unesi ulicu..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Broj:</td>
+                <td>
+                    <input type="text" id="txtBroj" placeholder="Unesi broj..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Grad:</td>
+                <td>
+                    <input type="text" id="txtGrad" placeholder="Unesi grad..." />
+                </td>
+            </tr>            
+            <tr>
+                <td>Postanski broj:</td>
+                <td>
+                    <input type="text" id="txtPostanskiBroj" placeholder="Unesi postanski broj..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Koordinate</td>                
+            </tr>
+            <tr>
+                <td>Koordinata X:</td>
+                <td>
+                    <input type="text" id="txtKoordinataX" placeholder="Koordinata X..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Koordinata Y:</td>
+                <td>
+                    <input type="text" id="txtKoordinataY" placeholder="Koordinata Y..." />
+                </td>
+            </tr>
+            <tr class="success">
+                <td colspan="2">
+                    <input id="btnObradiV" class="btn btn-success pull-right" type="button" value="Obradi">                    
+                </td>
+            </tr>
+        </tbody>
+     </table>`;
+    let htmlKodKomentar = `<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">
+                    Komentarisanje
+                </th>
+            </tr>
+        </thead>
+        <tbody>           
+            
+            <tr>
+                <td>Komentar:</td>
+                <td>
+                    <textarea id="txtKom" rows="4" cols="50"></textarea>
+                </td>
+            </tr>
+            
+            <tr class="success">
+                <td colspan="2">
+                    <input id="btnObradiV" class="btn btn-success pull-right" type="button" value="Obradi">                    
+                </td>
+            </tr>
+        </tbody>
+     </table>`;
+    let htmlKod = `<table class="table table - bordered">
+        <thead>
+        <tr class="success">
+            <th colspan="10" style="text-align:center">
+                Obradjivanje voznje
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Izaberi novi status:</td>
+                <td>
+                    <select id="cbStatusi">
+                        <option value="1" selected>Uspjesno</option>
+                        <option value="0">Neuspjesno</option>
+                    </select>
+                </td>
+            </tr>            
+        </tbody>
+    </table>`;
+    $("#prikazPodatakaDrugi").html(htmlKodOdredisteIIznos);
+    $("#prikazPodataka").html(htmlKod);
+    $("#cbStatusi").change(function () {
+        //alert(`promjena`);
+        var status = $("#cbStatusi").val();
+        if (status == "1") {
+            $("#prikazPodatakaDrugi").html(htmlKodOdredisteIIznos);
+        } else {//neuspjesna
+            $("#prikazPodatakaDrugi").html(htmlKodKomentar);
+        }
+        $("#btnObradiV").click(function () {
+            var status1 = $("#cbStatusi").val();
+            if (status1 == "1") {//uspjesna
+                $.get("/api/Vozac/UspjesnaVoznja/", { idVoznje: data1, idVozaca: data2, iznos: $("#txtIznos").val(), ulica: $("#txtUlica").val(), broj: $("#txtBroj").val(), grad: $("#txtGrad").val(), posta: $("#txtPostanskiBroj").val(), x: $("#txtKoordinataX").val(), y: $("#txtKoordinataY").val() }, function () {
+                    location.href = "Vozac.html";
+                });
+            } else {//neuspjesna
+                $.get("/api/Vozac/NeuspjesnaVoznja/", { idVoznje: data1, idVozaca: data2, koment: $("#txtKom").val() }, function () {
+                    location.href = "Vozac.html";
+                });
+            }
+        });
+    });
+    $("#btnObradiV").click(function () {
+        var status1 = $("#cbStatusi").val();
+        if (status1 == "1") {//uspjesna
+            $.get("/api/Vozac/UspjesnaVoznja/", { idVoznje: data1, idVozaca: data2, iznos: $("#txtIznos").val(), ulica: $("#txtUlica").val(), broj: $("#txtBroj").val(), grad: $("#txtGrad").val(), posta: $("#txtPostanskiBroj").val(), x: $("#txtKoordinataX").val(), y: $("#txtKoordinataY").val() }, function () {
+                location.href = "Vozac.html";
+            });
+        } else {//neuspjesna
+            $.get("/api/Vozac/NeuspjesnaVoznja/", { idVoznje: data1, idVozaca: data2, koment: $("#txtKom").val() }, function () {
+                location.href = "Vozac.html";
+            });
+        }
+    });    
 };

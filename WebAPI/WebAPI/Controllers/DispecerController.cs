@@ -15,7 +15,6 @@ namespace WebAPI.Controllers
         [Route("api/Dispecer/VratiSveVoznje")]
         public List<Voznja> VratiSveVoznje()
         {
-            //Dispecer k = (Dispecer)System.Web.HttpContext.Current.Session["mojaSesija"];
             List<Voznja> ret = new List<Voznja>();
             foreach (var item in Korisnici.ListaMusterija)
             {
@@ -56,6 +55,7 @@ namespace WebAPI.Controllers
             voznja.Vozac = vozac;
             Korisnici.ListaDispecera.FirstOrDefault(d => d.KorisnickoIme == korImeDisp).Voznje.Add(voznja);
             Korisnici.ListaVozaca.FirstOrDefault(d => d.KorisnickoIme == vozac).Voznje.Add(voznja);
+            Korisnici.ListaVozaca.FirstOrDefault(d => d.KorisnickoIme == vozac).Zauzet = true;
         }
         [HttpPost]
         [Route("api/Dispecer/DodajVozaca/")]
@@ -69,6 +69,7 @@ namespace WebAPI.Controllers
                 //ne postoji korisnicko ime do sad
                 voz.Uloga = Uloge.Vozac;
                 voz.Voznje = new List<Voznja>();
+                voz.Zauzet = false;
                 Korisnici.ListaVozaca.Add(voz);
                 mess.StatusCode = HttpStatusCode.OK;
                 return mess;
@@ -109,7 +110,8 @@ namespace WebAPI.Controllers
             //sve preko indeksa izmijeni
             voznja.Komentar = kom;*/
             disp.Voznje.Add(voznja);
-
+            Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == vozac).Voznje.Add(voznja);
+            Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == vozac).Zauzet=true;
             System.Web.HttpContext.Current.Session["mojaSesija"] = disp;
             return ret;
         }
