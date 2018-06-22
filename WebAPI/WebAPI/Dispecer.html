@@ -10,7 +10,7 @@
     <title></title>
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#btnLogout").click(function () {
+            /*$("#btnLogout").click(function () {
                 $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
                     .fail(function ()
                     {
@@ -18,7 +18,7 @@
                     });
 
                 location.href = "Login.html";
-            });
+            });*/
             let korisnik = ``;
             $.get("/api/Dispecer", function (data) {
                 //alert(data.KorisnickoIme);
@@ -51,12 +51,12 @@
                 });*/
                 KreirajVozaca(korisnik);
             });
-            $("#IspisiMojeVoznje").click(function () {//ispisuje njegove
+            /*$("#IspisiMojeVoznje").click(function () {//ispisuje njegove
                 //alert("ispisi voznje")
                 $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);                    
                 });
-            });
+            });*/
             $("#IspisiVoznje").click(function () {//ispisuje opet njegove, treba sve iz sistema
                 //alert("ispisi voznje")
                 
@@ -66,6 +66,22 @@
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
                 });
                 //$("#btnIzmijeniVoznju").hide();
+            });
+            /*$("#pocetna").mousedown(function () {
+                alert(`pocetnaaaaa`);
+            });*/
+            $("#pocetna").click(function () {
+                $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
+                    IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
+                });
+            });
+            $("#logout").click(function () {
+                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
+                    .fail(function () {
+                        alert(`greskaaaaaa`);
+                    });
+
+                location.href = "Login.html";
             });
         });
     </script>
@@ -82,36 +98,39 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Dispecer</a>
+                <a class="navbar-brand glyphicon glyphicon-home" id="pocetna" href="#"> Pocetna</a>
+                
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form navbar-left">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
+                
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
 
-                <button id="btnLogout" type="button" class="btn navbar-btn navbar-right btn-sm">
-                    <span class="glyphicon glyphicon-log-out"></span> Izloguj se
-                </button>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" id="korisnik" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a id="prikaziPodatke" href="#">Moji podaci</a></li>
-                            <li><a id="izmijeniPodatke" href="#">Izmijeni podatke</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a id="promijeniSifru" href="#">Promijeni sifru</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
+                    <a class="navbar-brand glyphicon glyphicon-log-out pull-right" id="logout" href="#"> Izloguj se</a>
+                    <!--button id="btnLogout" type="button" class="btn navbar-btn navbar-right btn-sm">
+            <span class="glyphicon glyphicon-log-out"></span> Izloguj se
+        </!button-->
+                    <ul class="nav navbar-nav navbar-right">
+                        <!--li><a class="navbar-brand" href="#">Link</a></!--li-->
+                        <li class="dropdown">
+                            <a href="#" id="korisnik" class="navbar-brand dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a id="prikaziPodatke" href="#">Moji podaci</a></li>
+                                <li><a id="izmijeniPodatke" href="#">Izmijeni podatke</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a id="promijeniSifru" href="#">Promijeni sifru</a></li>
+                            </ul>
+                        </li>
+                    </ul>                    
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
     </nav>
     <div id="dugmad">
         <button id="kreirajVoznju" type="button" class="btn btn-default btn-sm">
@@ -123,9 +142,9 @@
         <button id="IspisiVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve voznje
         </button>
-        <button id="IspisiMojeVoznje" type="button" class="btn btn-default btn-sm">
+        <!--button id="IspisiMojeVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi moje voznje
-        </button>
+        </!--button-->
     </div>
     <div id="prikazPodataka">
 

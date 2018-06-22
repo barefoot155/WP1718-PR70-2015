@@ -157,11 +157,11 @@ let IzmijeniPodatke = function (korisnik) {
             //alert(data);
         })
             .done(function () {
-                alert("uspjesno registrovano, sad se uloguj");
+                alert("uspjesno izmijenjeni podaci");
                 location.href = "Dispecer.html";
             })
             .fail(function () {
-                alert("vec postoji korisnik sa datim korisnickim imenom");
+                alert("greska prilikom izmjene podataka");
             });
     });
 };

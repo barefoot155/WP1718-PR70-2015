@@ -121,7 +121,7 @@ namespace WebAPI.Controllers
         {
             string ime = dispecer.Ime;
             HttpResponseMessage mess = new HttpResponseMessage();
-            //Musterija m = musterija;
+            //mora postojati ako je izmjena podataka
             if (Korisnici.ListaDispecera.FirstOrDefault(d => dispecer.KorisnickoIme == d.KorisnickoIme)!=null)
             {
                 int ind = Korisnici.ListaDispecera.IndexOf(Korisnici.ListaDispecera.FirstOrDefault(d => dispecer.KorisnickoIme == d.KorisnickoIme));

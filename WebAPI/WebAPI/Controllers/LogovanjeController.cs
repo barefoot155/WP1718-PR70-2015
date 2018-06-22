@@ -22,6 +22,7 @@ namespace WebAPI.Controllers
             HttpContext.Current.Session["mojaSesija"] = null;
             HttpContext.Current.Session.Abandon();
             var cookie = Request.Headers.GetCookies("mojKuki").FirstOrDefault();
+            
             //var myCookie = cookie.Cookies.FirstOrDefault();
             if(cookie!=null)
             {
