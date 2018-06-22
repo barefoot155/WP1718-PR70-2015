@@ -8,6 +8,33 @@ let ulogaKorisnika = function (data) {
         ul = "Vozac";
     }
 };
+function funkcijaStatusVoznje(statusV) {
+    switch (statusV) {
+        case 0:
+            return "Kreirana - Na cekanju";
+            break;
+        case 1:
+            return "Formirana";
+            break;
+        case 2:
+            return "Obradjena";
+            break;
+        case 3:
+            return "Prihvacena";
+            break;
+        case 4:
+            return "Otkazana";
+            break;
+        case 5:
+            return "Neuspjesna";
+            break;
+        case 6:
+            return "Uspjesna";
+            break;
+        default:
+            return "greska";
+    }
+};
 let KreiranjeVoznje = function (data) {
     $("#prikazPodataka").html(`<table class="table table-bordered">
         <thead>
@@ -108,7 +135,7 @@ let IspisiVoznje = function (data) {
         temp += (`<td>${data[drive].Musterija}</td>`);
         temp += (`<td>${data[drive].Dispecer}</td>`);
         temp += (`<td>${data[drive].Vozac}</td>`);
-        temp += (`<td>${data[drive].StatusVoznje}</td>`);
+        temp += (`<td>${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td >`);
         temp += (`<td>${data[drive].TipAutomobila}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
@@ -443,7 +470,7 @@ let IspisiVoznjeDisp = function (data,username) {
         temp += (`<td>${data[drive].Musterija}</td>`);
         temp += (`<td>${data[drive].Dispecer}</td>`);
         temp += (`<td>${data[drive].Vozac}</td>`);
-        temp += (`<td>${data[drive].StatusVoznje}</td>`);
+        temp += (`<td>${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${data[drive].TipAutomobila}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
@@ -649,7 +676,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         temp += (`<td>${data[drive].Musterija}</td>`);
         temp += (`<td>${data[drive].Dispecer}</td>`);
         temp += (`<td>${data[drive].Vozac}</td>`);
-        temp += (`<td>${data[drive].StatusVoznje}</td>`);
+        temp += (`<td>${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${data[drive].TipAutomobila}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
