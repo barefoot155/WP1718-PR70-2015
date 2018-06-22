@@ -46,9 +46,9 @@ namespace WebAPI.Controllers
         }
         public List<Voznja> Get(string korIme)
         {
-            Musterija k = (Musterija)System.Web.HttpContext.Current.Session["mojaSesija"];
-
-            return k.Voznje;
+            //Musterija k = (Musterija)System.Web.HttpContext.Current.Session["mojaSesija"];
+            return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje;
+            //return k.Voznje;
         }
         // GET: api/Musterija/5
         public Musterija Get()

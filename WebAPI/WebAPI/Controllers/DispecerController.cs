@@ -83,9 +83,9 @@ namespace WebAPI.Controllers
         }
         public List<Voznja> Get(string korIme)
         {
-            Dispecer k = (Dispecer)System.Web.HttpContext.Current.Session["mojaSesija"];
-
-            return k.Voznje;
+            //Dispecer k = (Dispecer)System.Web.HttpContext.Current.Session["mojaSesija"];
+            return Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korIme).Voznje;
+            //return k.Voznje;
         }
         // GET: api/Dispecer/5
         public Dispecer Get()

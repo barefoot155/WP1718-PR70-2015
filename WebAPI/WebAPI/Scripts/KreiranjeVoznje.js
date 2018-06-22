@@ -879,3 +879,70 @@ let ObradjivanjeVoznjeVozac = function (data1, data2) {// data1 id voznje tj but
         }
     });    
 };
+
+let IzmijeniLokaciju = function (idVozaca) {
+    let htmlLokacija = `<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">
+                    Moja lokacija
+                </th>
+            </tr>
+        </thead>
+        <tbody>            
+            <tr>
+                <td>Adresa na koju taksi dolazi:</td>
+            </tr>
+            <tr>
+                <td>Ulica:</td>
+                <td>
+                    <input type="text" id="txtUlica" placeholder="Unesi ulicu..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Broj:</td>
+                <td>
+                    <input type="text" id="txtBroj" placeholder="Unesi broj..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Grad:</td>
+                <td>
+                    <input type="text" id="txtGrad" placeholder="Unesi grad..." />
+                </td>
+            </tr>            
+            <tr>
+                <td>Postanski broj:</td>
+                <td>
+                    <input type="text" id="txtPostanskiBroj" placeholder="Unesi postanski broj..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Koordinate</td>                
+            </tr>
+            <tr>
+                <td>Koordinata X:</td>
+                <td>
+                    <input type="text" id="txtKoordinataX" placeholder="Koordinata X..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Koordinata Y:</td>
+                <td>
+                    <input type="text" id="txtKoordinataY" placeholder="Koordinata Y..." />
+                </td>
+            </tr>
+            <tr class="success">
+                <td colspan="2">
+                    <input id="btnLok" class="btn btn-success pull-right" type="button" value="Promijeni lokaciju">                    
+                </td>
+            </tr>
+        </tbody>
+     </table>`;    
+    $("#prikazPodataka").html(htmlLokacija);
+    $("#btnLok").click(function () {
+        $.get("/api/Vozac/PromijeniLokaciju/", { idVozaca: idVozaca, ulica: $("#txtUlica").val(), broj: $("#txtBroj").val(), grad: $("#txtGrad").val(), posta: $("#txtPostanskiBroj").val(), x: $("#txtKoordinataX").val(), y: $("#txtKoordinataY").val() }, function () {
+            location.href = "Vozac.html";
+        });
+    });
+};

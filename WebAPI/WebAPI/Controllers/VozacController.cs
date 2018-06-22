@@ -10,6 +10,15 @@ namespace WebAPI.Controllers
 {
     public class VozacController : ApiController
     {
+        //"/api/Vozac/PromijeniLokaciju/"
+        [HttpGet]
+        [Route("api/Vozac/PromijeniLokaciju/")]
+        public void PromijeniLokaciju(string idVozaca, string broj, string ulica, string grad, string x, string y, string posta)
+        {
+            //string b=broj;
+            Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Lokacija = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta, Ulica = ulica } };
+            System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
+        }
         [HttpGet]
         [Route("api/Vozac/VratiKreirane")]
         public List<Voznja> VratiKreirane()

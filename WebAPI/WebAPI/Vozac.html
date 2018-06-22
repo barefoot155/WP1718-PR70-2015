@@ -71,7 +71,12 @@
                 });                
             });
             $("#PromijeniLokaciju").click(function () {
-                //PrikaziMapu();
+                $.get("/api/Vozac", function (data) {
+                    //alert(data.KorisnickoIme);
+                    korisnik = data;
+                    $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
+                    IzmijeniLokaciju(korisnik.KorisnickoIme);
+                }); 
                 $("#prikazPodatakaDrugi").html(``);
             });
         });
