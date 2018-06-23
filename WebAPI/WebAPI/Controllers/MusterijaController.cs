@@ -20,9 +20,10 @@ namespace WebAPI.Controllers
             int i = int.Parse(idVoznje);
             Musterija must = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik);
             int indVoznja = must.Voznje.IndexOf(must.Voznje.FirstOrDefault(v => v.Id == i));
-            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik).Voznje[indVoznja].Komentar = new Komentar() { Korisnik = Korisnik, Voznja = Voznja, DatumObjave = DateTime.Now, Opis = Opis, Ocjena = (Ocjene)(int.Parse(Ocjena)) };
+            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik).Voznje[indVoznja].Komentar = new Komentar() { Korisnik = Korisnik, Voznja = Voznja, DatumObjave = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Unspecified), Opis = Opis, Ocjena = (Ocjene)(int.Parse(Ocjena)) };
             //return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v => v.Id == i);
         }
+        
         [HttpGet]
         [Route("api/Musterija/VratiVoznju/")]
         public Voznja VratiVoznju(string id,string korIme)
@@ -44,6 +45,7 @@ namespace WebAPI.Controllers
             Musterija ret = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
             System.Web.HttpContext.Current.Session["mojaSesija"] = ret;
         }
+        
         public List<Voznja> Get(string korIme)
         {
             //Musterija k = (Musterija)System.Web.HttpContext.Current.Session["mojaSesija"];
@@ -65,7 +67,7 @@ namespace WebAPI.Controllers
 
             Adresa adresa = new Adresa() { Ulica = ulica, Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta };
             Lokacija lokacija = new Lokacija() { Adresa = adresa, KoordinataX = x, KoordinataY = y };
-            Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.Now, Musterija = korIme, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Lokacija = lokacija, TipAutomobila = (TipoviAutomobila)(int.Parse(tip)), Komentar = new Komentar() { Opis = "", Ocjena = Ocjene.Jedan } };
+            Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified), Musterija = korIme, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Lokacija = lokacija, TipAutomobila = (TipoviAutomobila)(int.Parse(tip)), Komentar = new Komentar() { Opis = "", Ocjena = Ocjene.Jedan } };
             //Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.IndexOf()
             Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.Add(voznja);
             
@@ -76,7 +78,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Route("api/Musterija/IzmijeniVoznju/")]
         public void Get(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme,string id)
-        {
+        {//izmijeniiiiiiiiii voznju
             int i = int.Parse(id);//izmijeniti jer se ovdje id promijeni
             string xxx = ulica;
             Adresa adresa = new Adresa() { Ulica = ulica, Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta };

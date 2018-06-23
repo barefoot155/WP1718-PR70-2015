@@ -127,6 +127,15 @@ let KreiranjeVoznje = function (data) {
     });    
 };
 
+function comparer(index) {
+    return function (a, b) {
+        var valA = getCellValue(a, index), valB = getCellValue(b, index)
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+};
+function getCellValue(row, index) {
+    return $(row).children('td').eq(index).text()
+};
 let IspisiVoznje = function (data) {
     let temp = ``;
     for (drive in data) {
@@ -135,27 +144,40 @@ let IspisiVoznje = function (data) {
         temp += (`<td>${data[drive].Musterija}</td>`);
         temp += (`<td>${data[drive].Dispecer}</td>`);
         temp += (`<td>${data[drive].Vozac}</td>`);
-        temp += (`<td>${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td >`);
+        temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${data[drive].TipAutomobila}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
         temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
         temp += (data[drive].StatusVoznje == 0) ? (`<td><input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : `<td>` + `</td>`;
         //dodaj za status voznje Uspjesno komentar
-        //temp += (data[drive].StatusVoznje == 6) ? (`<td><input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : `<td>` + `</td>`;
+        temp += (data[drive].StatusVoznje == 6) ? (`<td><input name="komentar" id="btnKoment` + data[drive].Id + `" class="btn btn-success" type="button" value="Ostavi komentar">`) : `<td>` + `</td>`;
        temp += `</tr>`;
     }
 
-    $("#prikazPodataka").html(`<table class="table table - bordered">
+    $("#prikazPodataka").html(`<div>
+    <select id="zaFilter">
+         <option value="Bez naznake" selected>Bez naznake</option>
+         <option value="Kreirana - Na cekanju">Kreirana - Na cekanju</option>
+         <option value="Formirana">Formirana</option>
+         <option value="Obradjena">Obradjena</option>
+         <option value="Prihvacena">Prihvacena</option>
+         <option value="Otkazana">Otkazana</option>
+         <option value="Neuspjesna">Neuspjesna</option>
+         <option value="Uspjesna">Uspjesna</option>
+    </select>
+    </div>
+    <table id="table" class="table table - bordered">
         <thead>
         <tr class="success">
-            <th colspan="10" style="text-align:center">
+            <th colspan="12" style="text-align:center">
                 Korisnikove voznje
             </th>
         </tr>
         <tr>    
-            <th class="success">Datum i vrijeme</th>
+            <th name="sortiraj" class="success">Datum i vrijeme<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Musterija</th>
             <th class="success">Dispecer</th>
             <th class="success">Vozac</th>
@@ -163,16 +185,174 @@ let IspisiVoznje = function (data) {
             <th class="success">TipAutomobila</th>
             <th class="success">Ulica</th>
             <th class="success">Odrediste</th>
-            <th class="success">Iznos</th>
-            <th class="success">Komentar</th>
+            <th name="sortiraj" class="success">Iznos<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
+            <th class="success">Komentar-Opis</th>
+            <th name="sortiraj" class="success">Komentar-Ocjena<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Opcije</th>
+        </tr>
+        <tr class="success">
+            <th>
+                od: <input type="datetime-local" id="odDatum"/></br>
+                do: <input type="datetime-local" id="doDatum"/>
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>
+                od: <input type="number" id="odCijena"/></br>
+                do: <input type="number" id="doCijena"/>
+            </th>
+            <th></th>
+            <th>
+                od: <input type="number" id="odOcjena"/></br>
+                do: <input type="number" id="doOcjena"/>
+            </th>
+            <th></th>
         </tr>
         </thead>
         <tbody>${temp}        
         </tbody>
     </table>`);
+    $("#odCijena").keyup(function () {
+        //alert("promjenaaaa")
+        if ($("#doCijena").val() != ``) {
+            if ($("#odCijena").val()-$("#doCijena").val()>0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretraga($("#odCijena").val(), $("#doCijena").val());
+        }
+        
+    });
+    $("#odCijena").mouseup(function () {
+        //alert("miss")
+        if ($("#doCijena").val() != ``) {
+            if ($("#odCijena").val() - $("#doCijena").val() > 0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretraga($("#odCijena").val(), $("#doCijena").val());
+        }
+    });
+    $("#doCijena").keyup(function () {
+        //alert("promjenaaaa")
+        if ($("#odCijena").val() != ``) {
+            if ($("#doCijena").val() - $("#odCijena").val() < 0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretraga($("#odCijena").val(), $("#doCijena").val());
+        }
+
+    });
+    $("#doCijena").mouseup(function () {
+        //alert("miss")
+        if ($("#odCijena").val() != ``) {
+            if ($("#doCijena").val() - $("#odCijena").val() < 0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretraga($("#odCijena").val(), $("#doCijena").val());
+        }
+    });
+    $("#odOcjena").keyup(function () {
+        //alert("promjenaaaa")
+        if ($("#doOcjena").val() != ``) {
+            if ($("#odOcjena").val() - $("#doOcjena").val() > 0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+        }
+
+    });
+    $("#odOcjena").mouseup(function () {
+        //alert("miss")
+        if ($("#doOcjena").val() != ``) {
+            if ($("#odCijena").val() - $("#doOcjena").val() > 0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+        }
+    });
+    $("#doOcjena").keyup(function () {
+        //alert("promjenaaaa")
+        if ($("#odOcjena").val() != ``) {
+            if ($("#doOcjena").val() - $("#odOcjena").val() < 0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+        }
+
+    });
+    $("#doOcjena").mouseup(function () {
+        //alert("miss")
+        if ($("#odOcjena").val() != ``) {
+            if ($("#doOcjena").val() - $("#odOcjena").val() < 0) {
+                $(this).removeAttr("class");
+                $(this).addClass("alert-danger");
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+        } else {
+            $(this).removeAttr("class");
+            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+        }
+    });
+    $("#zaFilter").change(function () {
+        //alert($(this).val());
+        if ($(this).val() == "Bez naznake") {
+            $("#table td.col1").parent().show();
+        } else {
+            $("#table td.col1:contains('" + $(this).val() + "')").parent().show();
+            $("#table td.col1:not(:contains('" + $(this).val() + "'))").parent().hide();
+        }
+    });
     $("input:button[name=otkazi]").click(function () {
         //alert(this.id);//uzmi id tog dugmeta
+        
         ulogaKorisnika(`0`);
         var ppp = this.id;
         //alert(`uloga prije geta` + ul + this.id + data[0].Musterija);
@@ -190,8 +370,113 @@ let IspisiVoznje = function (data) {
             //location.href = (ul + `.html`);
         });
     });
-};
+    $("input:button[name=komentar]").click(function () {
+        //alert(this.id);//uzmi id tog dugmeta
+        ulogaKorisnika(`0`);
+        var ppp = this.id;
+        //alert(`uloga prije geta` + ul + this.id + data[0].Musterija);
+        OstaviKom(ppp, data[0].Musterija);        
+    });
+    $("th[name=sortiraj]").click(function () {
 
+        if ($(this.getElementsByTagName("span")).attr(`class`) == "glyphicon glyphicon-arrow-down") {
+            $(this.getElementsByTagName("span")).removeClass("glyphicon glyphicon-arrow-down");
+            $(this.getElementsByTagName("span")).toggleClass("glyphicon glyphicon-arrow-up");
+        } else {
+            $(this.getElementsByTagName("span")).removeClass("glyphicon glyphicon-up-down");
+            $(this.getElementsByTagName("span")).toggleClass("glyphicon glyphicon-arrow-down");
+        }
+        var table = $(this).parents('table').eq(0)
+        var rows = table.find('tr:gt(2)').toArray().sort(comparer($(this).index()))
+        this.asc = !this.asc
+        if (!this.asc) { rows = rows.reverse() }
+        for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
+    });
+};
+function pretraga(minValue, maxValue) {
+    var min = parseInt($('#odCijena').val(), 10);
+    var max = parseInt($('#doCijena').val(), 10);
+    $("#table tbody tr").each(function () {
+        var age = parseFloat($('td:eq(8)', this).text()) || 0;
+        if ((isNaN(min) && isNaN(max)) ||
+            (isNaN(min) && age <= max) ||
+            (min <= age && isNaN(max)) ||
+            (min <= age && age <= max)) {
+            $(this).show()
+        } else {
+            $(this).hide()
+        }
+    });
+};
+function pretragaOcj(minValue, maxValue) {
+    var min = parseInt($('#odOcjena').val(), 10);
+    var max = parseInt($('#doOcjena').val(), 10);
+    $("#table tbody tr").each(function () {
+        var age = parseFloat($('td:eq(10)', this).text()) || 0;
+        if ((isNaN(min) && isNaN(max)) ||
+            (isNaN(min) && age <= max) ||
+            (min <= age && isNaN(max)) ||
+            (min <= age && age <= max)) {
+            $(this).show()
+        } else {
+            $(this).hide()
+        }
+    });
+};
+let OstaviKom = function (idVoz, idKor) {
+    $("#prikazPodataka").html(`<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">
+                    Komentarisanje
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <td>Ocjena:</td>
+                <td>
+                    <select id="ocjena">
+                        <option value="0" selected>Neocijenjeno</option>
+                        <option value="1">Jedan</option>
+                        <option value="2">Dva</option>
+                        <option value="3">Tri</option>
+                        <option value="4">Cetiri</option>
+                        <option value="5">Pet</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Komentar:</td>
+                <td>
+                    <input type="text" id="txtKom" placeholder="Unesi komenatar..." />
+                </td>
+            </tr>
+            
+            <tr class="success">
+                <td colspan="2">
+                    <input id="btnKoment" class="btn btn-success pull-right" type="button" value="Ostavi komentar">                    
+                </td>
+            </tr>
+        </tbody>
+     </table>`
+    );
+    $("#btnKoment").click(function () {
+        ulogaKorisnika(`0`);
+        var uloga = ul;
+        //alert(uloga);
+        var ocj = $("#ocjena").val();
+        var koment = $("#txtKom").val();
+
+        //idKor i idVoz
+        $.get("/api/" + uloga + "/OstaviKomentar/", { Opis: koment, Ocjena: ocj, Korisnik: idKor, Voznja: idVoz }, function () {
+            //alert(`komeeeeeentaaar`);
+            location.href = ul + `.html`;
+        });
+
+    });
+};
 let IzmijeniVoznju = function (data) {
     var tip = ``;
     if (data.TipAutomobila == "1") {//putnicki
@@ -473,6 +758,7 @@ let IspisiVoznjeDisp = function (data,username) {
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
         temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
         temp += (data[drive].StatusVoznje == 0) ? (`<td><input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Obradi voznju">`) : `<td>` + `</td>`;
         temp += `</tr>`;
     }
@@ -485,7 +771,7 @@ let IspisiVoznjeDisp = function (data,username) {
             </th>
         </tr>
         <tr>    
-            <th class="success">Datum i vrijeme</th>
+            <th name="sortiraj" class="success">Datum i vrijeme</th>
             <th class="success">Musterija</th>
             <th class="success">Dispecer</th>
             <th class="success">Vozac</th>
@@ -493,8 +779,9 @@ let IspisiVoznjeDisp = function (data,username) {
             <th class="success">TipAutomobila</th>
             <th class="success">Ulica</th>
             <th class="success">Odrediste</th>
-            <th class="success">Iznos</th>
-            <th class="success">Komentar</th>
+            <th name="sortiraj" class="success">Iznos</th>
+            <th class="success">Komentar-Opis</th>
+            <th name="sortiraj" class="success">Komentar-Ocjena</th>
             <th class="success">Opcije</th>
         </tr>
         </thead>
@@ -679,6 +966,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
         temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
         temp += `<td>`;
         temp += (data[drive].StatusVoznje == 0) ? (`<input name="prihvati" id="btnPrihvati` + data[drive].Id + `" class="btn btn-success" type="button" value="Prihvati voznju">`) : ``;
         temp += (data[drive].StatusVoznje == 2 || data[drive].StatusVoznje == 3 || data[drive].StatusVoznje == 4) ? (`<input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Promijeni status voznje">`) : ``;
@@ -694,7 +982,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             </th>
         </tr>
         <tr>    
-            <th class="success">Datum i vrijeme</th>
+            <th name="sortiraj" class="success">Datum i vrijeme</th>
             <th class="success">Musterija</th>
             <th class="success">Dispecer</th>
             <th class="success">Vozac</th>
@@ -702,8 +990,9 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             <th class="success">TipAutomobila</th>
             <th class="success">Ulica</th>
             <th class="success">Odrediste</th>
-            <th class="success">Iznos</th>
-            <th class="success">Komentar</th>
+            <th name="sortiraj" class="success">Iznos</th>
+            <th class="success">Komentar-Opis</th>
+            <th name="sortiraj" class="success">Komentar-Ocjena</th>
             <th class="success">Opcije</th>
         </tr>
         </thead>
@@ -747,7 +1036,7 @@ let ObradjivanjeVoznjeVozac = function (data1, data2) {// data1 id voznje tj but
             <tr>
                 <td>Iznos:</td>                
                 <td>
-                    <input type="text" id="txtIznos" placeholder="Unesi iznos..." />
+                    <input type="number" id="txtIznos" placeholder="Unesi iznos..." />
                 </td>                
             </tr>
             <tr>

@@ -102,7 +102,7 @@ namespace WebAPI.Controllers
             string usernameVozaca = vozac;
             Adresa adresa = new Adresa() { Ulica = ulica, Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta };
             Lokacija lokacija = new Lokacija() { Adresa = adresa, KoordinataX = x, KoordinataY = y };
-            Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.Now, Musterija ="nepoznato", Vozac=vozac, Dispecer = korIme, StatusVoznje = StatusiVoznje.Formirana, Lokacija = lokacija, Komentar = new Komentar() { Opis="", Ocjena=Ocjene.Neocijenjeno}, TipAutomobila = (TipoviAutomobila)(int.Parse(tip))};
+            Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified), Musterija ="nepoznato", Vozac=vozac, Dispecer = korIme, StatusVoznje = StatusiVoznje.Formirana, Lokacija = lokacija, Komentar = new Komentar() { Opis="", Ocjena=Ocjene.Neocijenjeno}, TipAutomobila = (TipoviAutomobila)(int.Parse(tip))};
             Dispecer disp = Korisnici.ListaDispecera.FirstOrDefault(m => m.KorisnickoIme == korIme);
             /*Voznja voz = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v => v.Id == i);
             int indexVoznje = Korisnici.ListaDispecera.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.IndexOf(voz);
