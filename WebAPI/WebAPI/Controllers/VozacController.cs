@@ -114,6 +114,7 @@ namespace WebAPI.Controllers
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje = StatusiVoznje.Uspjesna;
             Lokacija odr = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { Ulica = ulica, Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta } };
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Odrediste = odr;
+            Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Iznos=double.Parse(iznos);
             
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Zauzet = false;
             if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "")
@@ -121,12 +122,14 @@ namespace WebAPI.Controllers
                 string korImeMust = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija;
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje = StatusiVoznje.Uspjesna;
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Odrediste = odr;
+                Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Iznos=double.Parse(iznos);
             }
             if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer != null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer != "")
             {
                 string korImeDisp = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer;
                 Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje = StatusiVoznje.Uspjesna;
                 Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Odrediste=odr;
+                Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Iznos=double.Parse(iznos);
             }
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
             //Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;

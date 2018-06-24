@@ -29,7 +29,7 @@
                 }
                 $.post("/api/Logovanje", { username: user, password: pass, rememberMe: remember }, function (data) {
                     //alert(remember);
-                    alert(data);
+                    //alert(data);
                     switch (data) {                        
                         case `Dispecer`:
                             location.href = "Dispecer.html";

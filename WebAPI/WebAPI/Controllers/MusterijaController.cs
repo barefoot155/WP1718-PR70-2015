@@ -78,18 +78,19 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Route("api/Musterija/IzmijeniVoznju/")]
         public void Get(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme,string id)
-        {//izmijeniiiiiiiiii voznju
-            int i = int.Parse(id);//izmijeniti jer se ovdje id promijeni
+        {
+            int i = int.Parse(id);
             string xxx = ulica;
+
             Adresa adresa = new Adresa() { Ulica = ulica, Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta };
             Lokacija lokacija = new Lokacija() { Adresa = adresa, KoordinataX = x, KoordinataY = y };
-            Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.Now, Musterija = korIme, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Lokacija = lokacija, TipAutomobila = (TipoviAutomobila)(int.Parse(tip)) };
+
             Voznja voz = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v=>v.Id==i);
             int indexVoznje = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.IndexOf(voz);
             Komentar kom = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje[indexVoznje].Komentar;
-            //sve preko indeksa izmijeni
-            voznja.Komentar = kom;
-            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje[indexVoznje] = voznja;
+            
+            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje[indexVoznje].Lokacija=lokacija;
+            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje[indexVoznje].TipAutomobila= (TipoviAutomobila)(int.Parse(tip));
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
             
         }

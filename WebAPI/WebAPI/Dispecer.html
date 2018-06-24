@@ -15,15 +15,7 @@
     <title></title>
     <script type="text/javascript">
         $(document).ready(function () {
-            /*$("#btnLogout").click(function () {
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
-                    .fail(function ()
-                    {
-                        alert(`greskaaaaaa`);
-                    });
-
-                location.href = "Login.html";
-            });*/
+            
             let korisnik = ``;
             $.get("/api/Dispecer", function (data) {
                 //alert(data.KorisnickoIme);
@@ -49,32 +41,18 @@
                     KreiranjeVoznjeDisp(korisnik, data1);
                 });                
             });
-            $("#kreirajVozaca").click(function () {
-                /*$.get("/api/Dispecer/VratiSlobodneVozace", function (data1) {
-                    alert(data1[0].KorisnickoIme);
-                    KreiranjeVoznjeDisp(korisnik, data1);
-                });*/
+            $("#kreirajVozaca").click(function () {                
                 KreirajVozaca(korisnik);
-            });
-            /*$("#IspisiMojeVoznje").click(function () {//ispisuje njegove
-                //alert("ispisi voznje")
-                $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
-                    IspisiVoznjeDisp(data, korisnik.KorisnickoIme);                    
-                });
-            });*/
-            $("#IspisiVoznje").click(function () {//ispisuje opet njegove, treba sve iz sistema
-                //alert("ispisi voznje")
+            });            
+            $("#IspisiVoznje").click(function () {
                 
                 $.get("api/Dispecer/VratiSveVoznje", function (data) {
                     //alert("iz geta");
                     //alert(data[0].Id);
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
                 });
-                //$("#btnIzmijeniVoznju").hide();
             });
-            /*$("#pocetna").mousedown(function () {
-                alert(`pocetnaaaaa`);
-            });*/
+            
             $("#pocetna").click(function () {
                 $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
@@ -116,9 +94,7 @@
                         </div>
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>                    
-                    <!--button id="btnLogout" type="button" class="btn navbar-btn navbar-right btn-sm">
-            <span class="glyphicon glyphicon-log-out"></span> Izloguj se
-        </!button-->
+                    
                     <ul class="nav navbar-nav navbar-right">
                         <!--li><a class="navbar-brand" href="#">Link</a></!--li-->
                         <li class="dropdown">
@@ -146,9 +122,6 @@
         <button id="IspisiVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve voznje
         </button>
-        <!--button id="IspisiMojeVoznje" type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-arrow-down"></span> Ispisi moje voznje
-        </!--button-->
     </div>
     <div id="prikazPodataka">
 

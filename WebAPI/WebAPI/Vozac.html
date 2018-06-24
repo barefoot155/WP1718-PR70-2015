@@ -21,15 +21,7 @@
     <title></title>
     <script type="text/javascript">
         $(document).ready(function () {
-            /*$("#btnLogout").click(function () {
-                $("#prikazPodatakaDrugi").html(``);
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
-                    .fail(function () {
-                        alert(`greskaaaaaa`);
-                    });
-
-                location.href = "Login.html";
-            });*/
+            
             let korisnik = ``;
             $.get("/api/Vozac", function (data) {
                 //alert(data.KorisnickoIme);
@@ -64,15 +56,7 @@
                     IspisiVoznjeVozac(data, korisnik.KorisnickoIme);                    
                 });
             });
-            /*$("#IspisiMojeVoznje").click(function () {
-                $("#prikazPodatakaDrugi").html(``);
-                $.get("/api/Vozac", function (data) {
-                    //alert(data.KorisnickoIme);
-                    korisnik = data;
-                    $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
-                    IspisiVoznjeVozac(korisnik.Voznje, korisnik.KorisnickoIme);
-                });                
-            });*/
+            
             $("#PromijeniLokaciju").click(function () {
                 $.get("/api/Vozac", function (data) {
                     //alert(data.KorisnickoIme);
@@ -126,10 +110,7 @@
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
-                <!--a class="navbar-brand glyphicon glyphicon-log-out pull-right" id="logout" href="#"> Izloguj se</!--a-->
-                <!--button id="btnLogout" type="button" class="btn navbar-btn navbar-right btn-sm">
-                    <span class="glyphicon glyphicon-log-out"></span> Izloguj se
-                </!--button-->
+                
                 <ul class="nav navbar-nav navbar-right">
                     <li><a class="navbar-brand" id="lokacija" href="#">Lokacija</a></li>
                     <li class="dropdown">
@@ -151,9 +132,7 @@
         <button id="IspisiKreiraneVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve kreirane voznje
         </button>
-        <!--button id="IspisiMojeVoznje" type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-arrow-down"></span> Ispisi moje voznje
-        </!--button-->
+        
         <button id="PromijeniLokaciju" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Promijeni Lokaciju
         </button>

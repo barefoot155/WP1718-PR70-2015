@@ -16,10 +16,7 @@
     <title></title>
     <script type="text/javascript">
         $(document).ready(function () {
-            /*$("#btnLogout").click(function () {
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); }).fail(function () { alert(`greska`); });
-                location.href = "Login.html";
-            });*/
+            
             let korisnik = ``;
             $.get("/api/Musterija", function (data) {
                 //alert(data.KorisnickoIme);
@@ -29,14 +26,7 @@
                     //alert("iz geta");
                     IspisiVoznje(data1);
                 });
-            });
-            /*$("#IspisiVoznje").click(function () {
-                //alert("ispisi voznje")
-                $.get("api/Musterija", { korIme: korisnik.KorisnickoIme }, function (data) {
-                    //alert("iz geta");
-                    IspisiVoznje(data);
-                });
-            });*/
+            });            
             $("#prikaziPodatke").click(function () {
                 IspisiPodatke(korisnik);
             });
@@ -56,7 +46,7 @@
                 });
             });
             $("#logout").click(function () {
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); }).fail(function () { alert(`greska`); });
+                $.get("/api/Logovanje/IzlogujSe", function (data) { /*alert(`uspjesno izlogovan`);*/ }).fail(function () { /*alert(`greska`);*/ });
                 location.href = "Login.html";
             });
         });
@@ -86,9 +76,7 @@
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
                 <a class="navbar-brand glyphicon glyphicon-log-out pull-right" id="logout" href="#"> Izloguj se</a>
-                <!--button id="btnLogout" type="button" class="btn navbar-btn navbar-right btn-sm">
-                    <span class="glyphicon glyphicon-log-out"></span> Izloguj se
-                </!-button-->
+                
                 <ul class="nav navbar-nav navbar-right">
                     <!--li><a href="#">Link</a></!--li-->
                     <li class="dropdown">
@@ -110,9 +98,6 @@
         <button id="kreirajVoznju" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-plus-sign"></span> Kreiraj voznju
         </button>
-        <!--button id="IspisiVoznje" type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-arrow-down"></span> Ispisi voznje
-        </!--button-->
     </div>
     <div id="prikazPodataka">
 
