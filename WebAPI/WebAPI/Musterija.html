@@ -21,6 +21,10 @@
             $.get("/api/Musterija", function (data) {
                 //alert(data.KorisnickoIme);
                 korisnik = data;
+                if (data.Banovan) {
+                    $("body").attr(`style`, `padding:300px 300px 400px 500px`);
+                    $("body").html(`<p><b>Banovan si!!</b></p>`);                    
+                }
                 $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
                 $.get("api/Musterija", { korIme: data.KorisnickoIme }, function (data1) {
                     //alert("iz geta");

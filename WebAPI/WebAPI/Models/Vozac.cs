@@ -13,9 +13,11 @@ namespace WebAPI.Models
             Automobil = new Automobil();
             Voznje = new List<Voznja>();
             Zauzet = false;
+            Banovan = false;
         }
         public Lokacija Lokacija { get; set; }
         public Automobil Automobil { get; set; }
         public bool Zauzet { get; set; }
+        public bool Banovan { get; set; }
     }
 }

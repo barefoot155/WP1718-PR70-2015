@@ -52,7 +52,14 @@
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
                 });
             });
-            
+            $("#IspisiKorisnike").click(function () {
+
+                $.get("api/Dispecer/VratiSveKorisnike", function (data) {
+                    //alert("iz geta");
+                    //alert(data[0].Id);
+                    IspisiKorisnike(data);
+                });
+            });
             $("#pocetna").click(function () {
                 $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
@@ -121,6 +128,9 @@
         </button>
         <button id="IspisiVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve voznje
+        </button>
+        <button id="IspisiKorisnike" type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve korisnike
         </button>
     </div>
     <div id="prikazPodataka">

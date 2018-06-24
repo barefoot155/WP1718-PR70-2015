@@ -10,6 +10,8 @@ namespace WebAPI.Models
         public Musterija()
         {
             Voznje = new List<Voznja>();
+            Banovan = false;
         }
+        public bool Banovan { get; set; }
     }
 }

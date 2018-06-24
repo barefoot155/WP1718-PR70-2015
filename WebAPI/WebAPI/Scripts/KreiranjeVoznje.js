@@ -1707,3 +1707,46 @@ let IzmijeniLokaciju = function (idVozaca) {
         });
     });
 };
+
+let IspisiKorisnike = function (data) {
+    var pom = ``;
+    for (user in data) {
+        pom += `<tr><td>`;
+        pom += data[user].split(`-`)[0];
+        pom += `</td><td>`;
+        pom += data[user].split(`-`)[1];
+        pom += `</td><td>`;
+        pom += (data[user].split(`-`)[2] == `True`) ? `<button name="blok" id="${data[user].split(`-`)[0]}" type="button" class="btn btn-success btn-sm">Odblokiraj</button>` : `<button name="blok" id="${data[user].split(`-`)[0]}" type="button" class="btn btn-success btn-sm">Blokiraj</button>`;
+        pom += `</td></tr>`;
+    }
+    $("#prikazPodataka").html(`<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="3">
+                    Svi vozaci i musterije
+                </th>
+            </tr>
+            <tr class="success">
+                <th>
+                    Korisnicko ime
+                </th>
+                <th>
+                    Uloga
+                </th>
+                <th>
+                    Opcije
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            ${pom}
+        </tbody>
+     </table>`);
+    $("button[name=blok]").click(function () {
+
+        $.get("api/Dispecer/Blokiranje/", { korIme: this.id }, function (pod) {
+            
+            IspisiKorisnike(pod);
+        });        
+    });
+};

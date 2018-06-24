@@ -33,6 +33,35 @@ namespace WebAPI.Controllers
             return ret;
         }
         [HttpGet]
+        [Route("api/Dispecer/VratiSveKorisnike")]
+        public List<string> VratiSveKorisnike()
+        {
+            List<string> ret = new List<string>();
+            foreach (var item in Korisnici.ListaMusterija)
+            {
+                ret.Add(item.KorisnickoIme+"-musterija-"+item.Banovan.ToString());
+            }
+            foreach (var item in Korisnici.ListaVozaca)
+            {
+                ret.Add(item.KorisnickoIme + "-vozac-" + item.Banovan.ToString());
+            }
+            return ret;
+        }
+
+        [HttpGet]
+        [Route("api/Dispecer/Blokiranje/")]
+        public List<string> Blokiranje(string korIme)
+        {
+            if (Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme) != null)
+            {
+                Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Banovan = !Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Banovan;
+            }else if (Korisnici.ListaVozaca.FirstOrDefault(m => m.KorisnickoIme == korIme) != null)
+            {
+                Korisnici.ListaVozaca.FirstOrDefault(m => m.KorisnickoIme == korIme).Banovan = !Korisnici.ListaVozaca.FirstOrDefault(m => m.KorisnickoIme == korIme).Banovan;
+            }
+            return VratiSveKorisnike();
+        }
+        [HttpGet]
         [Route("api/Dispecer/VratiSlobodneVozace")]
         public List<Vozac> VratiSlobodneVozace()
         {
