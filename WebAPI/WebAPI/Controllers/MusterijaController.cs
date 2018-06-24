@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
             int i = int.Parse(idVoznje);
             Musterija must = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik);
             int indVoznja = must.Voznje.IndexOf(must.Voznje.FirstOrDefault(v => v.Id == i));
-            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik).Voznje[indVoznja].Komentar = new Komentar() { Korisnik = Korisnik, Voznja = Voznja, DatumObjave = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Unspecified), Opis = Opis, Ocjena = (Ocjene)(int.Parse(Ocjena)) };
+            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik).Voznje[indVoznja].Komentar = new Komentar() { Korisnik = Korisnik, Voznja = idVoznje, DatumObjave = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Unspecified), Opis = Opis, Ocjena = (Ocjene)(int.Parse(Ocjena)) };
             //return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v => v.Id == i);
         }
         

@@ -32,7 +32,103 @@ function funkcijaStatusVoznje(statusV) {
             return "Uspjesna";
             break;
         default:
-            return "greska";
+            return "";
+    }
+};
+function funkcijaTipAuta(tipAuta) {
+    switch (tipAuta) {
+        case 0:
+            return "Nepoznato";
+            break;
+        case 1:
+            return "Putnicki automobil";
+            break;
+        case 2:
+            return "Kombi vozilo";
+            break;        
+        default:
+            return "";
+    }
+};
+function ModalDialogKod(header,opis,ocjena,datum,voznja,autor) {
+return `<!-- Trigger the modal with a button -->
+<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">Prikazi +</button>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">`+ header +`</h4>
+      </div>
+      <div class="modal-body">
+        <p><b>Datum:</b>`+ datum + `</p>
+        <p><b>Autor:</b>`+ autor + `</p>
+        <p><b>Voznja:</b>`+ voznja + `</p>        
+        <p><b>Ocjena:</b>`+ ocjena + `</p>
+        <p><b>Opis:</b>`+ opis + `</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Zatvori</button>
+      </div>
+    </div>
+
+  </div>
+</div>`;
+};
+
+
+function display(startDate, endDate) {
+    if (endDate == "") {
+        var startDateTimeStamp = new Date(startDate).getTime();
+        $("#table tbody tr").each(function () {
+            var rowDate = $(this).find('td:eq(0)').html();
+            /*var rDate = startDate.split(`T`)[0].split(`-`);
+            var rTime = startDate.split(`T`)[1].split(`-`);
+            */
+            var rowDateTimeStamp = new Date(rowDate).getTime();
+            if (startDateTimeStamp <= rowDateTimeStamp) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+
+    }else if(startDate == ""){
+
+        var startDateTimeStamp = new Date(startDate).getTime();
+        $("#table tbody tr").each(function () {
+            var rowDate = $(this).find('td:eq(0)').html();
+            /*var rDate = startDate.split(`T`)[0].split(`-`);
+            var rTime = startDate.split(`T`)[1].split(`-`);
+            */
+            var rowDateTimeStamp = new Date(rowDate).getTime();
+            if (rowDateTimeStamp <= endDateTimeStamp) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }else{
+
+        var startDateTimeStamp = new Date(startDate).getTime();
+        var endDateTimeStamp = new Date(endDate).getTime();
+
+        $("#table tbody tr").each(function () {
+            var rowDate = $(this).find('td:eq(0)').html();
+            /*var rDate = startDate.split(`T`)[0].split(`-`);
+            var rTime = startDate.split(`T`)[1].split(`-`);
+            */
+            var rowDateTimeStamp = new Date(rowDate).getTime();
+            if (startDateTimeStamp <= rowDateTimeStamp && rowDateTimeStamp <= endDateTimeStamp) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
     }
 };
 let KreiranjeVoznje = function (data) {
@@ -145,11 +241,13 @@ let IspisiVoznje = function (data) {
         temp += (`<td>${data[drive].Dispecer}</td>`);
         temp += (`<td>${data[drive].Vozac}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
-        temp += (`<td>${data[drive].TipAutomobila}</td>`);
+        temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td >`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
-        temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        //temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        komen = `Komentar`;
+        temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
         temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
         temp += (`<td>`);
         temp += (data[drive].StatusVoznje == 0) ? (`<input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : ``;
@@ -187,7 +285,7 @@ let IspisiVoznje = function (data) {
             <th class="success">Ulica</th>
             <th class="success">Odrediste</th>
             <th name="sortiraj" class="success">Iznos<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
-            <th class="success">Komentar-Opis</th>
+            <th class="success">Komentar</th>
             <th name="sortiraj" class="success">Komentar-Ocjena<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Opcije</th>
         </tr>
@@ -209,8 +307,8 @@ let IspisiVoznje = function (data) {
             </th>
             <th></th>
             <th>
-                od: <input type="number" id="odOcjena"/></br>
-                do: <input type="number" id="doOcjena"/>
+                od: </br><input type="number" id="odOcjena" min="0" max="5"/></br>
+                do: </br><input type="number" id="doOcjena" min="0" max="5"/>
             </th>
             <th></th>
         </tr>
@@ -218,6 +316,25 @@ let IspisiVoznje = function (data) {
         <tbody>${temp}        
         </tbody>
     </table>`);
+    $("#odDatum").change(function () {
+        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+            $("#table tbody tr").each(function () {
+                $(this).show();
+            });
+        } else {
+            display($("#odDatum").val(), $("#doDatum").val());
+        }        
+    });
+    $("#doDatum").change(function () {
+        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+            $("#table tbody tr").each(function () {
+                $(this).show();
+            });
+        } else {
+            display($("#odDatum").val(), $("#doDatum").val());
+        }
+    });
+    
     $("#odCijena").keyup(function () {
         //alert("promjenaaaa")
         if ($("#doCijena").val() != ``) {
@@ -403,7 +520,7 @@ let IspisiVoznjeDisp = function (data, username) {
         temp += (`<td>${data[drive].Dispecer}</td>`);
         temp += (`<td>${data[drive].Vozac}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
-        temp += (`<td>${data[drive].TipAutomobila}</td>`);
+        temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
@@ -464,8 +581,8 @@ let IspisiVoznjeDisp = function (data, username) {
             </th>
             <th></th>
             <th>
-                od: <input type="number" id="odOcjena"/></br>
-                do: <input type="number" id="doOcjena"/>
+                od: </br><input type="number" id="odOcjena" min="0" max="5"/></br>
+                do: </br><input type="number" id="doOcjena" min="0" max="5"/>
             </th>
             <th></th>
         </tr>
@@ -853,7 +970,7 @@ let Komentarisanje = function (idVoz, idKor) {
             <tr>
                 <td>Komentar:</td>
                 <td>
-                    <input type="text" id="txtKom" placeholder="Unesi komenatar..." />
+                    <textarea id="txtKom" rows="4" cols="50"></textarea>
                 </td>
             </tr>
             
@@ -880,7 +997,7 @@ let Komentarisanje = function (idVoz, idKor) {
         
     });
 };
-let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru, fale jos podaci o vozacima
+let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru, data1 podaci o vozacima
     var listaVozaca;
     let temp = ``;
     for (v in data1) {
@@ -993,7 +1110,7 @@ let ObradjivanjeVoznje = function (data1, data2, data3) {
     let voznje = null;
     let temp = ``;
     $.get("/api/Dispecer/VratiSlobodneVozace", function (data4) {
-        alert(data4[0].KorisnickoIme);
+        //alert(data4[0].KorisnickoIme);
         voznje = data4;
         for (v in data4) {
             temp += `<option value="${data4[v].KorisnickoIme}">${data4[v].KorisnickoIme}</option>`;
@@ -1117,7 +1234,7 @@ let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. 
         var Prezime = $("#txtPrezime").val();
         var Pol = $("input:radio[name=pol]:checked").val();
         $.post("/api/Dispecer/DodajVozaca/", { KorisnickoIme: KorisnickoIme, Lozinka: Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
-            alert(KorisnickoIme);
+            //alert(KorisnickoIme);
             location.href = `Dispecer.html`;
             //alert(data);
         })
@@ -1134,7 +1251,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         temp += (`<td>${data[drive].Dispecer}</td>`);
         temp += (`<td>${data[drive].Vozac}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
-        temp += (`<td>${data[drive].TipAutomobila}</td>`);
+        temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
@@ -1198,8 +1315,8 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             </th>
             <th></th>
             <th>
-                od: <input type="number" id="odOcjena"/></br>
-                do: <input type="number" id="doOcjena"/>
+                od:</br><input type="number" id="odOcjena" min="0" max="5"/></br>
+                do:</br><input type="number" id="doOcjena" min="0" max="5"/>
             </th>
             <th></th>
         </tr>
@@ -1360,7 +1477,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         ulogaKorisnika(`2`);
         var ppp = this.id;
         $.get("/api/Vozac/PrihvatiVoznju/", { idVoznje: ppp, idVozaca:idVoz}, function () {
-            alert(`prihvacena`);
+            //alert(`prihvacena`);
             location.href = "Vozac.html";
         });
         //alert(`uloga prije geta` + ul + this.id + data[0].Musterija);
