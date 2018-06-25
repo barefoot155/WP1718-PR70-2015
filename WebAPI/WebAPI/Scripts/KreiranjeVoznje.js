@@ -86,9 +86,7 @@ function display(startDate, endDate) {
         var startDateTimeStamp = new Date(startDate).getTime();
         $("#table tbody tr").each(function () {
             var rowDate = $(this).find('td:eq(0)').html();
-            /*var rDate = startDate.split(`T`)[0].split(`-`);
-            var rTime = startDate.split(`T`)[1].split(`-`);
-            */
+            
             var rowDateTimeStamp = new Date(rowDate).getTime();
             if (startDateTimeStamp <= rowDateTimeStamp) {
                 $(this).show();
@@ -102,9 +100,7 @@ function display(startDate, endDate) {
         var startDateTimeStamp = new Date(startDate).getTime();
         $("#table tbody tr").each(function () {
             var rowDate = $(this).find('td:eq(0)').html();
-            /*var rDate = startDate.split(`T`)[0].split(`-`);
-            var rTime = startDate.split(`T`)[1].split(`-`);
-            */
+            
             var rowDateTimeStamp = new Date(rowDate).getTime();
             if (rowDateTimeStamp <= endDateTimeStamp) {
                 $(this).show();
@@ -119,9 +115,7 @@ function display(startDate, endDate) {
 
         $("#table tbody tr").each(function () {
             var rowDate = $(this).find('td:eq(0)').html();
-            /*var rDate = startDate.split(`T`)[0].split(`-`);
-            var rTime = startDate.split(`T`)[1].split(`-`);
-            */
+            
             var rowDateTimeStamp = new Date(rowDate).getTime();
             if (startDateTimeStamp <= rowDateTimeStamp && rowDateTimeStamp <= endDateTimeStamp) {
                 $(this).show();
@@ -243,7 +237,7 @@ let IspisiVoznje = function (data) {
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td >`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
-        temp += (`<td>${data[drive].Odrediste}</td>`);
+        temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
         //temp += (`<td>${data[drive].Komentar.Opis}</td>`);
         komen = `Komentar`;
