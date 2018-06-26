@@ -24,54 +24,59 @@
                 $.get("api/Dispecer", { korIme: data.KorisnickoIme }, function (data1) {
                     //alert("iz geta");
                     IspisiVoznje(data1);
+                    $("div[name=pretraga]").show();
                 });
             });
             $("#prikaziPodatke").click(function () {
-                IspisiPodatke(korisnik);                
+                IspisiPodatke(korisnik);
+                $("div[name=pretraga]").hide();
             });
             $("#izmijeniPodatke").click(function () {
-                IzmijeniPodatke(korisnik);                
+                IzmijeniPodatke(korisnik); 
+                $("div[name=pretraga]").hide();
             });
             $("#promijeniSifru").click(function () {
                 IzmijeniSifru(korisnik);
+                $("div[name=pretraga]").hide();
             });
             $("#kreirajVoznju").click(function () {
                 $.get("/api/Dispecer/VratiSlobodneVozace", function (data1) {                    
-                    alert(data1[0].KorisnickoIme);
+                    //alert(data1[0].KorisnickoIme);
                     KreiranjeVoznjeDisp(korisnik, data1);
+                    $("div[name=pretraga]").hide();
                 });                
             });
             $("#kreirajVozaca").click(function () {                
                 KreirajVozaca(korisnik);
+                $("div[name=pretraga]").hide();
             });            
             $("#IspisiVoznje").click(function () {
                 
                 $.get("api/Dispecer/VratiSveVoznje", function (data) {
-                    //alert("iz geta");
-                    //alert(data[0].Id);
+                    $("div[name=pretraga]").show();
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
                 });
             });
             $("#IspisiKorisnike").click(function () {
 
                 $.get("api/Dispecer/VratiSveKorisnike", function (data) {
-                    //alert("iz geta");
-                    //alert(data[0].Id);
+                    
                     IspisiKorisnike(data);
+                    $("div[name=pretraga]").hide();
                 });
             });
             $("#pocetna").click(function () {
                 $.get("api/Dispecer", { korIme: korisnik.KorisnickoIme }, function (data) {
-                    IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
+                    //IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
+                    IspisiVoznje(data);
+                    $("div[name=pretraga]").show();
                 });
             });
             $("#logout").click(function () {
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
+                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); location.href = "Login.html"; })
                     .fail(function () {
                         alert(`greskaaaaaa`);
-                    });
-
-                location.href = "Login.html";
+                    });                
             });
         });
     </script>
@@ -89,35 +94,35 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand glyphicon glyphicon-home" id="pocetna" href="#"> Pocetna</a>
-                
+
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                
-                    <form class="navbar-form navbar-left">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>                    
-                    
-                    <ul class="nav navbar-nav navbar-right">
-                        <!--li><a class="navbar-brand" href="#">Link</a></!--li-->
-                        <li class="dropdown">
-                            <a href="#" id="korisnik" class="navbar-brand dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a id="prikaziPodatke" href="#">Moji podaci</a></li>
-                                <li><a id="izmijeniPodatke" href="#">Izmijeni podatke</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a id="promijeniSifru" href="#">Promijeni sifru</a></li>
-                            </ul>
-                        </li>
-                        <li><a class="navbar-brand glyphicon glyphicon-log-out pull-right" id="logout" href="#"> Izloguj se</a></li>
-                    </ul>                    
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <!--li><a class="navbar-brand" href="#">Link</a></!--li-->
+                    <li class="dropdown">
+                        <a href="#" id="korisnik" class="navbar-brand dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a id="prikaziPodatke" href="#">Moji podaci</a></li>
+                            <li><a id="izmijeniPodatke" href="#">Izmijeni podatke</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a id="promijeniSifru" href="#">Promijeni sifru</a></li>
+                        </ul>
+                    </li>
+                    <li><a class="navbar-brand glyphicon glyphicon-log-out pull-right" id="logout" href="#"> Izloguj se</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
     </nav>
     <div id="dugmad">
         <button id="kreirajVoznju" type="button" class="btn btn-default btn-sm">
@@ -133,6 +138,12 @@
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve korisnike
         </button>
     </div>
+    <div name="pretraga">
+        <br/><b>Pretrazi po imenu/prezimenu musterije:   </b><input type="text" id="pretraziMusterije" placeholder="Unesi ime/prezime musterija..." style="width:250px;" />
+    </div>
+    <div name="pretraga">
+        <br/><b>Pretrazi po imenu/prezimenu vozaca:&nbsp;&nbsp;&nbsp;&nbsp;</b><input type="text" id="pretraziVozace" placeholder="Unesi ime/prezime vozaca..." style="width:250px;" />
+    </div><br/>
     <div id="prikazPodataka">
 
     </div>

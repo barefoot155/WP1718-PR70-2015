@@ -52,10 +52,10 @@ function funkcijaTipAuta(tipAuta) {
 };
 function ModalDialogKod(header,opis,ocjena,datum,voznja,autor) {
 return `<!-- Trigger the modal with a button -->
-<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">Prikazi +</button>
+<button id="${voznja}" type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal${voznja}">Prikazi +</button>
 
 <!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
+<div id="myModal${voznja}" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -86,7 +86,9 @@ function display(startDate, endDate) {
         var startDateTimeStamp = new Date(startDate).getTime();
         $("#table tbody tr").each(function () {
             var rowDate = $(this).find('td:eq(0)').html();
-            
+            /*var rDate = startDate.split(`T`)[0].split(`-`);
+            var rTime = startDate.split(`T`)[1].split(`-`);
+            */
             var rowDateTimeStamp = new Date(rowDate).getTime();
             if (startDateTimeStamp <= rowDateTimeStamp) {
                 $(this).show();
@@ -100,7 +102,9 @@ function display(startDate, endDate) {
         var startDateTimeStamp = new Date(startDate).getTime();
         $("#table tbody tr").each(function () {
             var rowDate = $(this).find('td:eq(0)').html();
-            
+            /*var rDate = startDate.split(`T`)[0].split(`-`);
+            var rTime = startDate.split(`T`)[1].split(`-`);
+            */
             var rowDateTimeStamp = new Date(rowDate).getTime();
             if (rowDateTimeStamp <= endDateTimeStamp) {
                 $(this).show();
@@ -115,7 +119,9 @@ function display(startDate, endDate) {
 
         $("#table tbody tr").each(function () {
             var rowDate = $(this).find('td:eq(0)').html();
-            
+            /*var rDate = startDate.split(`T`)[0].split(`-`);
+            var rTime = startDate.split(`T`)[1].split(`-`);
+            */
             var rowDateTimeStamp = new Date(rowDate).getTime();
             if (startDateTimeStamp <= rowDateTimeStamp && rowDateTimeStamp <= endDateTimeStamp) {
                 $(this).show();
@@ -125,8 +131,12 @@ function display(startDate, endDate) {
         });
     }
 };
+
 let KreiranjeVoznje = function (data) {
-    $("#prikazPodataka").html(`<table class="table table-bordered">
+    $("#prikazPodataka").html(`<h2>Pocetna lokacija</h2>
+    <button id="kreiranje">Uzmi lokaciju sa mape</button>
+    <div id="map" class="map" style="width:50%;height:500px;float:left;"></div>
+    <table class="table table-bordered" style="width:50%;padding:200px 0px 200px 0px;float:right;">
         <thead>
             <tr class="success">
                 <th colspan="2">
@@ -196,6 +206,20 @@ let KreiranjeVoznje = function (data) {
                     </tbody>
                 </table>`
     );
+    pomocna();
+    /*$("#kreiranje").click(function () {
+        alert(jsonObjekat);
+        $.post("/api/Musterija/GetLokacija/", { jsonResult: jsonObjekat,tipA:`0` }, function (data) {
+            alert(data.KoordinataX);
+            $("#txtUlica").val(data.Adresa.Ulica);
+            $("#txtBroj").val(data.Adresa.Broj);
+            $("#txtGrad").val(data.Adresa.NaseljenoMjesto);
+            $("#txtPostanskiBroj").val(data.Adresa.PozivniBrojMjesta);
+            $("#txtKoordinataX").val(data.KoordinataX);
+            $("#txtKoordinataY").val(data.KoordinataY);
+            //location.href = uloga + `.html`;
+        });
+    });*/
     $("#btnKreirajVoznju").click(function () {        
         ulogaKorisnika(data.Uloga);
         var uloga = ul;
@@ -210,7 +234,7 @@ let KreiranjeVoznje = function (data) {
         //alert(`prije posta` + x + y + ulica + broj + grad + postanskiBr + `shd:`+ tipAutomobila);
         
         var korIme = data.KorisnickoIme;
-        $.get("/api/" + uloga, { x: x, y: y, tip: tipAutomobila, ulica: ulica, broj: broj, posta: postanskiBr, grad: grad, korIme: korIme }, function () {
+        $.get("/api/Musterija/KreirajVoznju/", { x: x, y: y, tip: tipAutomobila, ulica: ulica, broj: broj, posta: postanskiBr, grad: grad, korIme: korIme }, function (data) {
             //alert(`iz geta`);
             location.href = uloga+`.html`;
         });
@@ -229,19 +253,41 @@ function getCellValue(row, index) {
 let IspisiVoznje = function (data) {
     let temp = ``;
     for (drive in data) {
+        var imeiprzMusterije = ``;
+        var imeiprzVozaca = ``;
+        $.ajax({
+            url: "/api/Dispecer/VratiImeIPrezime/",
+            type: "get",
+            async: false,
+            data: { korIme: data[drive].Musterija },
+            success: function (imeiprz) {
+                imeiprzMusterije = imeiprz;
+                imeiprzMusterije = imeiprz.split('-')[0] + ` ` + imeiprz.split('-')[1];
+            }
+        });
+        $.ajax({
+            url: "/api/Dispecer/VratiImeIPrezime/",
+            type: "get",
+            async: false,
+            data: { korIme: data[drive].Vozac },
+            success: function (imeiprz2) {
+                imeiprzVozaca = imeiprz2;
+                imeiprzVozaca = imeiprz2.split('-')[0] + ` ` + imeiprz2.split('-')[1];
+            }
+        });
         temp += `<tr>`;
         temp += (`<td>${data[drive].DatumIVrijemePorudzbe}</td>`);
-        temp += (`<td>${data[drive].Musterija}</td>`);
+        temp += (`<td>${imeiprzMusterije}</td>`);
         temp += (`<td>${data[drive].Dispecer}</td>`);
-        temp += (`<td>${data[drive].Vozac}</td>`);
+        temp += (`<td>${imeiprzVozaca}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td >`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
         //temp += (`<td>${data[drive].Komentar.Opis}</td>`);
-        komen = `Komentar`;
-        temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
+        var komen = `Komentar`;
+        temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Id, data[drive].Komentar.Korisnik)}</td>`);
         temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
         temp += (`<td>`);
         temp += (data[drive].StatusVoznje == 0) ? (`<input name="otkazi" id="btnOtkazi` + data[drive].Id + `" class="btn btn-success" type="button" value="Otkazi voznju"></br><input name="izmijeni" id="btnIzmijeni` + data[drive].Id + `" class="btn btn-success" type="button" value="Izmijeni voznju">`) : ``;
@@ -249,9 +295,9 @@ let IspisiVoznje = function (data) {
         temp += (`</td>`);
         temp += `</tr>`;
     }
-
+    
     $("#prikazPodataka").html(`<div>
-    <select id="zaFilter">
+    </br><b>Filtriraj po statusu:&nbsp;&nbsp;</b><select id="zaFilter">
          <option value="Bez naznake" selected>Bez naznake</option>
          <option value="Kreirana - Na cekanju">Kreirana - Na cekanju</option>
          <option value="Formirana">Formirana</option>
@@ -261,7 +307,7 @@ let IspisiVoznje = function (data) {
          <option value="Neuspjesna">Neuspjesna</option>
          <option value="Uspjesna">Uspjesna</option>
     </select>
-    </div>
+    </div><br/>    
     <table id="table" class="table table - bordered">
         <thead>
         <tr class="success">
@@ -285,8 +331,8 @@ let IspisiVoznje = function (data) {
         </tr>
         <tr class="success">
             <th>
-                od: <input type="datetime-local" id="odDatum"/></br>
-                do: <input type="datetime-local" id="doDatum"/>
+                od: <input type="datetime-local" id="odDatum" style="width:160px;"/></br>
+                do: <input type="datetime-local" id="doDatum" style="width:160px;"/>
             </th>
             <th></th>
             <th></th>
@@ -296,13 +342,13 @@ let IspisiVoznje = function (data) {
             <th></th>
             <th></th>
             <th>
-                od: <input type="number" id="odCijena"/></br>
-                do: <input type="number" id="doCijena"/>
+                od: <input type="number" id="odCijena" min="0" style="width:60px;"/></br>
+                do: <input type="number" id="doCijena" min="0" style="width:60px;"/>
             </th>
             <th></th>
             <th>
-                od: </br><input type="number" id="odOcjena" min="0" max="5"/></br>
-                do: </br><input type="number" id="doOcjena" min="0" max="5"/>
+                od: <input type="number" id="odOcjena" min="0" max="5"/></br>
+                do: <input type="number" id="doOcjena" min="0" max="5"/>
             </th>
             <th></th>
         </tr>
@@ -310,6 +356,28 @@ let IspisiVoznje = function (data) {
         <tbody>${temp}        
         </tbody>
     </table>`);
+    $("#pretraziVozace").keyup(function(){
+        $("#table tbody tr").each(function () {
+            var name = $('td:eq(3)', this).text().toLowerCase();
+            //$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            if (name.indexOf($("#pretraziVozace").text().toLowerCase())>-1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+    $("#pretraziMusterije").keyup(function () {
+        $("#table tbody tr").each(function () {
+            var name = $('td:eq(1)', this).text().toLowerCase();
+            //$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            if (name.indexOf($("#pretraziMusterije").text().toLowerCase()) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
     $("#odDatum").change(function () {
         if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
             $("#table tbody tr").each(function () {
@@ -505,27 +573,59 @@ let IspisiVoznje = function (data) {
         for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
     });
 };
+function ImeIPrezime(korisnicko) {
+    let vraceno = ``;
+    $.get("/api/Dispecer/VratiImeIPrezime/", { korIme: korisnicko }, function (vr) {
+        vraceno = vr;
+    });
+    return vraceno;
+};
 let IspisiVoznjeDisp = function (data, username) {
     let temp = ``;
+    let komen = `Komentar`;
+    var br = 0;
     for (drive in data) {
+        var imeiprzMusterije = ``;
+        var imeiprzVozaca = ``;
+        $.ajax({
+            url: "/api/Dispecer/VratiImeIPrezime/",
+            type: "get",
+            async: false,
+            data: { korIme: data[drive].Musterija},
+            success: function (imeiprz) {
+                imeiprzMusterije = imeiprz;
+                imeiprzMusterije = imeiprz.split('-')[0] + ` ` + imeiprz.split('-')[1];
+            }
+        });
+        $.ajax({
+            url: "/api/Dispecer/VratiImeIPrezime/",
+            type: "get",
+            async: false,
+            data: { korIme: data[drive].Vozac },
+            success: function (imeiprz2) {
+                imeiprzVozaca = imeiprz2;
+                imeiprzVozaca=imeiprz2.split('-')[0] + ` ` + imeiprz2.split('-')[1];
+            }
+        });
+        
         temp += `<tr>`;
         temp += (`<td>${data[drive].DatumIVrijemePorudzbe}</td>`);
-        temp += (`<td>${data[drive].Musterija}</td>`);
+        temp += (`<td>${imeiprzMusterije}</td>`);
         temp += (`<td>${data[drive].Dispecer}</td>`);
-        temp += (`<td>${data[drive].Vozac}</td>`);
+        temp += (`<td>${imeiprzVozaca}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
-        temp += (`<td>${data[drive].Odrediste}</td>`);
-        temp += (`<td>${data[drive].Iznos}</td>`);
-        temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
+        temp += (`<td>${data[drive].Iznos}</td>`);        
+        temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
         temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
         temp += (data[drive].StatusVoznje == 0) ? (`<td><input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Obradi voznju">`) : `<td>` + `</td>`;
         temp += `</tr>`;
     }
-
+    
     $("#prikazPodataka").html(`<div>
-    <select id="zaFilter">
+    </br><b>Filtriraj po statusu:&nbsp;&nbsp;</b><select id="zaFilter">
          <option value="Bez naznake" selected>Bez naznake</option>
          <option value="Kreirana - Na cekanju">Kreirana - Na cekanju</option>
          <option value="Formirana">Formirana</option>
@@ -536,6 +636,7 @@ let IspisiVoznjeDisp = function (data, username) {
          <option value="Uspjesna">Uspjesna</option>
     </select>
     </div>
+    <br/>
     <table id="table" class="table table - bordered">
         <thead>
         <tr class="success">
@@ -544,7 +645,7 @@ let IspisiVoznjeDisp = function (data, username) {
             </th>
         </tr>
         <tr>    
-            <th name="sortiraj" class="success">Datum i vrijeme</th>
+            <th name="sortiraj" class="success">Datum i vrijeme<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Musterija</th>
             <th class="success">Dispecer</th>
             <th class="success">Vozac</th>
@@ -552,15 +653,15 @@ let IspisiVoznjeDisp = function (data, username) {
             <th class="success">TipAutomobila</th>
             <th class="success">Ulica</th>
             <th class="success">Odrediste</th>
-            <th name="sortiraj" class="success">Iznos</th>
-            <th class="success">Komentar-Opis</th>
-            <th name="sortiraj" class="success">Komentar-Ocjena</th>
+            <th name="sortiraj" class="success">Iznos<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
+            <th class="success">Komentar</th>
+            <th name="sortiraj" class="success">Komentar-Ocjena<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Opcije</th>
         </tr>
         <tr class="success">
             <th>
-                od: <input type="datetime-local" id="odDatum"/></br>
-                do: <input type="datetime-local" id="doDatum"/>
+                od: <input type="datetime-local" id="odDatum" style="width:160px;"/></br>
+                do: <input type="datetime-local" id="doDatum" style="width:160px;"/>
             </th>
             <th></th>
             <th></th>
@@ -570,13 +671,13 @@ let IspisiVoznjeDisp = function (data, username) {
             <th></th>
             <th></th>
             <th>
-                od: <input type="number" id="odCijena"/></br>
-                do: <input type="number" id="doCijena"/>
+                od: <input type="number" id="odCijena" min="0" style="width:60px;"/></br>
+                do: <input type="number" id="doCijena" min="0" style="width:60px;"/>
             </th>
             <th></th>
             <th>
-                od: </br><input type="number" id="odOcjena" min="0" max="5"/></br>
-                do: </br><input type="number" id="doOcjena" min="0" max="5"/>
+                od: <input type="number" id="odOcjena" min="0" max="5"/></br>
+                do: <input type="number" id="doOcjena" min="0" max="5"/>
             </th>
             <th></th>
         </tr>
@@ -584,6 +685,48 @@ let IspisiVoznjeDisp = function (data, username) {
         <tbody>${temp}        
         </tbody>
     </table>`);
+    $("#pretraziVozace").keyup(function () {
+        $("#table tbody tr").each(function () {
+            var name = $('td:eq(3)', this).text().toLowerCase();
+            var unesi = $("#pretraziVozace").val().toLowerCase();
+            //$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            if (name.indexOf(unesi) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+    $("#pretraziMusterije").keyup(function () {
+        $("#table tbody tr").each(function () {
+            var name = $('td:eq(1)', this).text().toLowerCase();
+            var unesi = $("#pretraziMusterije").val().toLowerCase();
+            //$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            if (name.indexOf(unesi) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+    $("#odDatum").change(function () {
+        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+            $("#table tbody tr").each(function () {
+                $(this).show();
+            });
+        } else {
+            display($("#odDatum").val(), $("#doDatum").val());
+        }
+    });
+    $("#doDatum").change(function () {
+        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+            $("#table tbody tr").each(function () {
+                $(this).show();
+            });
+        } else {
+            display($("#odDatum").val(), $("#doDatum").val());
+        }
+    });
     $("#odCijena").keyup(function () {
         //alert("promjenaaaa")
         if ($("#doCijena").val() != ``) {
@@ -1249,11 +1392,12 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Odrediste}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
-        temp += (`<td>${data[drive].Komentar.Opis}</td>`);
+        var komen = `Komentar`;
+        temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
         temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
         temp += `<td>`;
         temp += (data[drive].StatusVoznje == 0) ? (`<input name="prihvati" id="btnPrihvati` + data[drive].Id + `" class="btn btn-success" type="button" value="Prihvati voznju">`) : ``;
-        temp += (data[drive].StatusVoznje == 2 || data[drive].StatusVoznje == 3 || data[drive].StatusVoznje == 4) ? (`<input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Promijeni status voznje">`) : ``;
+        temp += (data[drive].StatusVoznje == 2 || data[drive].StatusVoznje == 3 || data[drive].StatusVoznje == 1) ? (`<input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Promijeni status voznje">`) : ``;
         temp += `</td>`;
         temp += `</tr>`;
     }
@@ -1278,7 +1422,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             </th>
         </tr>
         <tr>    
-            <th name="sortiraj" class="success">Datum i vrijeme</th>
+            <th name="sortiraj" class="success">Datum i vrijeme<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Musterija</th>
             <th class="success">Dispecer</th>
             <th class="success">Vozac</th>
@@ -1286,15 +1430,15 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             <th class="success">TipAutomobila</th>
             <th class="success">Ulica</th>
             <th class="success">Odrediste</th>
-            <th name="sortiraj" class="success">Iznos</th>
-            <th class="success">Komentar-Opis</th>
-            <th name="sortiraj" class="success">Komentar-Ocjena</th>
+            <th name="sortiraj" class="success">Iznos<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
+            <th class="success">Komentar</th>
+            <th name="sortiraj" class="success">Komentar-Ocjena<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Opcije</th>
         </tr>
         <tr class="success">
             <th>
-                od: <input type="datetime-local" id="odDatum"/></br>
-                do: <input type="datetime-local" id="doDatum"/>
+                od: <input type="datetime-local" id="odDatum" style="width:160px;"/></br>
+                do: <input type="datetime-local" id="doDatum" style="width:160px;"/>
             </th>
             <th></th>
             <th></th>
@@ -1304,13 +1448,13 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             <th></th>
             <th></th>
             <th>
-                od: <input type="number" id="odCijena"/></br>
-                do: <input type="number" id="doCijena"/>
+                od: <input type="number" id="odCijena" min="0" style="width:60px;"/></br>
+                do: <input type="number" id="doCijena" min="0" style="width:60px;"/>
             </th>
             <th></th>
             <th>
-                od:</br><input type="number" id="odOcjena" min="0" max="5"/></br>
-                do:</br><input type="number" id="doOcjena" min="0" max="5"/>
+                od: <input type="number" id="odOcjena" min="0" max="5"/></br>
+                do: <input type="number" id="doOcjena" min="0" max="5"/>
             </th>
             <th></th>
         </tr>
@@ -1318,6 +1462,24 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         <tbody>${temp}        
         </tbody>
     </table>`);
+    $("#odDatum").change(function () {
+        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+            $("#table tbody tr").each(function () {
+                $(this).show();
+            });
+        } else {
+            display($("#odDatum").val(), $("#doDatum").val());
+        }
+    });
+    $("#doDatum").change(function () {
+        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+            $("#table tbody tr").each(function () {
+                $(this).show();
+            });
+        } else {
+            display($("#odDatum").val(), $("#doDatum").val());
+        }
+    });
     $("#odCijena").keyup(function () {
         //alert("promjenaaaa")
         if ($("#doCijena").val() != ``) {
@@ -1710,7 +1872,7 @@ let IspisiKorisnike = function (data) {
         pom += `</td><td>`;
         pom += data[user].split(`-`)[1];
         pom += `</td><td>`;
-        pom += (data[user].split(`-`)[2] == `True`) ? `<button name="blok" id="${data[user].split(`-`)[0]}" type="button" class="btn btn-success btn-sm">Odblokiraj</button>` : `<button name="blok" id="${data[user].split(`-`)[0]}" type="button" class="btn btn-success btn-sm">Blokiraj</button>`;
+        pom += (data[user].split(`-`)[2] == `True`) ? `<button name="blok" id="${data[user].split(`-`)[0]}" type="button" class="btn btn-success btn-sm">Odblokiraj</button>` : `<button name="blok" id="${data[user].split(`-`)[0]}" type="button" class="btn btn-danger btn-sm">Blokiraj</button>`;
         pom += `</td></tr>`;
     }
     $("#prikazPodataka").html(`<table class="table table-bordered">

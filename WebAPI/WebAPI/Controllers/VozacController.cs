@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,6 +12,51 @@ namespace WebAPI.Controllers
 {
     public class VozacController : ApiController
     {
+        [HttpPost]
+        [Route("api/Vozac/IzmijeniLokaciju/")]
+        public void IzmijeniLokaciju([FromBody]JObject jsonResult)
+        {
+            //isparsiraj i username jos
+            string korisnicko = "";
+            string s = jsonResult.ToString();
+            IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
+            //string b="";
+            string grad = "";
+            string ulica = "";
+            string posta = "";
+            string broj = "";
+            foreach (var item in addresses)
+            {
+                string ssss = item.ToString().Replace("\"","");
+                if (ssss.Split(':')[0] == "city")
+                {
+                    grad = ssss.Split(':')[1].Trim();
+                }else if (ssss.Split(':')[0] == "road")
+                {
+                    ulica = ssss.Split(':')[1].Trim();
+                }
+                else if (ssss.Split(':')[0] == "postcode")
+                {
+                    posta = ssss.Split(':')[1].Trim();
+                }
+                else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
+                {
+                    broj = ssss.Split(':')[1].Trim();
+                }
+            }
+            IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
+            //TripObject item = JsonConvert.DeserializeObject<TripObject>(jsonResult.ToString());
+            //return jsonResult;
+            string x = koordinate[0].ToString().Trim(new char[] {'{','}' });
+            string y = koordinate[3].ToString().Trim(new char[] {'{','}' });
+            if (broj.Trim() == "")
+            {
+                broj = "bb";
+            }
+            Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
+            korisnicko = Get().KorisnickoIme;
+            Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korisnicko).Lokacija = lok;
+        }
         //"/api/Vozac/PromijeniLokaciju/"
         [HttpGet]
         [Route("api/Vozac/PromijeniLokaciju/")]
@@ -90,17 +137,25 @@ namespace WebAPI.Controllers
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje=StatusiVoznje.Neuspjesna;
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Zauzet = false;
-            if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija!=null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "")
+            if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija!=null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "" && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "nepoznato")
             {
                 string korImeMust = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija;
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje = StatusiVoznje.Neuspjesna;
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;
+                Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Voznja=id;
+                Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.DatumObjave=DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Unspecified);
+                Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Korisnik=idVozaca;
+                Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Ocjena=Ocjene.Neocijenjeno;
             }
             if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer != null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer != "")
             {
                 string korImeDisp = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer;
                 Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje = StatusiVoznje.Neuspjesna;
                 Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis = koment;
+                Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Voznja=id;
+                Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.DatumObjave= DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
+                Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Korisnik = idVozaca;
+                Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Ocjena = Ocjene.Neocijenjeno;
             }
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
             //Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;
@@ -117,7 +172,7 @@ namespace WebAPI.Controllers
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Iznos=double.Parse(iznos);
             
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Zauzet = false;
-            if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "")
+            if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "" && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "nepoznato")
             {
                 string korImeMust = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija;
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje = StatusiVoznje.Uspjesna;

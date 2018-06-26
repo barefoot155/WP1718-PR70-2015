@@ -10,6 +10,17 @@ namespace WebAPI.Controllers
 {
     public class DispecerController : ApiController
     {
+        [HttpGet]
+        [Route("api/Dispecer/VratiImeIPrezime/")]
+        public string VratiImeIPrezime(string korIme)
+        {
+            if (Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme) != null)
+                return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Ime + "-" + Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Prezime;
+            else if (Korisnici.ListaVozaca.FirstOrDefault(m => m.KorisnickoIme == korIme) != null)
+                return Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korIme).Ime + "-" + Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korIme).Prezime;
+            else
+                return "";
+        }
         //api/Dispecer/VratiSveVoznje
         [HttpGet]
         [Route("api/Dispecer/VratiSveVoznje")]
