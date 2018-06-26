@@ -551,9 +551,35 @@ let pomocna = function () {
             location.href = `Vozac.html`;
         });
     });
+    $("#kreiranjeVoz").click(function () {
+        alert(jsonObjekat);
+        $.post("/api/Vozac/GetLokacija/", { jsonResult: jsonObjekat }, function (data) {
+            //alert(data.KoordinataX);
+            $("#txtUlica").val(data.Adresa.Ulica);
+            $("#txtBroj").val(data.Adresa.Broj);
+            $("#txtGrad").val(data.Adresa.NaseljenoMjesto);
+            $("#txtPostanskiBroj").val(data.Adresa.PozivniBrojMjesta);
+            $("#txtKoordinataX").val(data.KoordinataX);
+            $("#txtKoordinataY").val(data.KoordinataY);
+            //location.href = uloga + `.html`;
+        });
+    });
     $("#kreiranje").click(function () {
         alert(jsonObjekat);
         $.post("/api/Musterija/GetLokacija/", { jsonResult: jsonObjekat}, function (data) {
+            //alert(data.KoordinataX);
+            $("#txtUlica").val(data.Adresa.Ulica);
+            $("#txtBroj").val(data.Adresa.Broj);
+            $("#txtGrad").val(data.Adresa.NaseljenoMjesto);
+            $("#txtPostanskiBroj").val(data.Adresa.PozivniBrojMjesta);
+            $("#txtKoordinataX").val(data.KoordinataX);
+            $("#txtKoordinataY").val(data.KoordinataY);
+            //location.href = uloga + `.html`;
+        });
+    });
+    $("#kreiranjeDisp").click(function () {
+        alert(jsonObjekat);
+        $.post("/api/Dispecer/GetLokacija/", { jsonResult: jsonObjekat }, function (data) {
             //alert(data.KoordinataX);
             $("#txtUlica").val(data.Adresa.Ulica);
             $("#txtBroj").val(data.Adresa.Broj);

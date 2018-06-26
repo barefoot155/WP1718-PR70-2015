@@ -4,7 +4,9 @@
     <meta charset="utf-8" />
     <script src="Scripts/jquery-1.10.2.js"></script>
     <link rel="stylesheet" href="Content/bootstrap.min.css">
+    <link rel="stylesheet" href="Scripts/ol.css" type="text/css">
     <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Scripts/ol.js" type="text/javascript"></script>
     <script src="Scripts/MojaSkripta.js"></script>
     <script src="Scripts/KreiranjeVoznje.js"></script>
     <style>
@@ -15,7 +17,7 @@
     <title></title>
     <script type="text/javascript">
         $(document).ready(function () {
-            
+
             let korisnik = ``;
             $.get("/api/Dispecer", function (data) {
                 //alert(data.KorisnickoIme);
@@ -32,7 +34,7 @@
                 $("div[name=pretraga]").hide();
             });
             $("#izmijeniPodatke").click(function () {
-                IzmijeniPodatke(korisnik); 
+                IzmijeniPodatke(korisnik);
                 $("div[name=pretraga]").hide();
             });
             $("#promijeniSifru").click(function () {
@@ -40,18 +42,18 @@
                 $("div[name=pretraga]").hide();
             });
             $("#kreirajVoznju").click(function () {
-                $.get("/api/Dispecer/VratiSlobodneVozace", function (data1) {                    
+                $.get("/api/Dispecer/VratiSlobodneVozace", function (data1) {
                     //alert(data1[0].KorisnickoIme);
                     KreiranjeVoznjeDisp(korisnik, data1);
                     $("div[name=pretraga]").hide();
-                });                
+                });
             });
-            $("#kreirajVozaca").click(function () {                
+            $("#kreirajVozaca").click(function () {
                 KreirajVozaca(korisnik);
                 $("div[name=pretraga]").hide();
-            });            
+            });
             $("#IspisiVoznje").click(function () {
-                
+
                 $.get("api/Dispecer/VratiSveVoznje", function (data) {
                     $("div[name=pretraga]").show();
                     IspisiVoznjeDisp(data, korisnik.KorisnickoIme);
@@ -60,7 +62,7 @@
             $("#IspisiKorisnike").click(function () {
 
                 $.get("api/Dispecer/VratiSveKorisnike", function (data) {
-                    
+
                     IspisiKorisnike(data);
                     $("div[name=pretraga]").hide();
                 });
@@ -76,7 +78,7 @@
                 $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); location.href = "Login.html"; })
                     .fail(function () {
                         alert(`greskaaaaaa`);
-                    });                
+                    });
             });
         });
     </script>

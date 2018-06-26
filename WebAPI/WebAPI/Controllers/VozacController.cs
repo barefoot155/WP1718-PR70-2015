@@ -13,6 +13,52 @@ namespace WebAPI.Controllers
     public class VozacController : ApiController
     {
         [HttpPost]
+        [Route("api/Vozac/GetLokacija/")]
+        public Lokacija GetLokacija([FromBody]JObject jsonResult)
+        {
+            string korisnicko = "";
+            string s = jsonResult.ToString();
+            IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
+            //string b="";
+            string grad = "";
+            string ulica = "";
+            string posta = "";
+            string broj = "";
+            foreach (var item in addresses)
+            {
+                string ssss = item.ToString().Replace("\"", "");
+                if (ssss.Split(':')[0] == "city")
+                {
+                    grad = ssss.Split(':')[1].Trim();
+                }
+                else if (ssss.Split(':')[0] == "road")
+                {
+                    ulica = ssss.Split(':')[1].Trim();
+                }
+                else if (ssss.Split(':')[0] == "postcode")
+                {
+                    posta = ssss.Split(':')[1].Trim();
+                }
+                else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
+                {
+                    broj = ssss.Split(':')[1].Trim();
+                }
+            }
+            IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
+
+            string x = koordinate[0].ToString().Trim(new char[] { '{', '}' });
+            string y = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+            if (broj.Trim() == "")
+            {
+                broj = "bb";
+            }
+            Lokacija lok = new Lokacija() { KoordinataX = x , KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
+            korisnicko = Get().KorisnickoIme;
+
+            return lok;
+
+        }
+        [HttpPost]
         [Route("api/Vozac/IzmijeniLokaciju/")]
         public void IzmijeniLokaciju([FromBody]JObject jsonResult)
         {
@@ -100,7 +146,7 @@ namespace WebAPI.Controllers
                     if (item2.Id == int.Parse(id))
                     {
                         item2.Vozac = idVozaca;
-                        item2.StatusVoznje = StatusiVoznje.Prihvacena;
+                        item2.StatusVoznje = StatusiVoznje.Prihvacena;                        
                         v = item2;
                     }
                 }

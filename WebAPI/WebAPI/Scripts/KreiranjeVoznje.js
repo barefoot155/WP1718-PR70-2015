@@ -996,11 +996,14 @@ let IzmijeniVoznju = function (data) {
             <option value="0" selected>Bez naznake</option>
         </select>`;
     }
-    $("#prikazPodataka").html(`<table class="table table-bordered">
+    $("#prikazPodataka").html(`<h2>Pocetna lokacija</h2>
+    <button id="kreiranje">Uzmi lokaciju sa mape</button>
+    <div id="map" class="map" style="width:50%;height:500px;float:left;"></div>
+    <table class="table table-bordered" style="width:50%;padding:200px 0px 200px 0px;float:right;">
         <thead>
             <tr class="success">
                 <th colspan="2">
-                    Kreiranje voznje
+                    Izmjena voznje
                 </th>
             </tr>
         </thead>
@@ -1062,7 +1065,7 @@ let IzmijeniVoznju = function (data) {
                     </tbody>
                 </table>`
     );
-   
+    pomocna();
     $("#btnIzmijeniVoznju").click(function () {
         var tipAutomobila = $("#tipAuta").val();
         var ulica = $("#txtUlica").val();
@@ -1141,7 +1144,10 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
         temp += `<option value="${data1[v].KorisnickoIme}">${data1[v].KorisnickoIme}</option>`;
     }
     
-    $("#prikazPodataka").html(`<table class="table table-bordered">
+    $("#prikazPodataka").html(`<h2>Pocetna lokacija</h2>
+    <button id="kreiranjeDisp">Uzmi lokaciju sa mape</button>
+    <div id="map" class="map" style="width:50%;height:500px;float:left;"></div>
+    <table class="table table-bordered" style="width:50%;padding:200px 0px 200px 0px;float:right;">
         <thead>
             <tr class="success">
                 <th colspan="2">
@@ -1219,6 +1225,7 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
                     </tbody>
                 </table>`
     );
+    pomocna();
     $("#btnKreirajVoznju").click(function () {
 
         ulogaKorisnika(data.Uloga);
@@ -1390,7 +1397,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
         temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
-        temp += (`<td>${data[drive].Odrediste}</td>`);
+        temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);
         var komen = `Komentar`;
         temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
@@ -1636,11 +1643,6 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             //alert(`prihvacena`);
             location.href = "Vozac.html";
         });
-        //alert(`uloga prije geta` + ul + this.id + data[0].Musterija);
-        /*$.get("/api/" + ul, { id: this.id, korIme: data[0].Musterija }, function () {
-            Komentarisanje(ppp, data[0].Musterija);
-            //location.href = (ul + `.html`);
-        });*/
     });
     $("input:button[name=obradi]").click(function () {
         //alert(this.id);//uzmi id tog dugmeta
@@ -1652,7 +1654,10 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
 
 let ObradjivanjeVoznjeVozac = function (data1, data2) {// data1 id voznje tj buttona,data2 idVozaca
     //let voznje = null;
-    let htmlKodOdredisteIIznos = `<table class="table table-bordered">
+    let htmlKodOdredisteIIznos = `<h2>Krajnja lokacija</h2>
+    <button id="kreiranjeVoz">Uzmi lokaciju sa mape</button>
+    <div id="map" class="map" style="width:50%;height:500px;float:left;"></div>
+    <table class="table table-bordered" style="width:50%;padding:200px 0px 200px 0px;float:right;">
         <thead>
             <tr class="success">
                 <th colspan="2">
@@ -1761,12 +1766,14 @@ let ObradjivanjeVoznjeVozac = function (data1, data2) {// data1 id voznje tj but
         </tbody>
     </table>`;
     $("#prikazPodatakaDrugi").html(htmlKodOdredisteIIznos);
+    pomocna();
     $("#prikazPodataka").html(htmlKod);
     $("#cbStatusi").change(function () {
         //alert(`promjena`);
         var status = $("#cbStatusi").val();
         if (status == "1") {
             $("#prikazPodatakaDrugi").html(htmlKodOdredisteIIznos);
+            pomocna();
         } else {//neuspjesna
             $("#prikazPodatakaDrugi").html(htmlKodKomentar);
         }
