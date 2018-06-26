@@ -1435,7 +1435,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             <th class="success">Vozac</th>
             <th class="success">StatusVoznje</th>
             <th class="success">TipAutomobila</th>
-            <th class="success">Ulica</th>
+            <th class="success" name="pocetnaLokacija">Pocetna lokacija<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Odrediste</th>
             <th name="sortiraj" class="success">Iznos<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Komentar</th>
@@ -1635,6 +1635,14 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         if (!this.asc) { rows = rows.reverse() }
         for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
     });
+    $("th[name=pocetnaLokacija]").click(function () {
+        $.get("/api/Vozac", function (vozac) {
+            var ret = data.sort(function (a, b) {
+                return ApsolutnoRastojanje(a.Lokacija.KoordinataX, a.Lokacija.KoordinataY, vozac.Lokacija.KoordinataX, vozac.Lokacija.KoordinataY) - ApsolutnoRastojanje(b.Lokacija.KoordinataX, b.Lokacija.KoordinataY, vozac.Lokacija.KoordinataX, vozac.Lokacija.KoordinataY)
+            });
+            IspisiVoznjeVozac(ret, idVoz);
+        });
+    });
     $("input:button[name=prihvati]").click(function () {
         //alert(this.id);//uzmi id tog dugmeta
         ulogaKorisnika(`2`);
@@ -1651,7 +1659,16 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         ObradjivanjeVoznjeVozac(ppp,idVoz);        
     });
 };
+function ApsolutnoRastojanje(x1, y1, x2, y2) {
+    var kX1 = parseFloat(x1);
+    var kX2 = parseFloat(x2);
+    var kY1 = parseFloat(y1);
+    var kY2 = parseFloat(y2);
 
+    var apsRastojanje = Math.pow((Math.pow((kX1 - kX2), 2) + Math.pow((kY1 - kY2), 2)), 0.5);
+    alert(apsRastojanje);
+    return apsRastojanje;
+};
 let ObradjivanjeVoznjeVozac = function (data1, data2) {// data1 id voznje tj buttona,data2 idVozaca
     //let voznje = null;
     let htmlKodOdredisteIIznos = `<h2>Krajnja lokacija</h2>

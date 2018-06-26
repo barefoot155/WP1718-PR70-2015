@@ -193,7 +193,7 @@ namespace WebAPI.Controllers
 
             return apsRastojanje;
         }
-
+        
         [HttpGet]
         [Route("api/Dispecer/ObradiVoznju/")]
         public void ObradiVoznju(string id,string korImeDisp, string korImeMusterije, string vozac)
