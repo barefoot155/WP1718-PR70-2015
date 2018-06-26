@@ -575,6 +575,7 @@ let pomocna = function () {
             $("#txtKoordinataX").val(data.KoordinataX);
             $("#txtKoordinataY").val(data.KoordinataY);
             //location.href = uloga + `.html`;
+            
         });
     });
     $("#kreiranjeDisp").click(function () {
@@ -588,6 +589,18 @@ let pomocna = function () {
             $("#txtKoordinataX").val(data.KoordinataX);
             $("#txtKoordinataY").val(data.KoordinataY);
             //location.href = uloga + `.html`;
+            $.get("/api/Dispecer/VratiSlobodneVozace1/", { x: data.KoordinataX, y: data.KoordinataY }, function (data1) {
+                //alert(data1[0].KorisnickoIme);
+                alert(`iz geta`);
+                //KreiranjeVoznjeDisp(korisnik, data1);
+                var vozaci = ``;
+                
+                for (v in data1) {
+                    vozaci += `<option value="${data1[v].KorisnickoIme}">${data1[v].KorisnickoIme}</option>`;                   
+                }
+                $("#cbVozaci").html(vozaci);
+                $("div[name=pretraga]").hide();
+            });
         });
     });
 };

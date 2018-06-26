@@ -46,8 +46,8 @@ namespace WebAPI.Controllers
             }
             IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
 
-            string x = koordinate[0].ToString().Trim(new char[] { '{', '}' });
-            string y = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+            string x = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+            string y = koordinate[0].ToString().Trim(new char[] { '{', '}' });
             if (broj.Trim() == "")
             {
                 broj = "bb";

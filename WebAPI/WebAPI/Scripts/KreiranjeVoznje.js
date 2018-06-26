@@ -1253,7 +1253,7 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
 let ObradjivanjeVoznje = function (data1, data2, data3) {
     let voznje = null;
     let temp = ``;
-    $.get("/api/Dispecer/VratiSlobodneVozace", function (data4) {
+    $.get("/api/Dispecer/VratiSlobodneVozaceNajblize/", {idVoznje:data1,idMusterije:data3}, function (data4) {
         //alert(data4[0].KorisnickoIme);
         voznje = data4;
         for (v in data4) {

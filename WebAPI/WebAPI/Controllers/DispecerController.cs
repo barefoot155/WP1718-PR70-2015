@@ -22,6 +22,7 @@ namespace WebAPI.Controllers
             else
                 return "";
         }
+
         [HttpPost]
         [Route("api/Dispecer/GetLokacija/")]
         public Lokacija GetLokacija([FromBody]JObject jsonResult)
@@ -55,35 +56,20 @@ namespace WebAPI.Controllers
                 }
             }
             IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
-            //IList<JToken> tipAuta = jsonResult["tipAuta"].Children().ToList();
-            //TripObject item = JsonConvert.DeserializeObject<TripObject>(jsonResult.ToString());
-            //return jsonResult;
-            string x = koordinate[0].ToString().Trim(new char[] { '{', '}' });
-            string y = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+            
+            string x = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+            string y = koordinate[0].ToString().Trim(new char[] { '{', '}' });
             if (broj.Trim() == "")
             {
                 broj = "bb";
             }
             Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
             korisnicko = Get().KorisnickoIme;
-            //Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korisnicko).Lokacija = lok;
-            //Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified), Musterija = Get().KorisnickoIme, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Lokacija = lok, TipAutomobila = (TipoviAutomobila)(0), Komentar = new Komentar() { Opis = "", Ocjena = Ocjene.Neocijenjeno } };
-            //Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Get().KorisnickoIme).Voznje.Add(voznja);
+            
             return lok;
-            /*HttpResponseMessage ret = new HttpResponseMessage();
-            ret.StatusCode = HttpStatusCode.OK;
-            string xxx = ulica;
-
-            Adresa adresa = new Adresa() { Ulica = ulica, Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta };
-            Lokacija lokacija = new Lokacija() { Adresa = adresa, KoordinataX = x, KoordinataY = y };
-            Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified), Musterija = korIme, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Lokacija = lokacija, TipAutomobila = (TipoviAutomobila)(int.Parse(tip)), Komentar = new Komentar() { Opis = "", Ocjena = Ocjene.Jedan } };
-            //Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.IndexOf()
-            Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.Add(voznja);
             
-            
-            System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
-            return ret;*/
         }
+
         //api/Dispecer/VratiSveVoznje
         [HttpGet]
         [Route("api/Dispecer/VratiSveVoznje")]
@@ -140,8 +126,74 @@ namespace WebAPI.Controllers
         public List<Vozac> VratiSlobodneVozace()
         {
             var ret = Korisnici.ListaVozaca.Where(v => !v.Zauzet).ToList();
+            
             return ret;
         }
+        //api/Dispecer/VratiSlobodneVozaceNajblize/
+        [HttpGet]
+        [Route("api/Dispecer/VratiSlobodneVozaceNajblize/")]
+        public List<Vozac> VratiSlobodneVozaceNajblize(string idVoznje,string idMusterije)
+        {
+            string id2 = idVoznje;
+            id2 = idVoznje.Substring(9);
+
+            string x = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == idMusterije).Voznje.FirstOrDefault(v => v.Id == int.Parse(id2)).Lokacija.KoordinataX;
+            string y = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == idMusterije).Voznje.FirstOrDefault(v => v.Id == int.Parse(id2)).Lokacija.KoordinataY;
+            var ret = Korisnici.ListaVozaca.Where(v => !v.Zauzet).ToList();
+            ret = Sortiraj(ret, x, y);
+
+            var listaSlobodnihNajblizih = ret.Where(v => !v.Zauzet).ToList();
+
+            if (listaSlobodnihNajblizih.Count <= 5)
+            {
+                return listaSlobodnihNajblizih;
+            }
+            else
+            {
+                return listaSlobodnihNajblizih.ToList().GetRange(0, 5);
+            }
+        }
+        [HttpGet]
+        [Route("api/Dispecer/VratiSlobodneVozace1/")]
+        public List<Vozac> VratiSlobodneVozace1(string x,string y)
+        {            
+            var ret = Korisnici.ListaVozaca.Where(v => !v.Zauzet).ToList();
+            ret=Sortiraj(ret,x,y);
+            //List<Vozac> listaSlobodnihVozaca = new List<Vozac>();
+            var listaSlobodnihNajblizih = ret.Where(v => !v.Zauzet).ToList();
+            if (listaSlobodnihNajblizih.Count <= 5)
+            {
+                return listaSlobodnihNajblizih;
+            }
+            else
+            {
+                return listaSlobodnihNajblizih.ToList().GetRange(0, 5);
+            }            
+        }
+        public List<Vozac> Sortiraj(List<Vozac> zaSortiranje,string x,string y)
+        {
+            var ret = new List<Vozac>();
+            zaSortiranje.Sort(
+                   delegate (Vozac b1, Vozac b2)
+                   {
+                       return ApsolutnoRastojanje(b1.Lokacija.KoordinataX,b1.Lokacija.KoordinataY, x, y).CompareTo(ApsolutnoRastojanje(b2.Lokacija.KoordinataX, b2.Lokacija.KoordinataY, x, y));
+                   }
+            );
+            return zaSortiranje;
+        }
+
+        public double ApsolutnoRastojanje(string x1,string y1,string x2,string y2)
+        {
+            double kX1 = double.Parse(x1.Replace('.',','));
+            double kX2 = double.Parse(x2.Replace('.', ','));
+            double kY1 = double.Parse(y1.Replace('.', ','));
+            double kY2 = double.Parse(y2.Replace('.', ','));
+
+            double apsRastojanje = Math.Sqrt(Math.Pow((kX1-kX2),2) + Math.Pow((kY1-kY2),2));
+
+            return apsRastojanje;
+        }
+
         [HttpGet]
         [Route("api/Dispecer/ObradiVoznju/")]
         public void ObradiVoznju(string id,string korImeDisp, string korImeMusterije, string vozac)
