@@ -35,6 +35,7 @@ namespace WebAPI.Controllers
             //int indVoznja = must.Voznje.IndexOf(must.Voznje.FirstOrDefault(v => v.Id == i));
             return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v => v.Id == i);
         }
+
         public void Get(string id,string korIme)
         {
             string idMusterija = id.Substring(9);
@@ -53,6 +54,7 @@ namespace WebAPI.Controllers
             return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje;
             //return k.Voznje;
         }
+
         // GET: api/Musterija/5
         public Musterija Get()
         {
@@ -110,6 +112,7 @@ namespace WebAPI.Controllers
         
         [HttpGet]
         [Route("api/Musterija/KreirajVoznju/")]
+
         public HttpResponseMessage KreirajVoznju(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme)
         {
             HttpResponseMessage ret = new HttpResponseMessage();
@@ -125,6 +128,7 @@ namespace WebAPI.Controllers
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
             return ret;            
         }
+
         [HttpGet]
         [Route("api/Musterija/IzmijeniVoznju/")]
         public void Get(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme,string id)
@@ -168,8 +172,7 @@ namespace WebAPI.Controllers
                 mess.StatusCode = HttpStatusCode.NotAcceptable;
                 return mess;
             }
-        }
-        
+        }        
 
         // PUT: api/Musterija/5
         public void Put(int id, [FromBody]string value)

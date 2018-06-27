@@ -20,6 +20,7 @@ namespace WebAPI.Controllers
             var ret = Sortiraj(sveVoznje,Get().Lokacija.KoordinataX,Get().Lokacija.KoordinataY);
             return ret;
         }
+
         public List<Voznja> Sortiraj(List<Voznja> zaSortiranje, string x, string y)
         {
             var ret = new List<Vozac>();
@@ -31,6 +32,7 @@ namespace WebAPI.Controllers
             );
             return zaSortiranje;
         }
+
         public double ApsolutnoRastojanje(string x1, string y1, string x2, string y2)
         {
             double kX1 = double.Parse(x1.Replace('.', ','));
@@ -42,6 +44,7 @@ namespace WebAPI.Controllers
 
             return apsRastojanje;
         }
+
         [HttpPost]
         [Route("api/Vozac/GetLokacija/")]
         public Lokacija GetLokacija([FromBody]JObject jsonResult)
@@ -88,6 +91,7 @@ namespace WebAPI.Controllers
             return lok;
 
         }
+
         [HttpPost]
         [Route("api/Vozac/IzmijeniLokaciju/")]
         public void IzmijeniLokaciju([FromBody]JObject jsonResult)
@@ -133,6 +137,7 @@ namespace WebAPI.Controllers
             korisnicko = Get().KorisnickoIme;
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korisnicko).Lokacija = lok;
         }
+
         //"/api/Vozac/PromijeniLokaciju/"
         [HttpGet]
         [Route("api/Vozac/PromijeniLokaciju/")]
@@ -142,6 +147,7 @@ namespace WebAPI.Controllers
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Lokacija = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta, Ulica = ulica } };
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
         }
+
         [HttpGet]
         [Route("api/Vozac/VratiKreirane")]
         public List<Voznja> VratiKreirane()
@@ -154,6 +160,7 @@ namespace WebAPI.Controllers
             
             return ret;
         }
+
         // GET: api/Vozac/5
         public Vozac Get()
         {
@@ -161,6 +168,7 @@ namespace WebAPI.Controllers
 
             return k;
         }
+
         ///api/Vozac/PrihvatiVoznju
         [HttpGet]
         [Route("api/Vozac/PrihvatiVoznju/")]
@@ -183,6 +191,7 @@ namespace WebAPI.Controllers
             }
             Korisnici.ListaVozaca.FirstOrDefault(vo => vo.KorisnickoIme == idVozaca).Voznje.Add(v);
         }
+
         [HttpGet]
         [Route("api/Vozac/ObradiVoznju/")]
         public void ObradiVoznju(string idVoznje, string idVozaca)
@@ -204,6 +213,7 @@ namespace WebAPI.Controllers
             }
             Korisnici.ListaVozaca.FirstOrDefault(vo => vo.KorisnickoIme == idVozaca).Voznje.Add(v);
         }
+
         [HttpGet]
         [Route("api/Vozac/NeuspjesnaVoznja/")]
         public void NeuspjesnaVoznja(string idVoznje,string idVozaca,string koment)
@@ -236,6 +246,7 @@ namespace WebAPI.Controllers
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
             //Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;
         }
+
         [HttpGet]
         [Route("api/Vozac/UspjesnaVoznja/")]
         public void UspjesnaVoznja(string idVoznje, string idVozaca, string iznos,string broj,string ulica,string grad,string x,string y,string posta)
@@ -265,6 +276,7 @@ namespace WebAPI.Controllers
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
             //Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;
         }
+        
         // POST: api/Vozac
         public HttpResponseMessage Post([FromBody]Vozac vozac)
         {

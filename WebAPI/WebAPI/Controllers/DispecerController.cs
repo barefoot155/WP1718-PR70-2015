@@ -30,11 +30,12 @@ namespace WebAPI.Controllers
             string korisnicko = "";
             string s = jsonResult.ToString();
             IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
-            //string b="";
+            
             string grad = "";
             string ulica = "";
             string posta = "";
             string broj = "";
+
             foreach (var item in addresses)
             {
                 string ssss = item.ToString().Replace("\"", "");
@@ -66,8 +67,7 @@ namespace WebAPI.Controllers
             Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
             korisnicko = Get().KorisnickoIme;
             
-            return lok;
-            
+            return lok;            
         }
 
         //api/Dispecer/VratiSveVoznje
@@ -92,6 +92,7 @@ namespace WebAPI.Controllers
             }
             return ret;
         }
+
         [HttpGet]
         [Route("api/Dispecer/VratiSveKorisnike")]
         public List<string> VratiSveKorisnike()
@@ -121,6 +122,7 @@ namespace WebAPI.Controllers
             }
             return VratiSveKorisnike();
         }
+
         [HttpGet]
         [Route("api/Dispecer/VratiSlobodneVozace")]
         public List<Vozac> VratiSlobodneVozace()
@@ -129,7 +131,7 @@ namespace WebAPI.Controllers
             
             return ret;
         }
-        //api/Dispecer/VratiSlobodneVozaceNajblize/
+        
         [HttpGet]
         [Route("api/Dispecer/VratiSlobodneVozaceNajblize/")]
         public List<Vozac> VratiSlobodneVozaceNajblize(string idVoznje,string idMusterije)
@@ -139,6 +141,7 @@ namespace WebAPI.Controllers
 
             string x = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == idMusterije).Voznje.FirstOrDefault(v => v.Id == int.Parse(id2)).Lokacija.KoordinataX;
             string y = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == idMusterije).Voznje.FirstOrDefault(v => v.Id == int.Parse(id2)).Lokacija.KoordinataY;
+
             var ret = Korisnici.ListaVozaca.Where(v => !v.Zauzet).ToList();
             ret = Sortiraj(ret, x, y);
 
@@ -153,14 +156,22 @@ namespace WebAPI.Controllers
                 return listaSlobodnihNajblizih.ToList().GetRange(0, 5);
             }
         }
+
         [HttpGet]
         [Route("api/Dispecer/VratiSlobodneVozace1/")]
-        public List<Vozac> VratiSlobodneVozace1(string x,string y)
+        public List<Vozac> VratiSlobodneVozace1(string x,string y, string tipAuta)
         {            
             var ret = Korisnici.ListaVozaca.Where(v => !v.Zauzet).ToList();
             ret=Sortiraj(ret,x,y);
-            //List<Vozac> listaSlobodnihVozaca = new List<Vozac>();
-            var listaSlobodnihNajblizih = ret.Where(v => !v.Zauzet).ToList();
+            var listaSlobodnihNajblizih = new List<Vozac>();
+            if (tipAuta != "0")
+            {
+                listaSlobodnihNajblizih = ret.Where(v => !v.Zauzet && v.Automobil.TipAutomobila == (TipoviAutomobila)int.Parse(tipAuta)).ToList();
+            }
+            else
+            {
+                listaSlobodnihNajblizih = ret.Where(v => !v.Zauzet).ToList();
+            }
             if (listaSlobodnihNajblizih.Count <= 5)
             {
                 return listaSlobodnihNajblizih;
@@ -170,6 +181,7 @@ namespace WebAPI.Controllers
                 return listaSlobodnihNajblizih.ToList().GetRange(0, 5);
             }            
         }
+
         public List<Vozac> Sortiraj(List<Vozac> zaSortiranje,string x,string y)
         {
             var ret = new List<Vozac>();
@@ -212,9 +224,10 @@ namespace WebAPI.Controllers
             Korisnici.ListaVozaca.FirstOrDefault(d => d.KorisnickoIme == vozac).Voznje.Add(voznja);
             Korisnici.ListaVozaca.FirstOrDefault(d => d.KorisnickoIme == vozac).Zauzet = true;
         }
+
         [HttpPost]
         [Route("api/Dispecer/DodajVozaca/")]
-        public HttpResponseMessage DodajVozaca([FromBody]Vozac voz)//from body?
+        public HttpResponseMessage DodajVozaca([FromBody]Vozac voz)
         {
             string ime = voz.Ime;
             HttpResponseMessage mess = new HttpResponseMessage();
@@ -236,12 +249,12 @@ namespace WebAPI.Controllers
                 return mess;
             }
         }
+
         public List<Voznja> Get(string korIme)
         {
-            //Dispecer k = (Dispecer)System.Web.HttpContext.Current.Session["mojaSesija"];
             return Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korIme).Voznje;
-            //return k.Voznje;
         }
+
         // GET: api/Dispecer/5
         public Dispecer Get()
         {
@@ -249,6 +262,7 @@ namespace WebAPI.Controllers
             
             return k;
         }
+
         public HttpResponseMessage Get(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme,string vozac)
         {
             HttpResponseMessage ret = new HttpResponseMessage();

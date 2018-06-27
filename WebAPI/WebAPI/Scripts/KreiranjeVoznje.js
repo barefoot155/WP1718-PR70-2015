@@ -8,6 +8,7 @@ let ulogaKorisnika = function (data) {
         ul = "Vozac";
     }
 };
+
 function funkcijaStatusVoznje(statusV) {
     switch (statusV) {
         case 0:
@@ -35,6 +36,7 @@ function funkcijaStatusVoznje(statusV) {
             return "";
     }
 };
+
 function funkcijaTipAuta(tipAuta) {
     switch (tipAuta) {
         case 0:
@@ -50,6 +52,7 @@ function funkcijaTipAuta(tipAuta) {
             return "";
     }
 };
+
 function ModalDialogKod(header,opis,ocjena,datum,voznja,autor) {
 return `<!-- Trigger the modal with a button -->
 <button id="${voznja}" type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal${voznja}">Prikazi +</button>
@@ -79,7 +82,6 @@ return `<!-- Trigger the modal with a button -->
   </div>
 </div>`;
 };
-
 
 function display(startDate, endDate) {
     if (endDate == "") {
@@ -247,9 +249,11 @@ function comparer(index) {
         return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
     }
 };
+
 function getCellValue(row, index) {
     return $(row).children('td').eq(index).text()
 };
+
 let IspisiVoznje = function (data) {
     let temp = ``;
     for (drive in data) {
@@ -606,6 +610,7 @@ let IspisiVoznje = function (data) {
         for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
     });
 };
+
 function ImeIPrezime(korisnicko) {
     let vraceno = ``;
     $.get("/api/Dispecer/VratiImeIPrezime/", { korIme: korisnicko }, function (vr) {
@@ -613,6 +618,7 @@ function ImeIPrezime(korisnicko) {
     });
     return vraceno;
 };
+
 let IspisiVoznjeDisp = function (data, username) {
     let temp = ``;
     let komen = `Komentar`;
@@ -957,6 +963,7 @@ let IspisiVoznjeDisp = function (data, username) {
 
     });
 };
+
 function pretraga(minValue, maxValue) {
     var min = parseInt($('#odCijena').val(), 10);
     var max = parseInt($('#doCijena').val(), 10);
@@ -972,6 +979,7 @@ function pretraga(minValue, maxValue) {
         }
     });
 };
+
 function pretragaOcj(minValue, maxValue) {
     var min = parseInt($('#odOcjena').val(), 10);
     var max = parseInt($('#doOcjena').val(), 10);
@@ -987,7 +995,9 @@ function pretragaOcj(minValue, maxValue) {
         }
     });
 };
+
 let OstaviKom = function (idVoz, idKor) {
+    $("div[name=pretraga]").hide();
     $("#prikazPodataka").html(`<table class="table table-bordered">
         <thead>
             <tr class="success">
@@ -1041,6 +1051,7 @@ let OstaviKom = function (idVoz, idKor) {
 
     });
 };
+
 let IzmijeniVoznju = function (data) {
     var tip = ``;
     if (data.TipAutomobila == "1") {//putnicki
@@ -1202,6 +1213,7 @@ let Komentarisanje = function (idVoz, idKor) {
         
     });
 };
+
 let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru, data1 podaci o vozacima
     var listaVozaca;
     let temp = ``;
@@ -1290,13 +1302,31 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
                     </tbody>
                 </table>`
     );
-    pomocna();
-    $("#btnKreirajVoznju").click(function () {
 
+    pomocna();
+
+    $("#tipAuta").change(function () {
+        if ($("#txtKoordinataX").val() != `` && $("#txtKoordinataY").val()!=``) {
+            $.get("/api/Dispecer/VratiSlobodneVozace1/", { x: $("#txtKoordinataX").val(), y: $("#txtKoordinataY").val(), tipAuta: $("#tipAuta").val() }, function (data6) {
+                //alert(data1[0].KorisnickoIme);
+                alert(`iz geta`);
+                //KreiranjeVoznjeDisp(korisnik, data1);
+                var vozaci = ``;
+
+                for (v in data6) {
+                    vozaci += `<option value="${data6[v].KorisnickoIme}">${data6[v].KorisnickoIme}</option>`;
+                }
+                $("#cbVozaci").html(vozaci);
+                $("div[name=pretraga]").hide();
+            });
+        }
+    });
+
+    $("#btnKreirajVoznju").click(function () {
         ulogaKorisnika(data.Uloga);
-        //alert(temp);
+        
         var uloga = ul;
-        //alert(uloga);
+        
         var tipAutomobila = $("#tipAuta").val();
         var ulica = $("#txtUlica").val();
         var broj = $("#txtBroj").val();
@@ -1313,7 +1343,6 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
         });
     });
 };
-
 
 let ObradjivanjeVoznje = function (data1, data2, data3) {
     let voznje = null;
@@ -1361,6 +1390,7 @@ let ObradjivanjeVoznje = function (data1, data2, data3) {
     });
     //var tipAutomobila = $("#tipAuta").val();   
 };
+
 let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. taj disp kreira novog vozaca
     $("#prikazPodataka").html(`<table class="table table-bordered">
         <thead>
@@ -1758,6 +1788,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         ObradjivanjeVoznjeVozac(ppp,idVoz);        
     });
 };
+
 function ApsolutnoRastojanje(x1, y1, x2, y2) {
     var kX1 = parseFloat(x1);
     var kX2 = parseFloat(x2);
@@ -1768,6 +1799,7 @@ function ApsolutnoRastojanje(x1, y1, x2, y2) {
     alert(apsRastojanje);
     return apsRastojanje;
 };
+
 let ObradjivanjeVoznjeVozac = function (data1, data2) {// data1 id voznje tj buttona,data2 idVozaca
     //let voznje = null;
     let htmlKodOdredisteIIznos = `<h2>Krajnja lokacija</h2>

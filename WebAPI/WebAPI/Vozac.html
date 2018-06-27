@@ -46,6 +46,10 @@
                 IzmijeniPodatke3(korisnik);
                 $("#prikazPodatakaDrugi").html(``);
             });
+            $("#prikaziAuto").click(function () {
+                PrikaziPodatkeOAutomobilu(korisnik);
+                $("#prikazPodatakaDrugi").html(``);
+            });
             $("#promijeniSifru").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
                 IzmijeniSifru3(korisnik);
@@ -124,7 +128,7 @@
                         <ul class="dropdown-menu">
                             <li><a id="prikaziPodatke" href="#">Moji podaci</a></li>
                             <li><a id="izmijeniPodatke" href="#">Izmijeni podatke</a></li>
-                            <li><a href="#">Something else here</a></li>
+                            <li><a id="prikaziAuto" href="#">Podaci o automobilu</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a id="promijeniSifru" href="#">Promijeni sifru</a></li>
                         </ul>

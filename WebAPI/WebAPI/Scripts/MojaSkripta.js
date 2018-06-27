@@ -42,6 +42,7 @@
         </tbody>
     </table>`);
 };
+
 let IzmijeniSifru = function (korisnik) {
     $("#prikazPodataka").html(`<table class="table table-bordered">
                     <thead>
@@ -105,6 +106,7 @@ let IzmijeniSifru = function (korisnik) {
         }
     });
 };
+
 let IzmijeniPodatke = function (korisnik) {
     var pol = ``;
     if (korisnik.Pol == "1") {
@@ -199,6 +201,44 @@ let IzmijeniPodatke = function (korisnik) {
                 alert("greska prilikom izmjene podataka");
             });
     });
+};
+
+let PrikaziPodatkeOAutomobilu = function (korisnik) {
+    var tip = ``;
+    switch (korisnik.Automobil.TipAutomobila) {
+        case 0:
+            tip= "Nepoznato";
+            break;
+        case 1:
+            tip= "Putnicki automobil";
+            break;
+        case 2:
+            tip= "Kombi vozilo";
+            break;
+        default:
+            tip= "";
+    }
+    $("#prikazPodataka").html(`<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">Podaci o automobilu</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Godiste automobila:</td>
+                <td>` + ((korisnik.Automobil.GodisteAutomobila != null) ? korisnik.Automobil.GodisteAutomobila : `-`) + `</td>
+            </tr>
+            <tr>
+                <td>Broj taksi vozila:</td>
+                <td>` + ((korisnik.Automobil.BrojTaksiVozila != null) ? korisnik.Automobil.BrojTaksiVozila : `-`) + `</td>
+            </tr>
+            <tr>
+                <td>Tip automobila:</td>
+                <td>` + tip + `</td>
+            </tr>
+        </tbody>
+    </table>`);
 };
 
 let IzmijeniPodatke2 = function (korisnik) {
@@ -296,6 +336,7 @@ let IzmijeniPodatke2 = function (korisnik) {
             });
     });
 };
+
 let IzmijeniPodatke3 = function (korisnik) {
     var pol = ``;
     if (korisnik.Pol == "1") {
@@ -388,6 +429,7 @@ let IzmijeniPodatke3 = function (korisnik) {
             });
     });
 };
+
 let IzmijeniSifru2 = function (korisnik) {
     $("#prikazPodataka").html(`<table class="table table-bordered">
                     <thead>
@@ -451,6 +493,7 @@ let IzmijeniSifru2 = function (korisnik) {
         }
     });
 };
+
 let IzmijeniSifru3 = function (korisnik) {
     $("#prikazPodataka").html(`<table class="table table-bordered">
                     <thead>
@@ -514,9 +557,11 @@ let IzmijeniSifru3 = function (korisnik) {
         }
     });
 };
+
 let jsonObjekat;
+
 function reverseGeocode(coords) {
-    fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
         .then(function (response) {
             alert(response);
             return response.json();
@@ -525,6 +570,7 @@ function reverseGeocode(coords) {
             jsonObjekat = json;
         });
 };
+
 let pomocna = function () {
     var map = new ol.Map({
         target: 'map',
@@ -621,7 +667,7 @@ let pomocna = function () {
             $("#txtKoordinataX").val(data.KoordinataX);
             $("#txtKoordinataY").val(data.KoordinataY);
             //location.href = uloga + `.html`;
-            $.get("/api/Dispecer/VratiSlobodneVozace1/", { x: data.KoordinataX, y: data.KoordinataY }, function (data1) {
+            $.get("/api/Dispecer/VratiSlobodneVozace1/", { x: data.KoordinataX, y: data.KoordinataY, tipAuta: $("#tipAuta").val() }, function (data1) {
                 //alert(data1[0].KorisnickoIme);
                 alert(`iz geta`);
                 //KreiranjeVoznjeDisp(korisnik, data1);
@@ -636,6 +682,7 @@ let pomocna = function () {
         });
     });
 };
+
 let PrikaziMapu = function () {
     
     $("#prikazPodataka").html(`<h2>Moja lokacija</h2>
