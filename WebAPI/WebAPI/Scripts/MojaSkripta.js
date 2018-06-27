@@ -5,7 +5,42 @@
     } else {
         pol = `Muski`;
     }
-    $("#prikazPodataka").html(`<table class="table table-bordered"><thead><tr class="success"><th colspan="2">Moji podaci</th></tr></thead><tbody><tr><td>Korisnicko ime:</td><td>` + korisnik.KorisnickoIme + `</td></tr><tr><td>Sifra:</td><td>` + korisnik.Lozinka + `</td></tr><tr><td>Ime:</td><td>` + korisnik.Ime + `</td></tr><tr><td>Prezime:</td><td>` + korisnik.Prezime + `</td></tr><tr><td>Kontakt telefon:</td><td>` + korisnik.KontaktTelefon + `</td></tr><tr><td>JMBG:</td><td>` + korisnik.Jmbg + `</td></tr><tr><td>Pol:</td><td>` + pol + `</td></tr><tr><td>Email:</td> <td>` + korisnik.Email + `</td></tr></tbody></table>`);
+    $("#prikazPodataka").html(`<table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">Moji podaci</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Korisnicko ime:</td>
+                <td>` + ((korisnik.KorisnickoIme != null) ? korisnik.KorisnickoIme:`-`) + `</td>
+            </tr>
+            <tr>
+                <td>Ime:</td>
+                <td>` + ((korisnik.Ime != null) ? korisnik.Ime:`-`) + `</td>
+            </tr>
+            <tr>
+                <td>Prezime:</td>
+                <td>` + ((korisnik.Prezime != null) ? korisnik.Prezime:`-`) + `</td>
+            </tr>
+            <tr>
+                <td>Kontakt telefon:</td>
+                <td>` + ((korisnik.KontaktTelefon != null) ? korisnik.KontaktTelefon:`-`) + `</td>
+            </tr>
+            <tr>
+                <td>JMBG:</td><td>` + ((korisnik.Jmbg != null) ? korisnik.Jmbg:`-`) + `</td>
+            </tr>
+            <tr>
+                <td>Pol:</td>
+                <td>` + pol + `</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>` + ((korisnik.Email != null) ? korisnik.Email:`-`) + `</td>
+            </tr>
+        </tbody>
+    </table>`);
 };
 let IzmijeniSifru = function (korisnik) {
     $("#prikazPodataka").html(`<table class="table table-bordered">
@@ -91,32 +126,32 @@ let IzmijeniPodatke = function (korisnik) {
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>`
-        + korisnik.KorisnickoIme +
+        + ((korisnik.KorisnickoIme != null) ? korisnik.KorisnickoIme:``) +
         `</td>
             </tr>
             
             <tr>
                 <td>Ime:</td>
                 <td>
-                    <input type="text" id="txtIme" value="`+ korisnik.Ime + `"/>
+                    <input type="text" id="txtIme" value="`+ ((korisnik.Ime != null) ? korisnik.KorisnickoIme:``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>Prezime:</td>
                 <td>
-                    <input type="text" id="txtPrezime" value="`+ korisnik.Prezime + `"/>
+                    <input type="text" id="txtPrezime" value="`+ ((korisnik.Prezime != null) ? korisnik.Prezime:`` ) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>Kontakt telefon:</td>
                 <td>
-                    <input type="text" id="txtTelefon" value="`+ korisnik.KontaktTelefon + `"/>
+                    <input type="text" id="txtTelefon" value="`+ ((korisnik.KontaktTelefon != null) ? korisnik.KontaktTelefon:``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>JMBG:</td>
                 <td>
-                    <input type="text" id="txtJMBG" value="`+ korisnik.Jmbg + `"/>
+                    <input type="text" id="txtJMBG" value="`+ ((korisnik.Jmbg != null) ? korisnik.Jmbg:``) + `"/>
                 </td>
             </tr>
             <tr>
@@ -128,7 +163,7 @@ let IzmijeniPodatke = function (korisnik) {
             <tr>
                 <td>Email:</td>
                 <td>
-                    <input type="email" id="txtEmail" value="`+ korisnik.Email + `"/>
+                    <input type="email" id="txtEmail" value="`+ ((korisnik.Email != null) ? korisnik.Email:``) + `"/>
                 </td>
             </tr>
             <tr class="success">
@@ -187,32 +222,32 @@ let IzmijeniPodatke2 = function (korisnik) {
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>`
-        + korisnik.KorisnickoIme +
+        + ((korisnik.KorisnickoIme != null) ? korisnik.KorisnickoIme:``) +
         `</td>
             </tr>
             
             <tr>
                 <td>Ime:</td>
                 <td>
-                    <input type="text" id="txtIme" value="`+ korisnik.Ime + `"/>
+                    <input type="text" id="txtIme" value="`+ ((korisnik.Ime != null) ? korisnik.Ime:``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>Prezime:</td>
                 <td>
-                    <input type="text" id="txtPrezime" value="`+ korisnik.Prezime + `"/>
+                    <input type="text" id="txtPrezime" value="`+ ((korisnik.Prezime != null) ? korisnik.Prezime:``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>Kontakt telefon:</td>
                 <td>
-                    <input type="text" id="txtTelefon" value="`+ korisnik.KontaktTelefon + `"/>
+                    <input type="text" id="txtTelefon" value="`+ ((korisnik.KontaktTelefon != null) ? korisnik.KontaktTelefon:``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>JMBG:</td>
                 <td>
-                    <input type="text" id="txtJMBG" value="`+ korisnik.Jmbg + `"/>
+                    <input type="text" id="txtJMBG" value="`+ ((korisnik.Jmbg != null) ? korisnik.Jmbg:``) + `"/>
                 </td>
             </tr>
             <tr>
@@ -224,7 +259,7 @@ let IzmijeniPodatke2 = function (korisnik) {
             <tr>
                 <td>Email:</td>
                 <td>
-                    <input type="email" id="txtEmail" value="`+ korisnik.Email + `"/>
+                    <input type="email" id="txtEmail" value="`+ ((korisnik.Email != null) ? korisnik.Email:``) + `"/>
                 </td>
             </tr>
             <tr class="success">
@@ -282,32 +317,32 @@ let IzmijeniPodatke3 = function (korisnik) {
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>`
-        + korisnik.KorisnickoIme +
+        + ((korisnik.KorisnickoIme != null) ? korisnik.KorisnickoIme :``) +
         `</td>
             </tr>
             
             <tr>
                 <td>Ime:</td>
                 <td>
-                    <input type="text" id="txtIme" value="`+ korisnik.Ime + `"/>
+                    <input type="text" id="txtIme" value="`+ ((korisnik.Ime != null) ? korisnik.Ime :``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>Prezime:</td>
                 <td>
-                    <input type="text" id="txtPrezime" value="`+ korisnik.Prezime + `"/>
+                    <input type="text" id="txtPrezime" value="`+ ((korisnik.Prezime != null) ? korisnik.Prezime :``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>Kontakt telefon:</td>
                 <td>
-                    <input type="text" id="txtTelefon" value="`+ korisnik.KontaktTelefon + `"/>
+                    <input type="text" id="txtTelefon" value="`+ ((korisnik.KontaktTelefon != null) ? korisnik.KontaktTelefon:``) + `"/>
                 </td>
             </tr>
             <tr>
                 <td>JMBG:</td>
                 <td>
-                    <input type="text" id="txtJMBG" value="`+ korisnik.Jmbg + `"/>
+                    <input type="text" id="txtJMBG" value="`+ ((korisnik.Jmbg != null) ? korisnik.Jmbg:``) + `"/>
                 </td>
             </tr>
             <tr>
@@ -319,7 +354,7 @@ let IzmijeniPodatke3 = function (korisnik) {
             <tr>
                 <td>Email:</td>
                 <td>
-                    <input type="email" id="txtEmail" value="`+ korisnik.Email + `"/>
+                    <input type="email" id="txtEmail" value="`+ ((korisnik.Email != null) ? korisnik.Email:``) + `"/>
                 </td>
             </tr>
             <tr class="success">
@@ -339,10 +374,7 @@ let IzmijeniPodatke3 = function (korisnik) {
         var Ime = $("#txtIme").val();
         var Prezime = $("#txtPrezime").val();
         var Pol = $("input:radio[name=pol]:checked").val();
-        //alert(Pol);
-
-
-        //alert("posle promjenljivih");
+        
         $.post("/api/Vozac", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: korisnik.Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
             //alert(remember);
             //alert(data);

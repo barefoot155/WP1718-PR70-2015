@@ -65,11 +65,11 @@ return `<!-- Trigger the modal with a button -->
         <h4 class="modal-title">`+ header +`</h4>
       </div>
       <div class="modal-body">
-        <p><b>Datum:</b>`+ datum + `</p>
-        <p><b>Autor:</b>`+ autor + `</p>
-        <p><b>Voznja:</b>`+ voznja + `</p>        
-        <p><b>Ocjena:</b>`+ ocjena + `</p>
-        <p><b>Opis:</b>`+ opis + `</p>
+        <p><b>Datum:</b>`+ ((datum != `0001-01-01T00:00:00`) ? datum : `-`) + `</p>
+        <p><b>Autor:</b>`+ ((autor != null) ? autor:`-`) + `</p>
+        <p><b>Voznja:</b>`+ ((voznja != null) ? voznja : `-`) + `</p>        
+        <p><b>Ocjena:</b>`+ ((ocjena != 0) ? ocjena : `Neocijenjen`) + `</p>
+        <p><b>Opis:</b>`+ ((opis != null) ? opis : `-`) + `</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal">Zatvori</button>
@@ -273,17 +273,50 @@ let IspisiVoznje = function (data) {
             success: function (imeiprz2) {
                 imeiprzVozaca = imeiprz2;
                 imeiprzVozaca = imeiprz2.split('-')[0] + ` ` + imeiprz2.split('-')[1];
+                //imeiprzVozaca = imeiprzVozaca.trim();
             }
         });
         temp += `<tr>`;
-        temp += (`<td>${data[drive].DatumIVrijemePorudzbe}</td>`);
-        temp += (`<td>${imeiprzMusterije}</td>`);
-        temp += (`<td>${data[drive].Dispecer}</td>`);
-        temp += (`<td>${imeiprzVozaca}</td>`);
+        temp += (`<td>${(data[drive].DatumIVrijemePorudzbe != null) ? data[drive].DatumIVrijemePorudzbe : `-`}</td>`);
+        temp += (`<td>${(imeiprzMusterije != null && imeiprzMusterije != ` undefined`) ? imeiprzMusterije : `-`}</td>`);
+        temp += (`<td>${(data[drive].Dispecer != null) ? data[drive].Dispecer : `-`}</td>`);
+        temp += (`<td>${(imeiprzVozaca != null && imeiprzVozaca != ` undefined`) ? imeiprzVozaca:`-`}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td >`);
-        temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
-        temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
+        var pom = ``;
+        if (data[drive].Lokacija.Adresa.Ulica != null) {
+            pom += data[drive].Lokacija.Adresa.Ulica;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.Ulica != null && data[drive].Lokacija.Adresa.Broj != null) {
+            pom += data[drive].Lokacija.Adresa.Broj;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.NaseljenoMjesto != null) {
+            pom += data[drive].Lokacija.Adresa.NaseljenoMjesto;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.PozivniBrojMjesta != null) {
+            pom += data[drive].Lokacija.Adresa.PozivniBrojMjesta;
+        }
+        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);
+        pom = ``;
+        if (data[drive].Odrediste.Adresa.Ulica != null) {
+            pom += data[drive].Odrediste.Adresa.Ulica;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.Ulica != null && data[drive].Odrediste.Adresa.Broj != null) {
+            pom += data[drive].Odrediste.Adresa.Broj;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.NaseljenoMjesto != null) {
+            pom += data[drive].Odrediste.Adresa.NaseljenoMjesto;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.PozivniBrojMjesta != null) {
+            pom += data[drive].Odrediste.Adresa.PozivniBrojMjesta;
+        }
+        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);//odrediste
         temp += (`<td>${data[drive].Iznos}</td>`);
         //temp += (`<td>${data[drive].Komentar.Opis}</td>`);
         var komen = `Komentar`;
@@ -322,7 +355,7 @@ let IspisiVoznje = function (data) {
             <th class="success">Vozac</th>
             <th class="success">StatusVoznje</th>
             <th class="success">TipAutomobila</th>
-            <th class="success">Ulica</th>
+            <th class="success">Pocetna lokacija</th>
             <th class="success">Odrediste</th>
             <th name="sortiraj" class="success">Iznos<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Komentar</th>
@@ -609,14 +642,47 @@ let IspisiVoznjeDisp = function (data, username) {
         });
         
         temp += `<tr>`;
-        temp += (`<td>${data[drive].DatumIVrijemePorudzbe}</td>`);
-        temp += (`<td>${imeiprzMusterije}</td>`);
-        temp += (`<td>${data[drive].Dispecer}</td>`);
-        temp += (`<td>${imeiprzVozaca}</td>`);
+        temp += (`<td>${(data[drive].DatumIVrijemePorudzbe != null) ? data[drive].DatumIVrijemePorudzbe : `-`}</td>`);
+        temp += (`<td>${(imeiprzMusterije == null || imeiprzMusterije == ` undefined`) ? `-` : imeiprzMusterije}</td>`);
+        temp += (`<td>${(data[drive].Dispecer != null) ? data[drive].Dispecer : `-`}</td>`);
+        temp += (`<td>${(imeiprzVozaca != null) ? imeiprzVozaca:`-`}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
-        temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
-        temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
+        var pom = ``;
+        if (data[drive].Lokacija.Adresa.Ulica != null) {
+            pom += data[drive].Lokacija.Adresa.Ulica;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.Ulica != null && data[drive].Lokacija.Adresa.Broj != null) {
+            pom += data[drive].Lokacija.Adresa.Broj;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.NaseljenoMjesto != null) {
+            pom += data[drive].Lokacija.Adresa.NaseljenoMjesto;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.PozivniBrojMjesta != null) {
+            pom += data[drive].Lokacija.Adresa.PozivniBrojMjesta;
+        }
+        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);
+        pom = ``;
+        if (data[drive].Odrediste.Adresa.Ulica != null) {
+            pom += data[drive].Odrediste.Adresa.Ulica;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.Ulica != null && data[drive].Odrediste.Adresa.Broj != null) {
+            pom += data[drive].Odrediste.Adresa.Broj;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.NaseljenoMjesto != null) {
+            pom += data[drive].Odrediste.Adresa.NaseljenoMjesto;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.PozivniBrojMjesta != null) {
+            pom += data[drive].Odrediste.Adresa.PozivniBrojMjesta;
+        }
+        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);//odrediste
+        //temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
         temp += (`<td>${data[drive].Iznos}</td>`);        
         temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
         temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
@@ -651,7 +717,7 @@ let IspisiVoznjeDisp = function (data, username) {
             <th class="success">Vozac</th>
             <th class="success">StatusVoznje</th>
             <th class="success">TipAutomobila</th>
-            <th class="success">Ulica</th>
+            <th class="success">Pocetna lokacija</th>
             <th class="success">Odrediste</th>
             <th name="sortiraj" class="success">Iznos<span name="strelica" class="glyphicon glyphicon-arrow-down"/></th>
             <th class="success">Komentar</th>
@@ -1014,25 +1080,25 @@ let IzmijeniVoznju = function (data) {
             <tr>
                 <td>Ulica:</td>
                 <td>
-                    <input type="text" id="txtUlica" value="`+ data.Lokacija.Adresa.Ulica +`" />
+                    <input type="text" id="txtUlica" value="`+ ((data.Lokacija.Adresa.Ulica != null) ? data.Lokacija.Adresa.Ulica:``) +`" />
                 </td>
             </tr>
             <tr>
                 <td>Broj:</td>
                 <td>
-                    <input type="text" id="txtBroj" value="`+ data.Lokacija.Adresa.Broj +`" />
+                    <input type="text" id="txtBroj" value="`+ ((data.Lokacija.Adresa.Broj != null) ? data.Lokacija.Adresa.Broj :``)+`" />
                 </td>
             </tr>
             <tr>
                 <td>Grad:</td>
                 <td>
-                    <input type="text" id="txtGrad" value="`+ data.Lokacija.Adresa.NaseljenoMjesto +`" />
+                    <input type="text" id="txtGrad" value="`+ ((data.Lokacija.Adresa.NaseljenoMjesto != null) ? data.Lokacija.Adresa.NaseljenoMjesto :``) +`" />
                 </td>
             </tr>            
             <tr>
                 <td>Postanski broj:</td>
                 <td>
-                    <input type="text" id="txtPostanskiBroj" value="`+ data.Lokacija.Adresa.PozivniBrojMjesta +`" />
+                    <input type="text" id="txtPostanskiBroj" value="`+ ((data.Lokacija.Adresa.PozivniBrojMjesta != null) ? data.Lokacija.Adresa.PozivniBrojMjesta :``) +`" />
                 </td>
             </tr>
             <tr>
@@ -1041,13 +1107,13 @@ let IzmijeniVoznju = function (data) {
             <tr>
                 <td>Koordinata X:</td>
                 <td>
-                    <input type="text" id="txtKoordinataX" value="`+data.Lokacija.KoordinataX+`" />
+                    <input type="text" id="txtKoordinataX" value="`+ ((data.Lokacija.KoordinataX != null) ? data.Lokacija.KoordinataX:``)+`" />
                 </td>
             </tr>
             <tr>
                 <td>Koordinata Y:</td>
                 <td>
-                    <input type="text" id="txtKoordinataY" value="`+data.Lokacija.KoordinataY+`" />
+                    <input type="text" id="txtKoordinataY" value="`+ ((data.Lokacija.KoordinataY != null) ? data.Lokacija.KoordinataY:``)+`" />
                 </td>
             </tr>
             <tr>
@@ -1059,11 +1125,10 @@ let IzmijeniVoznju = function (data) {
             <tr class="success">
                 <td colspan="2">
                     <input id="btnIzmijeniVoznju" class="btn btn-success pull-right" type="button" value="Izmijeni voznju">
-                        <!--/form-->
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>`
+                </td>
+            </tr>
+        </tbody>
+    </table>`
     );
     pomocna();
     $("#btnIzmijeniVoznju").click(function () {
@@ -1253,6 +1318,7 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
 let ObradjivanjeVoznje = function (data1, data2, data3) {
     let voznje = null;
     let temp = ``;
+    $("div[name=pretraga]").hide();
     $.get("/api/Dispecer/VratiSlobodneVozaceNajblize/", {idVoznje:data1,idMusterije:data3}, function (data4) {
         //alert(data4[0].KorisnickoIme);
         voznje = data4;
@@ -1390,14 +1456,46 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
     data = dataVoz;
     for (drive in data) {
         temp += `<tr>`;
-        temp += (`<td>${data[drive].DatumIVrijemePorudzbe}</td>`);
-        temp += (`<td>${data[drive].Musterija}</td>`);
-        temp += (`<td>${data[drive].Dispecer}</td>`);
-        temp += (`<td>${data[drive].Vozac}</td>`);
+        temp += (`<td>${(data[drive].DatumIVrijemePorudzbe != null) ? data[drive].DatumIVrijemePorudzbe:`-`}</td>`);
+        temp += (`<td>${(data[drive].Musterija != null && data[drive].Musterija != `nepoznato` && data[drive].Musterija!=``) ? data[drive].Musterija:`-`}</td>`);
+        temp += (`<td>${(data[drive].Dispecer != null) ? data[drive].Dispecer:`-`}</td>`);
+        temp += (`<td>${(data[drive].Vozac != null) ? data[drive].Vozac:`-`}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
-        temp += (`<td>${data[drive].Lokacija.Adresa.Ulica}</td>`);
-        temp += (`<td>${data[drive].Odrediste.Adresa.Ulica}</td>`);
+        var pom = ``;
+        if (data[drive].Lokacija.Adresa.Ulica != null) {
+            pom += data[drive].Lokacija.Adresa.Ulica;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.Ulica != null && data[drive].Lokacija.Adresa.Broj != null) {
+            pom += data[drive].Lokacija.Adresa.Broj;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.NaseljenoMjesto != null) {
+            pom += data[drive].Lokacija.Adresa.NaseljenoMjesto;
+            pom += ` `;
+        }
+        if (data[drive].Lokacija.Adresa.PozivniBrojMjesta != null) {
+            pom += data[drive].Lokacija.Adresa.PozivniBrojMjesta;
+        }
+        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);
+        pom = ``;
+        if (data[drive].Odrediste.Adresa.Ulica != null) {
+            pom += data[drive].Odrediste.Adresa.Ulica;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.Ulica != null && data[drive].Odrediste.Adresa.Broj != null) {
+            pom += data[drive].Odrediste.Adresa.Broj;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.NaseljenoMjesto != null) {
+            pom += data[drive].Odrediste.Adresa.NaseljenoMjesto;
+            pom += ` `;
+        }
+        if (data[drive].Odrediste.Adresa.PozivniBrojMjesta != null) {
+            pom += data[drive].Odrediste.Adresa.PozivniBrojMjesta;
+        }
+        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);//odrediste
         temp += (`<td>${data[drive].Iznos}</td>`);
         var komen = `Komentar`;
         temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
@@ -1410,7 +1508,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
     }
 
     $("#prikazPodataka").html(`<div>
-    <select id="zaFilter">
+    </br><b>Filtriraj po statusu:&nbsp;&nbsp;</b><select id="zaFilter">
          <option value="Bez naznake" selected>Bez naznake</option>
          <option value="Kreirana - Na cekanju">Kreirana - Na cekanju</option>
          <option value="Formirana">Formirana</option>
@@ -1421,6 +1519,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
          <option value="Uspjesna">Uspjesna</option>
     </select>
     </div>
+    </br>
     <table id="table" class="table table - bordered">
         <thead>
         <tr class="success">

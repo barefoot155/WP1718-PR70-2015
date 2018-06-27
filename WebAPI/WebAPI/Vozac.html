@@ -41,8 +41,6 @@
             $("#prikaziPodatke").click(function () {
                 IspisiPodatke(korisnik);
                 $("#prikazPodatakaDrugi").html(``);
-                //$("#prikazPodataka").html(`<table class="table table-bordered"><thead><tr class="success"><th colspan="2">Moji podaci</th></tr></thead><tbody><tr><td>Korisnicko ime:</td><td>korisnik.KorisnickoIme</td></tr><tr><td>Sifra:</td><td>korisnik.Lozinka</td></tr><tr><td>Ime:</td><td>korisnik.Ime</td></tr><tr><td>Prezime:</td><td>korisnik.Prezime</td></tr><tr><td>Kontakt telefon:</td><td>korisnik.KontaktTelefon</td></tr><tr><td>JMBG:</td><td>korisnik.Jmbg</td></tr><tr><td>Pol:</td><td>korisnik.Pol</td></tr><tr><td>Email:</td> <td>korisnik.Email</td></tr></tbody></table>`
-                //);
             });
             $("#izmijeniPodatke").click(function () {
                 IzmijeniPodatke3(korisnik);
@@ -78,7 +76,7 @@
                 $("#prikazPodatakaDrugi").html(``);
                 $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
                     .fail(function () {
-                        alert(`greskaaaaaa`);
+                        //alert(`greskaaaaaa`);
                     });
 
                 location.href = "Login.html";
