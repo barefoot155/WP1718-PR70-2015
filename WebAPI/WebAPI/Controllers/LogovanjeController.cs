@@ -19,17 +19,14 @@ namespace WebAPI.Controllers
         public HttpResponseMessage IzlogujSe()
         {
             HttpResponseMessage mess = new HttpResponseMessage();
+            
+            if(HttpContext.Current.Response.Cookies["mojKuki"] != null)
+            {
+                HttpContext.Current.Response.Cookies["mojKuki"].Value = null;
+                HttpContext.Current.Response.Cookies["mojKuki"].Expires = DateTime.Now.AddMonths(-1);
+            }
             HttpContext.Current.Session["mojaSesija"] = null;
             HttpContext.Current.Session.Abandon();
-            var cookie = Request.Headers.GetCookies("mojKuki").FirstOrDefault();
-            
-            //var myCookie = cookie.Cookies.FirstOrDefault();
-            if(cookie!=null)
-            {
-                cookie.Expires = DateTimeOffset.Now.AddDays(-5d);
-                mess.Headers.AddCookies(new CookieHeaderValue[] { cookie }); 
-                
-            }
             mess.StatusCode = HttpStatusCode.OK;
             return mess;
         }
