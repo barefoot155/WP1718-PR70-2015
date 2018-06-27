@@ -46,6 +46,7 @@ namespace WebAPI.Controllers
             cookie.Expires = DateTimeOffset.Now.AddDays(1);
             cookie.Domain = Request.RequestUri.Host;
             cookie.Path = "/";
+            
             resp.Headers.AddCookies(new CookieHeaderValue[] { cookie });
             //resp.StatusCode = HttpStatusCode.OK;
             return resp;
@@ -64,12 +65,9 @@ namespace WebAPI.Controllers
             if ((Korisnici.ListaDispecera.FirstOrDefault(dispecer => dispecer.KorisnickoIme == username && dispecer.Lozinka == password)) != null)
             {
                 korisnik = Korisnici.ListaDispecera.FirstOrDefault(dispecer => dispecer.KorisnickoIme == username && dispecer.Lozinka == password);
-                //System.Web.HttpContext.Current.Session["mojaSesija"] = new Dispecer();
-                //Dispecer d = (Dispecer)HttpContext.Current.Session["mojaSesija"];
-                //if (d == null)
-                {
-                    HttpContext.Current.Session["mojaSesija"] = korisnik;
-                }
+                
+                HttpContext.Current.Session["mojaSesija"] = korisnik;
+               
                 return korisnik.Uloga.ToString();
             }
             else if ((Korisnici.ListaVozaca.FirstOrDefault(vozac => vozac.KorisnickoIme == username && vozac.Lozinka == password)) != null)

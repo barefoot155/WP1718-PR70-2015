@@ -42,22 +42,27 @@
                 IspisiPodatke(korisnik);
                 $("#prikazPodatakaDrugi").html(``);
             });
+
             $("#izmijeniPodatke").click(function () {
                 IzmijeniPodatke3(korisnik);
                 $("#prikazPodatakaDrugi").html(``);
             });
+
             $("#prikaziAuto").click(function () {
                 PrikaziPodatkeOAutomobilu(korisnik);
                 $("#prikazPodatakaDrugi").html(``);
             });
+
             $("#promijeniSifru").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
                 IzmijeniSifru3(korisnik);
             });
+
             $("#lokacija").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
                 PrikaziMapu();
             });
+
             $("#IspisiKreiraneVoznje").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
                 $.get("/api/Vozac/VratiKreirane", function (data) {
@@ -76,6 +81,7 @@
                 }); 
                 $("#prikazPodatakaDrugi").html(``);
             });
+
             $("#logout").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
                 $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
@@ -85,6 +91,7 @@
 
                 location.href = "Login.html";
             });
+
             $("#pocetna").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
                 $.get("/api/Vozac", function (data) {

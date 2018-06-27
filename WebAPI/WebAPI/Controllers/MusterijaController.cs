@@ -11,6 +11,7 @@ namespace WebAPI.Controllers
 {
     public class MusterijaController : ApiController
     {
+        [MyAuthorization(Roles = "Musterija")]
         [HttpGet]
         [Route("api/Musterija/OstaviKomentar/")]
         public void OstaviKomentar(string Opis,string Ocjena, string Korisnik, string Voznja)
@@ -24,7 +25,8 @@ namespace WebAPI.Controllers
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m=>m.KorisnickoIme==Korisnik);
             //return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v => v.Id == i);
         }
-        
+
+        [MyAuthorization(Roles = "Musterija")]
         [HttpGet]
         [Route("api/Musterija/VratiVoznju/")]
         public Voznja VratiVoznju(string id,string korIme)
@@ -36,6 +38,7 @@ namespace WebAPI.Controllers
             return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v => v.Id == i);
         }
 
+        [MyAuthorization(Roles = "Musterija")]
         public void Get(string id,string korIme)
         {
             string idMusterija = id.Substring(9);
@@ -47,7 +50,8 @@ namespace WebAPI.Controllers
             Musterija ret = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
             System.Web.HttpContext.Current.Session["mojaSesija"] = ret;
         }
-        
+
+        [MyAuthorization(Roles = "Musterija")]
         public List<Voznja> Get(string korIme)
         {
             //Musterija k = (Musterija)System.Web.HttpContext.Current.Session["mojaSesija"];
@@ -55,6 +59,7 @@ namespace WebAPI.Controllers
             //return k.Voznje;
         }
 
+        [MyAuthorization(Roles = "Musterija")]
         // GET: api/Musterija/5
         public Musterija Get()
         {
@@ -63,6 +68,7 @@ namespace WebAPI.Controllers
             return k;
         }
 
+        [MyAuthorization(Roles = "Musterija")]
         [HttpPost]
         [Route("api/Musterija/GetLokacija/")]
         public Lokacija GetLokacija([FromBody]JObject jsonResult)
@@ -109,10 +115,12 @@ namespace WebAPI.Controllers
             return lok;
            
         }
-        
+
+        [MyAuthorization(Roles = "Musterija")]
         [HttpGet]
         [Route("api/Musterija/KreirajVoznju/")]
 
+        [MyAuthorization(Roles = "Musterija")]
         public HttpResponseMessage KreirajVoznju(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme)
         {
             HttpResponseMessage ret = new HttpResponseMessage();
@@ -129,6 +137,7 @@ namespace WebAPI.Controllers
             return ret;            
         }
 
+        [MyAuthorization(Roles = "Musterija")]
         [HttpGet]
         [Route("api/Musterija/IzmijeniVoznju/")]
         public void Get(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme,string id)
@@ -149,6 +158,7 @@ namespace WebAPI.Controllers
             
         }
 
+        [MyAuthorization(Roles = "Musterija")]
         // POST: api/Musterija
         public HttpResponseMessage Post([FromBody]Musterija musterija)
         {
@@ -173,16 +183,5 @@ namespace WebAPI.Controllers
                 return mess;
             }
         }        
-
-        // PUT: api/Musterija/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Musterija/5
-        public void Delete(int id)
-        {
-           
-        }
     }
 }

@@ -11,6 +11,7 @@ namespace WebAPI.Controllers
 {
     public class DispecerController : ApiController
     {
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/VratiImeIPrezime/")]
         public string VratiImeIPrezime(string korIme)
@@ -23,6 +24,7 @@ namespace WebAPI.Controllers
                 return "";
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         [HttpPost]
         [Route("api/Dispecer/GetLokacija/")]
         public Lokacija GetLokacija([FromBody]JObject jsonResult)
@@ -70,7 +72,7 @@ namespace WebAPI.Controllers
             return lok;            
         }
 
-        //api/Dispecer/VratiSveVoznje
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/VratiSveVoznje")]
         public List<Voznja> VratiSveVoznje()
@@ -93,6 +95,7 @@ namespace WebAPI.Controllers
             return ret;
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/VratiSveKorisnike")]
         public List<string> VratiSveKorisnike()
@@ -109,6 +112,7 @@ namespace WebAPI.Controllers
             return ret;
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/Blokiranje/")]
         public List<string> Blokiranje(string korIme)
@@ -123,6 +127,7 @@ namespace WebAPI.Controllers
             return VratiSveKorisnike();
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/VratiSlobodneVozace")]
         public List<Vozac> VratiSlobodneVozace()
@@ -131,7 +136,8 @@ namespace WebAPI.Controllers
             
             return ret;
         }
-        
+
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/VratiSlobodneVozaceNajblize/")]
         public List<Vozac> VratiSlobodneVozaceNajblize(string idVoznje,string idMusterije)
@@ -157,6 +163,7 @@ namespace WebAPI.Controllers
             }
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/VratiSlobodneVozace1/")]
         public List<Vozac> VratiSlobodneVozace1(string x,string y, string tipAuta)
@@ -205,7 +212,8 @@ namespace WebAPI.Controllers
 
             return apsRastojanje;
         }
-        
+
+        [MyAuthorization(Roles = "Administrator")]
         [HttpGet]
         [Route("api/Dispecer/ObradiVoznju/")]
         public void ObradiVoznju(string id,string korImeDisp, string korImeMusterije, string vozac)
@@ -225,6 +233,7 @@ namespace WebAPI.Controllers
             Korisnici.ListaVozaca.FirstOrDefault(d => d.KorisnickoIme == vozac).Zauzet = true;
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         [HttpPost]
         [Route("api/Dispecer/DodajVozaca/")]
         public HttpResponseMessage DodajVozaca([FromBody]Vozac voz)
@@ -250,11 +259,13 @@ namespace WebAPI.Controllers
             }
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         public List<Voznja> Get(string korIme)
         {
             return Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korIme).Voznje;
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         // GET: api/Dispecer/5
         public Dispecer Get()
         {
@@ -263,6 +274,7 @@ namespace WebAPI.Controllers
             return k;
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         public HttpResponseMessage Get(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme,string vozac)
         {
             HttpResponseMessage ret = new HttpResponseMessage();
@@ -285,6 +297,7 @@ namespace WebAPI.Controllers
             return ret;
         }
 
+        [MyAuthorization(Roles = "Administrator")]
         // POST: api/Dispecer
         public HttpResponseMessage Post([FromBody]Dispecer dispecer)
         {
@@ -309,15 +322,6 @@ namespace WebAPI.Controllers
                 return mess;
             }
         }
-
-        // PUT: api/Dispecer/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Dispecer/5
-        public void Delete(int id)
-        {
-        }
+        
     }
 }

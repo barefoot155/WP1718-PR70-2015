@@ -176,6 +176,7 @@
     <Compile Include="Models\Korisnik.cs" />
     <Compile Include="Models\Lokacija.cs" />
     <Compile Include="Models\Musterija.cs" />
+    <Compile Include="Models\MyAuthorization.cs" />
     <Compile Include="Models\Ocjene.cs" />
     <Compile Include="Models\Polovi.cs" />
     <Compile Include="Models\StatusiVoznje.cs" />

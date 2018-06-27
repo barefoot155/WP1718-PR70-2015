@@ -25,25 +25,32 @@
                 {
                     $.get("/api/Logovanje/ZapamtiMe/" + value, function (data) {
 
-                    }).fail(function () { alert(`greska zapamti me`); });
+                    }).fail(function () { /*alert(`greska zapamti me`);*/ });
                 }
                 $.post("/api/Logovanje", { username: user, password: pass, rememberMe: remember }, function (data) {
-                    //alert(remember);
-                    //alert(data);
+                    
                     switch (data) {                        
-                        case `Dispecer`:
+                        case `Dispecer`:                            
+                            $("#upozorenje").removeClass(`alert-danger`);
+                            $("#upozorenje").addClass(`hidden`);
                             location.href = "Dispecer.html";
-                            //sessionStorage.setItem(`autentifikacija`, data);
-                            
                             break;
-                        case `Vozac`:
+                        case `Vozac`:                            
+                            $("#upozorenje").removeClass(`alert-danger`);
+                            $("#upozorenje").addClass(`hidden`);
                             location.href = "Vozac.html";
                             break;
-                        case `Musterija`:
+                        case `Musterija`:                            
+                            $("#upozorenje").removeClass(`alert-danger`);
+                            $("#upozorenje").addClass(`hidden`);
                             location.href = "Musterija.html";
                             break;
                         default:
-
+                            //nije se ulogovalo
+                            $("#txtPassword").val(``);
+                            $("#upozorenje").removeClass(`hidden`);
+                            $("#upozorenje").addClass(`alert-danger`);
+                            break;
                     }
                 });
             });
@@ -51,44 +58,43 @@
     </script>
         <title></title>
 </head >
-            <body style="padding:200px 500px 200px 500px;">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr class="success">
-                            <th colspan="2">
-                                Login
-                        <a href="Registracija.html" class="btn btn-success pull-right">
-                                    Registrujte se
-                        </a>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Korisnicko ime:</td>
-                            <td>
-                                <input type="text" id="txtUsername" placeholder="Korisnicko ime..." />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Sifra:</td>
-                            <td>
-                                <input type="password" id="txtPassword"
-                                    placeholder="Sifra..." />
-                            </td>
-                        </tr>
-
-                        <tr class="success">
-                            <td colspan="2">
-                                <input id="cbRemember" type="checkbox" name="remember" /> Zapamti me
-                        <!--button id="btnLogin" class="btn btn-success pull-right">Login</!--button-->
-                        
-                        <!--form method="post" action="/api/logovanje"-->
-                                <input id="btnLogin" class="btn btn-success pull-right" type="button" value="Login">
-                        <!--/form-->
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </body>
+<body style="padding:200px 500px 200px 500px;">
+    
+    <table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th colspan="2">
+                    Login
+                    <a href="Registracija.html" class="btn btn-success pull-right">
+                        Registrujte se
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="upozorenje" class="hidden">
+                <td colspan="2"><strong>Greska!</strong> Pogresno korisnicko ime ili lozinka.</td>                
+            </tr>
+            <tr>
+                <td>Korisnicko ime:</td>
+                <td>
+                    <input type="text" id="txtUsername" placeholder="Korisnicko ime..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Sifra:</td>
+                <td>
+                    <input type="password" id="txtPassword"
+                           placeholder="Sifra..." />
+                </td>
+            </tr>
+            <tr class="success">
+                <td colspan="2">
+                    <input id="cbRemember" type="checkbox" name="remember" /> Zapamti me
+                    <input id="btnLogin" class="btn btn-success pull-right" type="button" value="Login">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
 </html >

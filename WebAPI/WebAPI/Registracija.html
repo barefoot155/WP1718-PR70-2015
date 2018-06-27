@@ -4,13 +4,33 @@
     <meta charset="utf-8" />
 
     <link rel="stylesheet" href="Content/bootstrap.min.css">
-    <script src="Scripts/bootstrap.min.js"></script>
     <script src="Scripts/jquery-1.10.2.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
 
     <title></title>
     <script type="text/javascript">
         $(document).ready(function () {
-            alert(`sdfsdfd`);
+            //alert(`sdfsdfd`);
+            $("#txtJMBG").keyup(function () {
+                if ($("#txtJMBG").val() == ``) {
+                    $("#txtJMBG").removeClass(`alert-danger`);
+                }
+                else if ($.isNumeric($("#txtJMBG").val())) {
+                    $("#txtJMBG").removeClass(`alert-danger`);
+                } else {
+                    $("#txtJMBG").addClass(`alert-danger`);
+                }
+            });
+            $("#txtEmail").keyup(function () {
+                
+                var email = new RegExp('^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$');
+                
+                if (!email.test($("#txtEmail").val())) {
+                    $("#txtEmail").addClass(`alert-danger`);
+                } else {
+                    $("#txtEmail").removeClass(`alert-danger`);
+                }
+            });
             $("#btnRegister").click(function () {
                 //alert(`prije promjenljivih`);
                 var KorisnickoIme = $("#txtUsername").val();
@@ -22,20 +42,23 @@
                 var Prezime = $("#txtPrezime").val();
                 var Pol = $("input:radio[name=pol]:checked").val();
                 //alert(Pol);
-                
-                
-                //alert("posle promjenljivih");
+
                 $.post("/api/Registracija", { KorisnickoIme: KorisnickoIme, Lozinka: Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
-                    //alert(remember);
-                    //alert(data);
+
                 })
-                .done(function () {
-                    alert("uspjesno registrovano, sad se uloguj");
-                    location.href = "Login.html";
-                })
-                .fail(function () {
-                    alert("vec postoji korisnik sa datim korisnickim imenom");
-                });                
+                    .done(function () {
+                        alert("uspjesno registrovano, sad se uloguj");
+                        $("#upozorenje").removeClass(`alert-danger`);
+                        $("#upozorenje").addClass(`hidden`);
+                        location.href = "Login.html";
+                    })
+                    .fail(function () {
+                        //alert("vec postoji korisnik sa datim korisnickim imenom");
+                        $("#txtUsername").val(``);
+                        $("#txtUsername").focus();
+                        $("#upozorenje").removeClass(`hidden`);
+                        $("#upozorenje").addClass(`alert-danger`);
+                    });
             });
         });
     </script>
@@ -50,6 +73,9 @@
             </tr>
         </thead>
         <tbody>
+            <tr id="upozorenje" class="hidden">
+                <td colspan="2"><strong>Greska!</strong>Vec postoji korisnik sa zadatim korisnickim imenom</td>
+            </tr>
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>
@@ -66,7 +92,7 @@
             <tr>
                 <td>Ime:</td>
                 <td>
-                    <input type="text" id="txtIme"
+                    <input type="text" id="txtIme" pattern="^[A-Za-z]*$"
                            placeholder="Ime..." />
                 </td>
             </tr>
@@ -94,8 +120,8 @@
             <tr>
                 <td>Pol:</td>
                 <td>
-                    <input type="radio"  name="pol" value="0"> Muski
-                    <input type="radio"  name="pol" value="1" checked="checked"> Zenski
+                    <input type="radio" name="pol" value="0"> Muski
+                    <input type="radio" name="pol" value="1" checked="checked"> Zenski
                 </td>
             </tr>
             <tr>
