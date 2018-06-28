@@ -2,10 +2,12 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Xml.Serialization;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
@@ -151,6 +153,14 @@ namespace WebAPI.Controllers
                 Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
                 korisnicko = Get().KorisnickoIme;
                 Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korisnicko).Lokacija = lok;
+                if (File.Exists(Korisnici.PutanjaVozaci))
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Vozac>));
+                    using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaVozaci, false))
+                    {
+                        xmlSerializer.Serialize(writer, Korisnici.ListaVozaca);
+                    }
+                }
             }
         }
 
@@ -162,6 +172,14 @@ namespace WebAPI.Controllers
         {
             //string b=broj;
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Lokacija = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { Broj = broj, NaseljenoMjesto = grad, PozivniBrojMjesta = posta, Ulica = ulica } };
+            if (File.Exists(Korisnici.PutanjaVozaci))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Vozac>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaVozaci, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaVozaca);
+                }
+            }
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
         }
 
@@ -210,6 +228,14 @@ namespace WebAPI.Controllers
                 }
             }
             Korisnici.ListaVozaca.FirstOrDefault(vo => vo.KorisnickoIme == idVozaca).Voznje.Add(v);
+            if (File.Exists(Korisnici.PutanjaVozaci))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Vozac>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaVozaci, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaVozaca);
+                }
+            }
         }
 
         [MyAuthorization(Roles = "Vozac")]
@@ -233,6 +259,14 @@ namespace WebAPI.Controllers
                 }
             }
             Korisnici.ListaVozaca.FirstOrDefault(vo => vo.KorisnickoIme == idVozaca).Voznje.Add(v);
+            if (File.Exists(Korisnici.PutanjaVozaci))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Vozac>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaVozaci, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaVozaca);
+                }
+            }
         }
 
         [MyAuthorization(Roles = "Vozac")]
@@ -245,6 +279,14 @@ namespace WebAPI.Controllers
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).StatusVoznje=StatusiVoznje.Neuspjesna;
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;
             Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Zauzet = false;
+            if (File.Exists(Korisnici.PutanjaVozaci))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Vozac>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaVozaci, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaVozaca);
+                }
+            }
             if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija!=null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "" && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija != "nepoznato")
             {
                 string korImeMust = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Musterija;
@@ -254,6 +296,14 @@ namespace WebAPI.Controllers
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.DatumObjave=DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Unspecified);
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Korisnik=idVozaca;
                 Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == korImeMust).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Ocjena=Ocjene.Neocijenjeno;
+                if (File.Exists(Korisnici.PutanjaMusterije))
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Musterija>));
+                    using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaMusterije, false))
+                    {
+                        xmlSerializer.Serialize(writer, Korisnici.ListaMusterija);
+                    }
+                }
             }
             if (Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer != null && Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Dispecer != "")
             {
@@ -264,6 +314,14 @@ namespace WebAPI.Controllers
                 Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.DatumObjave= DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
                 Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Korisnik = idVozaca;
                 Korisnici.ListaDispecera.FirstOrDefault(v => v.KorisnickoIme == korImeDisp).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Ocjena = Ocjene.Neocijenjeno;
+                if (File.Exists(Korisnici.PutanjaDispeceri))
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Dispecer>));
+                    using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaDispeceri, false))
+                    {
+                        xmlSerializer.Serialize(writer, Korisnici.ListaDispecera);
+                    }
+                }
             }
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == idVozaca);
             //Korisnici.ListaMusterija.FirstOrDefault(v => v.KorisnickoIme == idVozaca).Voznje.FirstOrDefault(v => v.Id == int.Parse(id)).Komentar.Opis=koment;
@@ -320,6 +378,14 @@ namespace WebAPI.Controllers
                 vozac.Banovan = Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme).Banovan;
                 vozac.Zauzet = Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme).Zauzet;
                 Korisnici.ListaVozaca[ind] = vozac;
+                if (File.Exists(Korisnici.PutanjaVozaci))
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Vozac>));
+                    using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaVozaci, false))
+                    {
+                        xmlSerializer.Serialize(writer, Korisnici.ListaVozaca);
+                    }
+                }
                 System.Web.HttpContext.Current.Session["mojaSesija"] = vozac;
                 mess.StatusCode = HttpStatusCode.OK;
                 return mess;
@@ -332,14 +398,5 @@ namespace WebAPI.Controllers
             }
         }
 
-        // PUT: api/Vozac/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Vozac/5
-        public void Delete(int id)
-        {
-        }
     }
 }

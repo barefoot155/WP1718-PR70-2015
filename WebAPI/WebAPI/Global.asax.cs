@@ -22,7 +22,9 @@ namespace WebAPI
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             //HttpContext.Current.SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior.Required);
             string path = Server.MapPath("~/App_Data/Adminitratori.xml");
-            Korisnici korisnici = new Korisnici(path);
+            string pathMusterije = Server.MapPath("~/App_Data/Musterije.xml");
+            string pathVozaci = Server.MapPath("~/App_Data/Vozaci.xml");
+            Korisnici korisnici = new Korisnici(path,pathMusterije,pathVozaci);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             
         }

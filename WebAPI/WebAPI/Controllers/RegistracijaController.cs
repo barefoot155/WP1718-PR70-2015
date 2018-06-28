@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Xml.Serialization;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
     public class RegistracijaController : ApiController
-    {
-        // GET: api/Registracija
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/Registracija/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
+    {        
         // POST: api/Registracija
         public HttpResponseMessage Post([FromBody]Musterija musterija)
         {
@@ -35,6 +25,14 @@ namespace WebAPI.Controllers
                 musterija.Voznje = new List<Voznja>();
                 Korisnici.ListaMusterija.Add(musterija);
                 mess.StatusCode = HttpStatusCode.OK;
+                if (File.Exists(Korisnici.PutanjaMusterije))
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Musterija>));
+                    using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaMusterije, false))
+                    {
+                        xmlSerializer.Serialize(writer, Korisnici.ListaMusterija);
+                    }
+                }
                 return mess;
             }
             else
@@ -45,14 +43,5 @@ namespace WebAPI.Controllers
             }
         }
 
-        // PUT: api/Registracija/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Registracija/5
-        public void Delete(int id)
-        {
-        }
     }
 }

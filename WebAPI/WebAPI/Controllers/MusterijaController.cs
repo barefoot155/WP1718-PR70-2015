@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Xml.Serialization;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
@@ -22,6 +24,14 @@ namespace WebAPI.Controllers
             Musterija must = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik);
             int indVoznja = must.Voznje.IndexOf(must.Voznje.FirstOrDefault(v => v.Id == i));
             Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == Korisnik).Voznje[indVoznja].Komentar = new Komentar() { Korisnik = Korisnik, Voznja = idVoznje, DatumObjave = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Unspecified), Opis = Opis, Ocjena = (Ocjene)(int.Parse(Ocjena)) };
+            if (File.Exists(Korisnici.PutanjaMusterije))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Musterija>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaMusterije, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaMusterija);
+                }
+            }
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m=>m.KorisnickoIme==Korisnik);
             //return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.FirstOrDefault(v => v.Id == i);
         }
@@ -48,15 +58,21 @@ namespace WebAPI.Controllers
             //must.Voznje.RemoveAt(indVoznja);
             Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje[indVoznja].StatusVoznje=StatusiVoznje.Otkazana;
             Musterija ret = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
+            if (File.Exists(Korisnici.PutanjaMusterije))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Musterija>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaMusterije, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaMusterija);
+                }
+            }
             System.Web.HttpContext.Current.Session["mojaSesija"] = ret;
         }
 
         [MyAuthorization(Roles = "Musterija")]
         public List<Voznja> Get(string korIme)
         {
-            //Musterija k = (Musterija)System.Web.HttpContext.Current.Session["mojaSesija"];
             return Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje;
-            //return k.Voznje;
         }
 
         [MyAuthorization(Roles = "Musterija")]
@@ -73,54 +89,55 @@ namespace WebAPI.Controllers
         [Route("api/Musterija/GetLokacija/")]
         public Lokacija GetLokacija([FromBody]JObject jsonResult)
         {
-            string korisnicko = "";
-            string s = jsonResult.ToString();
-            IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
-            //string b="";
-            string grad = "";
-            string ulica = "";
-            string posta = "";
-            string broj = "";
-            foreach (var item in addresses)
+            if (jsonResult != null)
             {
-                string ssss = item.ToString().Replace("\"", "");
-                if (ssss.Split(':')[0] == "city")
+                string korisnicko = "";
+                string s = jsonResult.ToString();
+                IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
+                //string b="";
+                string grad = "";
+                string ulica = "";
+                string posta = "";
+                string broj = "";
+                foreach (var item in addresses)
                 {
-                    grad = ssss.Split(':')[1].Trim();
+                    string ssss = item.ToString().Replace("\"", "");
+                    if (ssss.Split(':')[0] == "city")
+                    {
+                        grad = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "road")
+                    {
+                        ulica = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "postcode")
+                    {
+                        posta = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
+                    {
+                        broj = ssss.Split(':')[1].Trim();
+                    }
                 }
-                else if (ssss.Split(':')[0] == "road")
+                IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
+
+                string x = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+                string y = koordinate[0].ToString().Trim(new char[] { '{', '}' });
+                if (broj.Trim() == "")
                 {
-                    ulica = ssss.Split(':')[1].Trim();
+                    broj = "bb";
                 }
-                else if (ssss.Split(':')[0] == "postcode")
-                {
-                    posta = ssss.Split(':')[1].Trim();
-                }
-                else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
-                {
-                    broj = ssss.Split(':')[1].Trim();
-                }
+                Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
+                korisnicko = Get().KorisnickoIme;
+
+                return lok;
             }
-            IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
-            
-            string x = koordinate[3].ToString().Trim(new char[] { '{', '}' });
-            string y = koordinate[0].ToString().Trim(new char[] { '{', '}' });
-            if (broj.Trim() == "")
-            {
-                broj = "bb";
-            }
-            Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
-            korisnicko = Get().KorisnickoIme;
-            
-            return lok;
-           
+            return new Lokacija();
         }
 
         [MyAuthorization(Roles = "Musterija")]
         [HttpGet]
         [Route("api/Musterija/KreirajVoznju/")]
-
-        [MyAuthorization(Roles = "Musterija")]
         public HttpResponseMessage KreirajVoznju(string x, string y, string tip, string ulica, string broj, string posta, string grad, string korIme)
         {
             HttpResponseMessage ret = new HttpResponseMessage();
@@ -132,6 +149,15 @@ namespace WebAPI.Controllers
             Voznja voznja = new Voznja() { DatumIVrijemePorudzbe = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified), Musterija = korIme, StatusVoznje = StatusiVoznje.Kreirana_NaCekanju, Lokacija = lokacija, TipAutomobila = (TipoviAutomobila)(int.Parse(tip)), Komentar = new Komentar() { Opis = "", Ocjena = Ocjene.Neocijenjeno } };
             //Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.IndexOf()
             Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje.Add(voznja);
+
+            if (File.Exists(Korisnici.PutanjaMusterije))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Musterija>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaMusterije, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaMusterija);
+                }
+            }
 
             System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
             return ret;            
@@ -154,8 +180,16 @@ namespace WebAPI.Controllers
             
             Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje[indexVoznje].Lokacija=lokacija;
             Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme).Voznje[indexVoznje].TipAutomobila= (TipoviAutomobila)(int.Parse(tip));
-            System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme);
-            
+
+            if (File.Exists(Korisnici.PutanjaMusterije))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Musterija>));
+                using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaMusterije, false))
+                {
+                    xmlSerializer.Serialize(writer, Korisnici.ListaMusterija);
+                }
+            }
+            System.Web.HttpContext.Current.Session["mojaSesija"] = Korisnici.ListaMusterija.FirstOrDefault(m => m.KorisnickoIme == korIme); 
         }
 
         [MyAuthorization(Roles = "Musterija")]
@@ -173,6 +207,14 @@ namespace WebAPI.Controllers
                 musterija.Voznje = Korisnici.ListaMusterija[ind].Voznje;
                 musterija.Banovan = Korisnici.ListaMusterija[ind].Banovan;
                 Korisnici.ListaMusterija[ind] = musterija;
+                if (File.Exists(Korisnici.PutanjaMusterije))
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Musterija>));
+                    using (StreamWriter writer = new StreamWriter(Korisnici.PutanjaMusterije, false))
+                    {
+                        xmlSerializer.Serialize(writer, Korisnici.ListaMusterija);
+                    }
+                }
                 System.Web.HttpContext.Current.Session["mojaSesija"] = musterija;
                 mess.StatusCode = HttpStatusCode.OK;
                 return mess;

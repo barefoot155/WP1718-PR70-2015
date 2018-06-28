@@ -660,7 +660,7 @@ let IspisiVoznjeDisp = function (data, username) {
         temp += (`<td>${(data[drive].DatumIVrijemePorudzbe != null) ? data[drive].DatumIVrijemePorudzbe : `-`}</td>`);
         temp += (`<td>${(imeiprzMusterije == null || imeiprzMusterije == ` undefined`) ? `-` : imeiprzMusterije}</td>`);
         temp += (`<td>${(data[drive].Dispecer != null) ? data[drive].Dispecer : `-`}</td>`);
-        temp += (`<td>${(imeiprzVozaca != null) ? imeiprzVozaca:`-`}</td>`);
+        temp += (`<td>${(imeiprzVozaca != null || imeiprzVozaca!=` undefined`) ? imeiprzVozaca : `-`}</td>`);
         temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
         temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
         var pom = ``;
