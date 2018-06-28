@@ -247,6 +247,8 @@ namespace WebAPI.Controllers
                 voz.Uloga = Uloge.Vozac;
                 voz.Voznje = new List<Voznja>();
                 voz.Zauzet = false;
+                string korime = voz.KorisnickoIme;
+                voz.Automobil.Vozac = korime;
                 Korisnici.ListaVozaca.Add(voz);
                 mess.StatusCode = HttpStatusCode.OK;
                 return mess;
@@ -308,7 +310,7 @@ namespace WebAPI.Controllers
             {
                 int ind = Korisnici.ListaDispecera.IndexOf(Korisnici.ListaDispecera.FirstOrDefault(d => dispecer.KorisnickoIme == d.KorisnickoIme));
                 //ne postoji korisnicko ime do sad
-                dispecer.Uloga = Uloge.Dispecer;
+                dispecer.Uloga = Uloge.Dispecer;               
                 dispecer.Voznje = Korisnici.ListaDispecera[ind].Voznje;                
                 Korisnici.ListaDispecera[ind]=dispecer;
                 System.Web.HttpContext.Current.Session["mojaSesija"] = dispecer;

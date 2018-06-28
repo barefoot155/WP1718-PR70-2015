@@ -21,26 +21,36 @@
                 var user = $("#txtUsername").val();
                 var pass = $("#txtPassword").val();
                 var value = user;
-                if (remember == `on`)
-                {
-                    $.get("/api/Logovanje/ZapamtiMe/" + value, function (data) {
-
-                    }).fail(function () { /*alert(`greska zapamti me`);*/ });
-                }
+                
                 $.post("/api/Logovanje", { username: user, password: pass, rememberMe: remember }, function (data) {
                     
                     switch (data) {                        
                         case `Dispecer`:                            
                             $("#upozorenje").removeClass(`alert-danger`);
                             $("#upozorenje").addClass(`hidden`);
+                            if (remember == `on`) {
+                                $.get("/api/Logovanje/ZapamtiMe/" + value, function (data) {
+
+                                }).fail(function () { /*alert(`greska zapamti me`);*/ });
+                            }
                             location.href = "Dispecer.html";
                             break;
-                        case `Vozac`:                            
+                        case `Vozac`:                    
+                            if (remember == `on`) {
+                                $.get("/api/Logovanje/ZapamtiMe/" + value, function (data) {
+
+                                }).fail(function () { /*alert(`greska zapamti me`);*/ });
+                            }
                             $("#upozorenje").removeClass(`alert-danger`);
                             $("#upozorenje").addClass(`hidden`);
                             location.href = "Vozac.html";
                             break;
-                        case `Musterija`:                            
+                        case `Musterija`:   
+                            if (remember == `on`) {
+                                $.get("/api/Logovanje/ZapamtiMe/" + value, function (data) {
+
+                                }).fail(function () { /*alert(`greska zapamti me`);*/ });
+                            }
                             $("#upozorenje").removeClass(`alert-danger`);
                             $("#upozorenje").addClass(`hidden`);
                             location.href = "Musterija.html";

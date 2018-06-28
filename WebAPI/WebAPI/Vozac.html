@@ -35,6 +35,7 @@
                 }
                 $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
                 IspisiVoznjeVozac(korisnik.Voznje, korisnik.KorisnickoIme);
+                writeModalLocation(data.Lokacija);
                 $("#prikazPodatakaDrugi").html(``);
             });
             
@@ -57,23 +58,16 @@
                 $("#prikazPodatakaDrugi").html(``);
                 IzmijeniSifru3(korisnik);
             });
-
-            $("#lokacija").click(function () {
-                $("#prikazPodatakaDrugi").html(``);
-                PrikaziMapu();
-            });
-
+                        
             $("#IspisiKreiraneVoznje").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
                 $.get("/api/Vozac/VratiKreirane", function (data) {
-                    //alert(data[0].Vozac);
                     IspisiVoznjeVozac(data, korisnik.KorisnickoIme);                    
                 });
             });
             
             $("#PromijeniLokaciju").click(function () {
                 $.get("/api/Vozac", function (data) {
-                    //alert(data.KorisnickoIme);
                     korisnik = data;
                     $("#korisnik").html(data.KorisnickoIme + `<span class="caret"></span>`);
                     //IzmijeniLokaciju(korisnik.KorisnickoIme);
@@ -84,12 +78,12 @@
 
             $("#logout").click(function () {
                 $("#prikazPodatakaDrugi").html(``);
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); })
+                $.get("/api/Logovanje/IzlogujSe", function (data) { /*alert(`uspjesno izlogovan`);*/ })
                     .fail(function () {
                         //alert(`greskaaaaaa`);
                     });
                 //$.cookie("mojKuki", null);
-                alert(`iza brisanja kukija`);
+                //alert(`iza brisanja kukija`);
                 location.href = "Login.html";
             });
 
@@ -128,9 +122,9 @@
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
-                
+
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a class="navbar-brand" id="lokacija" href="#">Lokacija</a></li>
+                    <li><a class="navbar-brand" id="lokacija" data-toggle="modal" data-target="#myloc" href="#">Lokacija</a></li>
                     <li class="dropdown">
                         <a href="#" id="korisnik" class="navbar-brand dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -146,20 +140,21 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
+    <div id="divwritemodal"></div>
     <div id="dugmad">
         <button id="IspisiKreiraneVoznje" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Ispisi sve kreirane voznje
         </button>
-        
+
         <button id="PromijeniLokaciju" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-arrow-down"></span> Promijeni Lokaciju
         </button>
     </div>
     <div id="prikazPodataka">
-        <h2>Dobrodosli na Taxi servis</h2>        
+        <h2></h2>
     </div>
     <div id="prikazPodatakaDrugi">
-        <h2>Drugi div</h2>
+        <h2></h2>
     </div>
 </body>
 </html>

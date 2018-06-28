@@ -171,6 +171,7 @@ namespace WebAPI.Controllers
                 //ne postoji korisnicko ime do sad
                 musterija.Uloga = Uloge.Musterija;
                 musterija.Voznje = Korisnici.ListaMusterija[ind].Voznje;
+                musterija.Banovan = Korisnici.ListaMusterija[ind].Banovan;
                 Korisnici.ListaMusterija[ind] = musterija;
                 System.Web.HttpContext.Current.Session["mojaSesija"] = musterija;
                 mess.StatusCode = HttpStatusCode.OK;

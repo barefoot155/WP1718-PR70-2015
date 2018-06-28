@@ -75,9 +75,9 @@
                 });
             });
             $("#logout").click(function () {
-                $.get("/api/Logovanje/IzlogujSe", function (data) { alert(`uspjesno izlogovan`); location.href = "Login.html"; })
+                $.get("/api/Logovanje/IzlogujSe", function (data) {/* alert(`uspjesno izlogovan`);*/ location.href = "Login.html"; })
                     .fail(function () {
-                        alert(`greskaaaaaa`);
+                        //alert(`greskaaaaaa`);
                     });
             });
         });
@@ -99,7 +99,6 @@
 
             </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
                 <form class="navbar-form navbar-left">
@@ -116,7 +115,6 @@
                         <ul class="dropdown-menu">
                             <li><a id="prikaziPodatke" href="#">Moji podaci</a></li>
                             <li><a id="izmijeniPodatke" href="#">Izmijeni podatke</a></li>
-                            <li><a href="#">Something else here</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a id="promijeniSifru" href="#">Promijeni sifru</a></li>
                         </ul>

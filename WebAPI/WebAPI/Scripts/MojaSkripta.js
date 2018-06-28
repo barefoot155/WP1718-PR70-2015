@@ -53,6 +53,12 @@ let IzmijeniSifru = function (korisnik) {
                         </tr>
                     </thead>
                     <tbody>
+                        <tr id="upozorenje" class="hidden">
+                            <td colspan="2"><strong>Greska!</strong> Nova i ponovljena lozinka se ne poklapaju.</td>                
+                        </tr>
+                        <tr id="upozorenje2" class="hidden">
+                            <td colspan="2"><strong>Greska!</strong> Pogresno unesena stara lozinka.</td>                
+                        </tr>
                         <tr>
                             <td>Stara sifra:</td>
                             <td>
@@ -86,22 +92,37 @@ let IzmijeniSifru = function (korisnik) {
         var novaUnesena = $("#txtNovaSifra").val();
         var novaPonovoUnesena = $("#txtPonovljenaSifra").val();
         if (stara != staraUnesena) {
-            alert(`stara sifra nije u redu`);
+            $("#upozorenje").addClass(`hidden`);
+            $("#upozorenje2").removeClass(`hidden`);
+            $("#upozorenje2").addClass(`alert-danger`);
+            $("#txtStaraSifra").val(``);
+            $("#txtStaraSifra").focus();
+            $("#txtNovaSifra").val(``);
+            $("#txtPonovljenaSifra").val(``);
+            //alert(`stara sifra nije u redu`);
         } else if (novaUnesena != novaPonovoUnesena) {
-            alert(`nova i ponovljena nisu iste`);
+            $("#upozorenje2").addClass(`hidden`);
+            $("#upozorenje").removeClass(`hidden`);
+            $("#upozorenje").addClass(`alert-danger`);
+            $("#txtNovaSifra").val(``);
+            $("#txtNovaSifra").focus();
+            $("#txtPonovljenaSifra").val(``);
+            //alert(`nova i ponovljena nisu iste`);
         } else {
+            $("#upozorenje2").addClass(`hidden`);
+            $("#upozorenje").addClass(`hidden`);
             //ispravno, sacuvaj
-            alert(`moze`);
+            //alert(`moze`);
             $.post("/api/Dispecer", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: novaUnesena, Email: korisnik.Email, Jmbg: korisnik.Jmbg, KontaktTelefon: korisnik.KontaktTelefon, Ime: korisnik.Ime, Prezime: korisnik.Prezime, Pol: korisnik.Pol }, function (data) {
                 //alert(remember);
                 //alert(data);
             })
                 .done(function () {
-                    alert("uspjesno izmijenjeno");
+                    //alert("uspjesno izmijenjeno");
                     location.href = "Dispecer.html";
                 })
                 .fail(function () {
-                    alert("ne moze");
+                    //alert("ne moze");
                 });
         }
     });
@@ -125,6 +146,9 @@ let IzmijeniPodatke = function (korisnik) {
             </tr>
         </thead>
         <tbody>
+            <tr class="hidden" id="upozorenje">
+                <td colspan="2"></td>
+            </tr>
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>`
@@ -176,6 +200,43 @@ let IzmijeniPodatke = function (korisnik) {
             </tr>
         </tbody>
     </table>`);
+    $("#txtIme").keyup(function () {
+        if (!validateString($("#txtIme").val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+
+    $("#txtPrezime").keyup(function () {
+        if (!validateString($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtTelefon").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtJMBG").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    //isValidEmailAddress
+    $("#txtEmail").keyup(function () {
+        if (!isValidEmailAddress($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
     $("#btnIzmijeniPodatke").click(function () {
         //alert(`prije promjenljivih`);
 
@@ -187,19 +248,48 @@ let IzmijeniPodatke = function (korisnik) {
         var Pol = $("input:radio[name=pol]:checked").val();
         //alert(Pol);
 
-
-        //alert("posle promjenljivih");
-        $.post("/api/Dispecer", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: korisnik.Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
-            //alert(remember);
-            //alert(data);
-        })
-            .done(function () {
-                alert("uspjesno izmijenjeni podaci");
-                location.href = "Dispecer.html";
+        if (isValidEmailAddress(Email) && validateString(Ime) && KontaktTelefon.length == 10 && Jmbg.length == 13 && validateString(Prezime) && validateNumber(Jmbg) && validateNumber(KontaktTelefon)) {
+            $("#upozorenje").addClass(`hidden`);
+            //alert("posle promjenljivih");
+            $.post("/api/Dispecer", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: korisnik.Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
+                //alert(remember);
+                //alert(data);
             })
-            .fail(function () {
-                alert("greska prilikom izmjene podataka");
-            });
+                .done(function () {
+                    //alert("uspjesno izmijenjeni podaci");
+                    location.href = "Dispecer.html";
+                })
+                .fail(function () {
+                    //alert("greska prilikom izmjene podataka");
+                });
+        } else {
+            if (!validateString(Ime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Ime moze sadrzati samo slova.</td>`);
+                $("#txtIme").focus();
+            } else if (!validateString(Prezime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Prezime moze sadrzati samo slova.</td>`);
+                $("#txtPrezime").focus();
+            } else if (!validateNumber(KontaktTelefon) || KontaktTelefon.length != 10) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Telefon moze sadrzati samo 10 brojeva.</td>`);
+                $("#txtTelefon").focus();
+            } else if (!validateNumber(Jmbg) || Jmbg.length != 13) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Jmbg mora sadrzati 13 brojeva.</td>`);
+                $("#txtJMBG").focus();
+            } else if (!isValidEmailAddress(Email)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Email mora biti napisan u formatu nesto@yahoo.com.</td>`);
+                $("#txtEmail").focus();
+            }
+        }
     });
 };
 
@@ -259,6 +349,9 @@ let IzmijeniPodatke2 = function (korisnik) {
             </tr>
         </thead>
         <tbody>
+            <tr class="hidden" id="upozorenje">
+                <td colspan="2"></td>
+            </tr>
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>`
@@ -310,6 +403,43 @@ let IzmijeniPodatke2 = function (korisnik) {
             </tr>
         </tbody>
     </table>`);
+    $("#txtIme").keyup(function () {
+        if (!validateString($("#txtIme").val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+
+    $("#txtPrezime").keyup(function () {
+        if (!validateString($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtTelefon").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtJMBG").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    //isValidEmailAddress
+    $("#txtEmail").keyup(function () {
+        if (!isValidEmailAddress($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
     $("#btnIzmijeniPodatke").click(function () {
         //alert(`prije promjenljivih`);
 
@@ -321,20 +451,70 @@ let IzmijeniPodatke2 = function (korisnik) {
         var Pol = $("input:radio[name=pol]:checked").val();
         //alert(Pol);
 
-
-        //alert("posle promjenljivih");
-        $.post("/api/Musterija", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: korisnik.Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
-            //alert(remember);
-            //alert(data);
-        })
-            .done(function () {
-                alert("uspjesno registrovano, sad se uloguj");
-                location.href = "Musterija.html";
+        if (isValidEmailAddress(Email) && validateString(Ime) && KontaktTelefon.length == 10 && Jmbg.length == 13 && validateString(Prezime) && validateNumber(Jmbg) && validateNumber(KontaktTelefon)) {
+            $("#upozorenje").addClass(`hidden`);
+            //alert("posle promjenljivih");
+            $.post("/api/Musterija", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: korisnik.Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
+                //alert(remember);
+                //alert(data);
             })
-            .fail(function () {
-                alert("vec postoji korisnik sa datim korisnickim imenom");
-            });
+                .done(function () {
+                    //alert("uspjesno registrovano, sad se uloguj");
+                    location.href = "Musterija.html";
+                })
+                .fail(function () {
+                    //alert("vec postoji korisnik sa datim korisnickim imenom");
+                });
+        } else {
+            if (!validateString(Ime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Ime moze sadrzati samo slova.</td>`);
+                $("#txtIme").focus();
+            } else if (!validateString(Prezime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Prezime moze sadrzati samo slova.</td>`);
+                $("#txtPrezime").focus();
+            } else if (!validateNumber(KontaktTelefon) || KontaktTelefon.length != 10) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Telefon moze sadrzati samo 10 brojeva.</td>`);
+                $("#txtTelefon").focus();
+            } else if (!validateNumber(Jmbg) || Jmbg.length != 13) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Jmbg mora sadrzati 13 brojeva.</td>`);
+                $("#txtJMBG").focus();
+            } else if (!isValidEmailAddress(Email)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Email mora biti napisan u formatu nesto@yahoo.com.</td>`);
+                $("#txtEmail").focus();
+            }
+        }
     });
+};
+
+function validateString(nekiString) {
+    var re = /^[A-Za-z]+$/;
+    if (re.test(nekiString))
+        return true;
+    else
+        return false;
+}
+
+function validateNumber(nekiString) {
+    var re = /^[0-9]+$/;
+    if (re.test(nekiString))
+        return true;
+    else
+        return false;
+}
+
+function isValidEmailAddress(emailAddress) {
+    var pattern = new RegExp(/^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i);
+    return pattern.test(emailAddress);
 };
 
 let IzmijeniPodatke3 = function (korisnik) {
@@ -355,6 +535,9 @@ let IzmijeniPodatke3 = function (korisnik) {
             </tr>
         </thead>
         <tbody>
+            <tr class="hidden" id="upozorenje">
+                <td colspan="2"></td>
+            </tr>
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>`
@@ -406,6 +589,44 @@ let IzmijeniPodatke3 = function (korisnik) {
             </tr>
         </tbody>
     </table>`);
+    $("#txtIme").keyup(function () {
+        if (!validateString($("#txtIme").val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+
+    $("#txtPrezime").keyup(function () {
+        if (!validateString($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtTelefon").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtJMBG").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    //isValidEmailAddress
+    $("#txtEmail").keyup(function () {
+        if (!isValidEmailAddress($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+
     $("#btnIzmijeniPodatke").click(function () {
         //alert(`prije promjenljivih`);
 
@@ -415,18 +636,46 @@ let IzmijeniPodatke3 = function (korisnik) {
         var Ime = $("#txtIme").val();
         var Prezime = $("#txtPrezime").val();
         var Pol = $("input:radio[name=pol]:checked").val();
-        
-        $.post("/api/Vozac", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: korisnik.Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
-            //alert(remember);
-            //alert(data);
-        })
-            .done(function () {
-                alert("uspjesno registrovano, sad se uloguj");
-                location.href = "Vozac.html";
+        if (isValidEmailAddress(Email) && validateString(Ime) && KontaktTelefon.length == 10 && Jmbg.length == 13 && validateString(Prezime) && validateNumber(Jmbg) && validateNumber(KontaktTelefon)) {
+            $("#upozorenje").addClass(`hidden`);
+            $.post("/api/Vozac", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: korisnik.Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
+                
             })
-            .fail(function () {
-                alert("vec postoji korisnik sa datim korisnickim imenom");
-            });
+                .done(function () {
+                    //alert("uspjesno registrovano, sad se uloguj");
+                    location.href = "Vozac.html";
+                })
+                .fail(function () {
+                    //alert("vec postoji korisnik sa datim korisnickim imenom");
+                });
+        } else {
+            if (!validateString(Ime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Ime moze sadrzati samo slova.</td>`);
+                $("#txtIme").focus();
+            } else if (!validateString(Prezime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Prezime moze sadrzati samo slova.</td>`);
+                $("#txtPrezime").focus();
+            } else if (!validateNumber(KontaktTelefon) || KontaktTelefon.length != 10) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Telefon moze sadrzati samo 10 brojeva.</td>`);
+                $("#txtTelefon").focus();
+            } else if (!validateNumber(Jmbg) || Jmbg.length != 13) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Jmbg mora sadrzati 13 brojeva.</td>`);
+                $("#txtJMBG").focus();
+            } else if (!isValidEmailAddress(Email)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Email mora biti napisan u formatu nesto@yahoo.com.</td>`);
+                $("#txtEmail").focus();
+            }
+        }
     });
 };
 
@@ -440,6 +689,12 @@ let IzmijeniSifru2 = function (korisnik) {
                         </tr>
                     </thead>
                     <tbody>
+                         <tr id="upozorenje" class="hidden">
+                            <td colspan="2"><strong>Greska!</strong> Nova i ponovljena lozinka se ne poklapaju.</td>                
+                        </tr>
+                        <tr id="upozorenje2" class="hidden">
+                            <td colspan="2"><strong>Greska!</strong> Pogresno unesena stara lozinka.</td>                
+                        </tr>
                         <tr>
                             <td>Stara sifra:</td>
                             <td>
@@ -473,22 +728,37 @@ let IzmijeniSifru2 = function (korisnik) {
         var novaUnesena = $("#txtNovaSifra").val();
         var novaPonovoUnesena = $("#txtPonovljenaSifra").val();
         if (stara != staraUnesena) {
-            alert(`stara sifra nije u redu`);
+            $("#upozorenje").addClass(`hidden`);
+            $("#upozorenje2").removeClass(`hidden`);
+            $("#upozorenje2").addClass(`alert-danger`);
+            $("#txtStaraSifra").val(``);
+            $("#txtStaraSifra").focus();
+            $("#txtNovaSifra").val(``);
+            $("#txtPonovljenaSifra").val(``);
+            //alert(`stara sifra nije u redu`);
         } else if (novaUnesena != novaPonovoUnesena) {
-            alert(`nova i ponovljena nisu iste`);
+            $("#upozorenje2").addClass(`hidden`);
+            $("#upozorenje").removeClass(`hidden`);
+            $("#upozorenje").addClass(`alert-danger`);
+            $("#txtNovaSifra").val(``);
+            $("#txtNovaSifra").focus();
+            $("#txtPonovljenaSifra").val(``);
+            //alert(`nova i ponovljena nisu iste`);
         } else {
             //ispravno, sacuvaj
-            alert(`moze`);
+            $("#upozorenje2").addClass(`hidden`);
+            $("#upozorenje").addClass(`hidden`);
+            //alert(`moze`);
             $.post("/api/Musterija", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: novaUnesena, Email: korisnik.Email, Jmbg: korisnik.Jmbg, KontaktTelefon: korisnik.KontaktTelefon, Ime: korisnik.Ime, Prezime: korisnik.Prezime, Pol: korisnik.Pol }, function (data) {
                 //alert(remember);
                 //alert(data);
             })
                 .done(function () {
-                    alert("uspjesno izmijenjeno");
+                    //alert("uspjesno izmijenjeno");
                     location.href = "Musterija.html";
                 })
                 .fail(function () {
-                    alert("ne moze");
+                    //alert("ne moze");
                 });
         }
     });
@@ -504,6 +774,12 @@ let IzmijeniSifru3 = function (korisnik) {
                         </tr>
                     </thead>
                     <tbody>
+                         <tr id="upozorenje" class="hidden">
+                            <td colspan="2"><strong>Greska!</strong> Nova i ponovljena lozinka se ne poklapaju.</td>                
+                        </tr>
+                        <tr id="upozorenje2" class="hidden">
+                            <td colspan="2"><strong>Greska!</strong> Pogresno unesena stara lozinka.</td>                
+                        </tr>
                         <tr>
                             <td>Stara sifra:</td>
                             <td>
@@ -537,22 +813,37 @@ let IzmijeniSifru3 = function (korisnik) {
         var novaUnesena = $("#txtNovaSifra").val();
         var novaPonovoUnesena = $("#txtPonovljenaSifra").val();
         if (stara != staraUnesena) {
-            alert(`stara sifra nije u redu`);
+            $("#upozorenje").addClass(`hidden`);
+            $("#upozorenje2").removeClass(`hidden`);
+            $("#upozorenje2").addClass(`alert-danger`);
+            $("#txtStaraSifra").val(``);
+            $("#txtStaraSifra").focus();
+            $("#txtNovaSifra").val(``);
+            $("#txtPonovljenaSifra").val(``);
+            //alert(`stara sifra nije u redu`);
         } else if (novaUnesena != novaPonovoUnesena) {
-            alert(`nova i ponovljena nisu iste`);
+            $("#upozorenje2").addClass(`hidden`);
+            $("#upozorenje").removeClass(`hidden`);
+            $("#upozorenje").addClass(`alert-danger`);
+            $("#txtNovaSifra").val(``);
+            $("#txtNovaSifra").focus();
+            $("#txtPonovljenaSifra").val(``);
+            //alert(`nova i ponovljena nisu iste`);
         } else {
             //ispravno, sacuvaj
+            $("#upozorenje2").hide();
+            $("#upozorenje").hide();
             alert(`moze`);
             $.post("/api/Vozac", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: novaUnesena, Email: korisnik.Email, Jmbg: korisnik.Jmbg, KontaktTelefon: korisnik.KontaktTelefon, Ime: korisnik.Ime, Prezime: korisnik.Prezime, Pol: korisnik.Pol }, function (data) {
                 //alert(remember);
                 //alert(data);
             })
                 .done(function () {
-                    alert("uspjesno izmijenjeno");
+                    //alert("uspjesno izmijenjeno");
                     location.href = "Vozac.html";
                 })
                 .fail(function () {
-                    alert("ne moze");
+                    //alert("ne moze");
                 });
         }
     });
@@ -563,7 +854,7 @@ let jsonObjekat;
 function reverseGeocode(coords) {
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
         .then(function (response) {
-            alert(response);
+            //alert(response);
             return response.json();
         }).then(function (json) {
             console.log(json);
@@ -624,13 +915,13 @@ let pomocna = function () {
 
     });
     $("#btnMijenjaj").click(function () {
-        alert(jsonObjekat);
+        //alert(jsonObjekat);
         $.post("/api/Vozac/IzmijeniLokaciju/", { jsonResult: jsonObjekat }, function () {
             location.href = `Vozac.html`;
         });
     });
     $("#kreiranjeVoz").click(function () {
-        alert(jsonObjekat);
+        //alert(jsonObjekat);
         $.post("/api/Vozac/GetLokacija/", { jsonResult: jsonObjekat }, function (data) {
             //alert(data.KoordinataX);
             $("#txtUlica").val(data.Adresa.Ulica);
@@ -643,7 +934,7 @@ let pomocna = function () {
         });
     });
     $("#kreiranje").click(function () {
-        alert(jsonObjekat);
+        //alert(jsonObjekat);
         $.post("/api/Musterija/GetLokacija/", { jsonResult: jsonObjekat}, function (data) {
             //alert(data.KoordinataX);
             $("#txtUlica").val(data.Adresa.Ulica);

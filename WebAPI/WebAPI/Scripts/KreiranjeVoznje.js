@@ -147,6 +147,9 @@ let KreiranjeVoznje = function (data) {
             </tr>
         </thead>
         <tbody>
+            <tr id="upozorenje" class="hidden">
+                
+            </tr>
             <tr>
                 <td>Adresa na koju taksi dolazi:</td>                
             </tr>
@@ -180,13 +183,13 @@ let KreiranjeVoznje = function (data) {
             <tr>
                 <td>Koordinata X:</td>
                 <td>
-                    <input type="text" id="txtKoordinataX" placeholder="Koordinata X..." />
+                    <input type="text" readonly="readonly" id="txtKoordinataX" placeholder="Koordinata X..." />
                 </td>
             </tr>
             <tr>
                 <td>Koordinata Y:</td>
                 <td>
-                    <input type="text" id="txtKoordinataY" placeholder="Koordinata Y..." />
+                    <input type="text" readonly="readonly" id="txtKoordinataY" placeholder="Koordinata Y..." />
                 </td>
             </tr>
             <tr>
@@ -209,19 +212,7 @@ let KreiranjeVoznje = function (data) {
                 </table>`
     );
     pomocna();
-    /*$("#kreiranje").click(function () {
-        alert(jsonObjekat);
-        $.post("/api/Musterija/GetLokacija/", { jsonResult: jsonObjekat,tipA:`0` }, function (data) {
-            alert(data.KoordinataX);
-            $("#txtUlica").val(data.Adresa.Ulica);
-            $("#txtBroj").val(data.Adresa.Broj);
-            $("#txtGrad").val(data.Adresa.NaseljenoMjesto);
-            $("#txtPostanskiBroj").val(data.Adresa.PozivniBrojMjesta);
-            $("#txtKoordinataX").val(data.KoordinataX);
-            $("#txtKoordinataY").val(data.KoordinataY);
-            //location.href = uloga + `.html`;
-        });
-    });*/
+    
     $("#btnKreirajVoznju").click(function () {        
         ulogaKorisnika(data.Uloga);
         var uloga = ul;
@@ -236,10 +227,28 @@ let KreiranjeVoznje = function (data) {
         //alert(`prije posta` + x + y + ulica + broj + grad + postanskiBr + `shd:`+ tipAutomobila);
         
         var korIme = data.KorisnickoIme;
-        $.get("/api/Musterija/KreirajVoznju/", { x: x, y: y, tip: tipAutomobila, ulica: ulica, broj: broj, posta: postanskiBr, grad: grad, korIme: korIme }, function (data) {
-            //alert(`iz geta`);
-            location.href = uloga+`.html`;
-        });
+        if ($("#txtUlica").val() != `` && $("#txtBroj").val() != `` && $("#txtGrad").val() != `` && $("#txtPostanskiBroj").val != `` && $("#txtKoordinataX").val() != `` && $("#txtKoordinataY").val() != ``) {
+            $("#upozorenje").removeClass(`alert-danger`);
+            $("#upozorenje").addClass(`hidden`);
+            $.get("/api/Musterija/KreirajVoznju/", { x: x, y: y, tip: tipAutomobila, ulica: ulica, broj: broj, posta: postanskiBr, grad: grad, korIme: korIme }, function (data) {
+                //alert(`iz geta`);
+                location.href = uloga + `.html`;
+            });
+        } else {
+            if ($("#txtUlica").val() == ``) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Polje ulica ne smije biti prazno.</td>`);
+            } else if ($("#txtGrad").val() == ``) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Polje grad ne smije biti prazno.</td>`);
+            } else if ($("#txtKoordinataX").val() == `` || $("#txtKoordinataY").val() == ``) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Polja za koordinate ne smiju biti prazna.</td>`);
+            }
+        }
     });    
 };
 
@@ -1233,6 +1242,9 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
             </tr>
         </thead>
         <tbody>
+            <tr class="hidden" id="upozorenje">
+                
+            </tr>
             <tr>
                 <td>Adresa na koju taksi dolazi:</td>                
             </tr>
@@ -1266,13 +1278,13 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
             <tr>
                 <td>Koordinata X:</td>
                 <td>
-                    <input type="text" id="txtKoordinataX" placeholder="Koordinata X..." />
+                    <input type="text" readonly="readonly" id="txtKoordinataX" placeholder="Koordinata X..." />
                 </td>
             </tr>
             <tr>
                 <td>Koordinata Y:</td>
                 <td>
-                    <input type="text" id="txtKoordinataY" placeholder="Koordinata Y..." />
+                    <input type="text" readonly="readonly" id="txtKoordinataY" placeholder="Koordinata Y..." />
                 </td>
             </tr>
             <tr>
@@ -1337,10 +1349,24 @@ let KreiranjeVoznjeDisp = function (data,data1) {//u data su podaci o dispeceru,
         var voz = $("#cbVozaci").val();//username izabranog vozaca
         
         var korIme = data.KorisnickoIme;
-        $.get("/api/" + uloga, { x: x, y: y, tip: tipAutomobila, ulica: ulica, broj: broj, posta: postanskiBr, grad: grad, korIme: korIme, vozac: voz }, function () {
-            //alert(`iz geta`);
-            location.href = uloga + `.html`;
-        });
+        if ($("#txtUlica").val() != `` && $("#txtBroj").val() != `` && $("#txtGrad").val() != `` && $("#txtPostanskiBroj").val != `` && $("#txtKoordinataX").val() != `` && $("#txtKoordinataY").val() != ``) {
+            $("#upozorenje").removeClass(`alert-danger`);
+            $("#upozorenje").addClass(`hidden`);
+            $.get("/api/" + uloga, { x: x, y: y, tip: tipAutomobila, ulica: ulica, broj: broj, posta: postanskiBr, grad: grad, korIme: korIme, vozac: voz }, function () {
+                //alert(`iz geta`);
+                location.href = uloga + `.html`;
+            });
+        } else {
+            if ($("#txtUlica").val() == ``) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Polje ulica ne smije biti prazno.</td>`);
+            } else if ($("#txtGrad").val() == ``) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Polje grad ne smije biti prazno.</td>`);
+            }
+        }
     });
 };
 
@@ -1401,6 +1427,8 @@ let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. 
             </tr>
         </thead>
         <tbody>
+            <tr id="upozorenje" class="hidden">
+            </tr>
             <tr>
                 <td>Korisnicko ime:</td>
                 <td>
@@ -1455,6 +1483,28 @@ let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. 
                     <input type="email" id="txtEmail" placeholder="Email..." />
                 </td>
             </tr>
+            <tr>                
+                <td>Tip automobila:</td>
+                <td>
+                    <select id="tipAuta">
+                        <option value="1">Putnicko</option>
+                        <option value="2">Kombi</option>
+                        <option value="0" selected>Bez naznake</option>
+                    </select>
+                </td>                
+            </tr>
+            <tr>
+                <td>Godiste automobila:</td>
+                <td>
+                    <input type="number" id="txtGodiste" placeholder="Godiste automobila..." />
+                </td>
+            </tr>
+            <tr>
+                <td>Broj taksi vozila:</td>
+                <td>
+                    <input type="number" id="txtBrojVozila" placeholder="Broj taksi vozila..." />
+                </td>
+            </tr>
             <tr class="success">
                 <td colspan="2">
                     <input id="btnKreiraj" class="btn btn-success" type="button"
@@ -1463,6 +1513,57 @@ let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. 
             </tr>
         </tbody>
     </table>`);
+    $("#txtIme").keyup(function () {
+        if (!validateString($("#txtIme").val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+
+    $("#txtPrezime").keyup(function () {
+        if (!validateString($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtTelefon").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtJMBG").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    //isValidEmailAddress
+    $("#txtEmail").keyup(function () {
+        if (!isValidEmailAddress($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtBrojVozila").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
+    $("#txtGodiste").keyup(function () {
+        if (!validateNumber($(this).val())) {
+            $(this).addClass("alert-danger");
+        } else {
+            $(this).removeClass("alert-danger");
+        }
+    });
     $("#btnKreiraj").click(function () {
         //pozovi neki get u disp kontroleru
         var KorisnickoIme = $("#txtUsername").val();
@@ -1473,71 +1574,134 @@ let KreirajVozaca = function (dispecer) {//objekat dispecer, sa svim podacima.. 
         var Ime = $("#txtIme").val();
         var Prezime = $("#txtPrezime").val();
         var Pol = $("input:radio[name=pol]:checked").val();
-        $.post("/api/Dispecer/DodajVozaca/", { KorisnickoIme: KorisnickoIme, Lozinka: Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol }, function (data) {
-            //alert(KorisnickoIme);
-            location.href = `Dispecer.html`;
-            //alert(data);
-        })
+        var tip = funkcijaTipAuta($("#tipAuta").val());
+        var brojVozila = $("#txtBrojVozila").val();
+        var godisteVozila = $("#txtGodiste").val();
+        //jos godiste,broj taksi vozila i tip automobila
+        if (Lozinka.trim() != `` && validateNumber(brojVozila) && validateNumber(godisteVozila) && (godisteVozila - 1970 > 0) && (2018 - godisteVozila>0) && isValidEmailAddress(Email) && validateString(Ime) && KontaktTelefon.length == 10 && Jmbg.length == 13 && validateString(Prezime) && validateNumber(Jmbg) && validateNumber(KontaktTelefon)) {
+            $("#upozorenje").addClass(`hidden`);
+            $("#upozorenje").removeClass(`alert-danger`);
+            var Automobil = { "Vozac": "", "GodisteAutomobila": $("#txtGodiste").val(), "BrojTaksiVozila": $("#txtBrojVozila").val(), "TipAutomobila": $("#tipAuta").val() };
+            $.post("/api/Dispecer/DodajVozaca/", { KorisnickoIme: KorisnickoIme, Lozinka: Lozinka, Email: Email, Jmbg: Jmbg, KontaktTelefon: KontaktTelefon, Ime: Ime, Prezime: Prezime, Pol: Pol, Automobil: Automobil }, function (data) {
+                
+            }).done(function () {
+                //alert("uspjesno registrovano, sad se uloguj");
+                location.href = "Dispecer.html";
+            })
+                .fail(function () {
+                    //alert("vec postoji korisnik sa datim korisnickim imenom");
+                    $("#upozorenje").removeClass(`hidden`);
+                    $("#upozorenje").addClass(`alert-danger`);
+                    $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Korisnicko ime vec postoji.</td>`);
+                    $("#txtUsername").val(``);
+                    $("#txtUsername").focus();
+                });
+        } else {
+            if (!validateString(Ime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Ime moze sadrzati samo slova.</td>`);
+                $("#txtIme").focus();
+            } else if (!validateString(Prezime)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Prezime moze sadrzati samo slova.</td>`);
+                $("#txtPrezime").focus();
+            } else if (!validateNumber(KontaktTelefon) || KontaktTelefon.length != 10) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Telefon moze sadrzati samo 10 brojeva.</td>`);
+                $("#txtTelefon").focus();
+            } else if (!validateNumber(Jmbg) || Jmbg.length != 13) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Jmbg mora sadrzati 13 brojeva.</td>`);
+                $("#txtJMBG").focus();
+            } else if (!isValidEmailAddress(Email)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Email mora biti napisan u formatu nesto@yahoo.com.</td>`);
+                $("#txtEmail").focus();
+            } else if (Lozinka.trim() == ``) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Sifra ne smije biti prazan string.</td>`);
+                $("#txtPassword").focus();
+            } else if (!validateNumber(godisteVozila) || (godisteVozila - 2018 > 0) || (1970 - godisteVozila > 0)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Neispravno godiste vozila.</td>`);
+                $("#txtGodiste").focus();
+            } else if (!validateNumber(brojVozila)) {
+                $("#upozorenje").removeClass(`hidden`);
+                $("#upozorenje").addClass(`alert-danger`);
+                $("#upozorenje").html(`<td colspan="2"><strong>Greska!</strong> Neispravan broj taksi vozila.</td>`);
+                $("#txtBrojVozila").focus();
+            }
+        }
     });
 };
 
 let IspisiVoznjeVozac = function (dataVoz,idVoz) {
     let temp = ``;
     data = dataVoz;
-    for (drive in data) {
-        temp += `<tr>`;
-        temp += (`<td>${(data[drive].DatumIVrijemePorudzbe != null) ? data[drive].DatumIVrijemePorudzbe:`-`}</td>`);
-        temp += (`<td>${(data[drive].Musterija != null && data[drive].Musterija != `nepoznato` && data[drive].Musterija!=``) ? data[drive].Musterija:`-`}</td>`);
-        temp += (`<td>${(data[drive].Dispecer != null) ? data[drive].Dispecer:`-`}</td>`);
-        temp += (`<td>${(data[drive].Vozac != null) ? data[drive].Vozac:`-`}</td>`);
-        temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
-        temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
-        var pom = ``;
-        if (data[drive].Lokacija.Adresa.Ulica != null) {
-            pom += data[drive].Lokacija.Adresa.Ulica;
-            pom += ` `;
+    let tip=``;
+    $.get("/api/Vozac/VratiAutomobil/", { korIme: idVoz }, function (tipAut) {
+        tip = tipAut;
+    
+        for (drive in data) {
+            temp += `<tr>`;
+            temp += (`<td>${(data[drive].DatumIVrijemePorudzbe != null) ? data[drive].DatumIVrijemePorudzbe:`-`}</td>`);
+            temp += (`<td>${(data[drive].Musterija != null && data[drive].Musterija != `nepoznato` && data[drive].Musterija!=``) ? data[drive].Musterija:`-`}</td>`);
+            temp += (`<td>${(data[drive].Dispecer != null) ? data[drive].Dispecer:`-`}</td>`);
+            temp += (`<td>${(data[drive].Vozac != null) ? data[drive].Vozac:`-`}</td>`);
+            temp += (`<td class="col1">${funkcijaStatusVoznje(data[drive].StatusVoznje)}</td>`);
+            temp += (`<td>${funkcijaTipAuta(data[drive].TipAutomobila)}</td>`);
+            var pom = ``;
+            if (data[drive].Lokacija.Adresa.Ulica != null) {
+                pom += data[drive].Lokacija.Adresa.Ulica;
+                pom += ` `;
+            }
+            if (data[drive].Lokacija.Adresa.Ulica != null && data[drive].Lokacija.Adresa.Broj != null) {
+                pom += data[drive].Lokacija.Adresa.Broj;
+                pom += ` `;
+            }
+            if (data[drive].Lokacija.Adresa.NaseljenoMjesto != null) {
+                pom += data[drive].Lokacija.Adresa.NaseljenoMjesto;
+                pom += ` `;
+            }
+            if (data[drive].Lokacija.Adresa.PozivniBrojMjesta != null) {
+                pom += data[drive].Lokacija.Adresa.PozivniBrojMjesta;
+            }
+            temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);
+            pom = ``;
+            if (data[drive].Odrediste.Adresa.Ulica != null) {
+                pom += data[drive].Odrediste.Adresa.Ulica;
+                pom += ` `;
+            }
+            if (data[drive].Odrediste.Adresa.Ulica != null && data[drive].Odrediste.Adresa.Broj != null) {
+                pom += data[drive].Odrediste.Adresa.Broj;
+                pom += ` `;
+            }
+            if (data[drive].Odrediste.Adresa.NaseljenoMjesto != null) {
+                pom += data[drive].Odrediste.Adresa.NaseljenoMjesto;
+                pom += ` `;
+            }
+            if (data[drive].Odrediste.Adresa.PozivniBrojMjesta != null) {
+                pom += data[drive].Odrediste.Adresa.PozivniBrojMjesta;
+            }
+            temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);//odrediste
+            temp += (`<td>${data[drive].Iznos}</td>`);
+            var komen = `Komentar`;
+            temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
+            temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
+            temp += `<td>`;
+            temp += (data[drive].StatusVoznje == 0 && (data[drive].TipAutomobila == tip || data[drive].TipAutomobila == `0` || data[drive].TipAutomobila == 0)) ? (`<input name="prihvati" id="btnPrihvati` + data[drive].Id + `" class="btn btn-success" type="button" value="Prihvati voznju">`) : ``;
+            temp += (data[drive].StatusVoznje == 2 || data[drive].StatusVoznje == 3 || data[drive].StatusVoznje == 1) ? (`<input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Promijeni status voznje">`) : ``;
+            temp += `</td>`;
+            temp += `</tr>`;
         }
-        if (data[drive].Lokacija.Adresa.Ulica != null && data[drive].Lokacija.Adresa.Broj != null) {
-            pom += data[drive].Lokacija.Adresa.Broj;
-            pom += ` `;
-        }
-        if (data[drive].Lokacija.Adresa.NaseljenoMjesto != null) {
-            pom += data[drive].Lokacija.Adresa.NaseljenoMjesto;
-            pom += ` `;
-        }
-        if (data[drive].Lokacija.Adresa.PozivniBrojMjesta != null) {
-            pom += data[drive].Lokacija.Adresa.PozivniBrojMjesta;
-        }
-        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);
-        pom = ``;
-        if (data[drive].Odrediste.Adresa.Ulica != null) {
-            pom += data[drive].Odrediste.Adresa.Ulica;
-            pom += ` `;
-        }
-        if (data[drive].Odrediste.Adresa.Ulica != null && data[drive].Odrediste.Adresa.Broj != null) {
-            pom += data[drive].Odrediste.Adresa.Broj;
-            pom += ` `;
-        }
-        if (data[drive].Odrediste.Adresa.NaseljenoMjesto != null) {
-            pom += data[drive].Odrediste.Adresa.NaseljenoMjesto;
-            pom += ` `;
-        }
-        if (data[drive].Odrediste.Adresa.PozivniBrojMjesta != null) {
-            pom += data[drive].Odrediste.Adresa.PozivniBrojMjesta;
-        }
-        temp += (`<td>${(pom.trim() != ``) ? pom : `-`}</td>`);//odrediste
-        temp += (`<td>${data[drive].Iznos}</td>`);
-        var komen = `Komentar`;
-        temp += (`<td>${ModalDialogKod(komen, data[drive].Komentar.Opis, data[drive].Komentar.Ocjena, data[drive].Komentar.DatumObjave, data[drive].Komentar.Voznja, data[drive].Komentar.Korisnik)}</td>`);
-        temp += (`<td>${data[drive].Komentar.Ocjena}</td>`);
-        temp += `<td>`;
-        temp += (data[drive].StatusVoznje == 0) ? (`<input name="prihvati" id="btnPrihvati` + data[drive].Id + `" class="btn btn-success" type="button" value="Prihvati voznju">`) : ``;
-        temp += (data[drive].StatusVoznje == 2 || data[drive].StatusVoznje == 3 || data[drive].StatusVoznje == 1) ? (`<input name="obradi" id="btnObradi` + data[drive].Id + `" class="btn btn-success" type="button" value="Promijeni status voznje">`) : ``;
-        temp += `</td>`;
-        temp += `</tr>`;
-    }
-
-    $("#prikazPodataka").html(`<div>
+        $("#prikazPodataka").html(`<div>
     </br><b>Filtriraj po statusu:&nbsp;&nbsp;</b><select id="zaFilter">
          <option value="Bez naznake" selected>Bez naznake</option>
          <option value="Kreirana - Na cekanju">Kreirana - Na cekanju</option>
@@ -1598,6 +1762,8 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         <tbody>${temp}        
         </tbody>
     </table>`);
+    });
+    
     $("#odDatum").change(function () {
         if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
             $("#table tbody tr").each(function () {
@@ -1773,16 +1939,13 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         });
     });
     $("input:button[name=prihvati]").click(function () {
-        //alert(this.id);//uzmi id tog dugmeta
         ulogaKorisnika(`2`);
         var ppp = this.id;
         $.get("/api/Vozac/PrihvatiVoznju/", { idVoznje: ppp, idVozaca:idVoz}, function () {
-            //alert(`prihvacena`);
             location.href = "Vozac.html";
         });
     });
     $("input:button[name=obradi]").click(function () {
-        //alert(this.id);//uzmi id tog dugmeta
         ulogaKorisnika(`2`);
         var ppp = this.id;
         ObradjivanjeVoznjeVozac(ppp,idVoz);        
@@ -2060,4 +2223,26 @@ let IspisiKorisnike = function (data) {
             IspisiKorisnike(pod);
         });        
     });
+};
+
+let writeModalLocation = function (location) {
+    $("#divwritemodal").html(`<div id="myloc" class="modal fade" role="dialog"><div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header success">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title">Trenutna lokacija</h3>
+            </div>
+            <div class="modal-body">
+                <p><b>Street: ${(location.Adresa.Ulica == null) ? `-` : location.Adresa.Ulica}</b></p>
+                <p><b>House number: ${(location.Adresa.Broj == null) ? `-` : location.Adresa.Broj}</b></p>
+                <p><b>City: ${(location.Adresa.NaseljenoMjesto == null) ? `-` : location.Adresa.NaseljenoMjesto}</b></p>
+                <p><b>Post code: ${(location.Adresa.PozivniBrojMjesta == null) ? `-` : location.Adresa.PozivniBrojMjesta}</b></p></br>
+                <p><b>Longitude: ${(location.KoordinataX == null) ? `-` : location.KoordinataX}</b></p>
+                <p><b>Latitude: ${(location.KoordinataY == null) ? `-` : location.KoordinataY}</b></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Zatvori</button>
+            </div>
+        </div>
+        </div ></div>`);
 };

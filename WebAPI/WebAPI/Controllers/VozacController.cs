@@ -22,6 +22,13 @@ namespace WebAPI.Controllers
             return ret;
         }
 
+        [MyAuthorization(Roles = "Vozac")]
+        [HttpGet]
+        [Route("api/Vozac/VratiAutomobil/")]
+        public TipoviAutomobila VratiAutomobil(string korIme)
+        {
+            return Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korIme).Automobil.TipAutomobila;
+        }
         public List<Voznja> Sortiraj(List<Voznja> zaSortiranje, string x, string y)
         {
             var ret = new List<Vozac>();
@@ -51,47 +58,49 @@ namespace WebAPI.Controllers
         [Route("api/Vozac/GetLokacija/")]
         public Lokacija GetLokacija([FromBody]JObject jsonResult)
         {
-            string korisnicko = "";
-            string s = jsonResult.ToString();
-            IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
-            //string b="";
-            string grad = "";
-            string ulica = "";
-            string posta = "";
-            string broj = "";
-            foreach (var item in addresses)
+            if (jsonResult != null)
             {
-                string ssss = item.ToString().Replace("\"", "");
-                if (ssss.Split(':')[0] == "city")
+                string korisnicko = "";
+                string s = jsonResult.ToString();
+                IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
+                //string b="";
+                string grad = "";
+                string ulica = "";
+                string posta = "";
+                string broj = "";
+                foreach (var item in addresses)
                 {
-                    grad = ssss.Split(':')[1].Trim();
+                    string ssss = item.ToString().Replace("\"", "");
+                    if (ssss.Split(':')[0] == "city")
+                    {
+                        grad = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "road")
+                    {
+                        ulica = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "postcode")
+                    {
+                        posta = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
+                    {
+                        broj = ssss.Split(':')[1].Trim();
+                    }
                 }
-                else if (ssss.Split(':')[0] == "road")
+                IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
+
+                string x = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+                string y = koordinate[0].ToString().Trim(new char[] { '{', '}' });
+                if (broj.Trim() == "")
                 {
-                    ulica = ssss.Split(':')[1].Trim();
+                    broj = "bb";
                 }
-                else if (ssss.Split(':')[0] == "postcode")
-                {
-                    posta = ssss.Split(':')[1].Trim();
-                }
-                else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
-                {
-                    broj = ssss.Split(':')[1].Trim();
-                }
+                Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
+                korisnicko = Get().KorisnickoIme;
+                return lok;
             }
-            IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
-
-            string x = koordinate[3].ToString().Trim(new char[] { '{', '}' });
-            string y = koordinate[0].ToString().Trim(new char[] { '{', '}' });
-            if (broj.Trim() == "")
-            {
-                broj = "bb";
-            }
-            Lokacija lok = new Lokacija() { KoordinataX = x , KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
-            korisnicko = Get().KorisnickoIme;
-
-            return lok;
-
+            return new Lokacija();
         }
 
         [MyAuthorization(Roles = "Vozac")]
@@ -99,46 +108,50 @@ namespace WebAPI.Controllers
         [Route("api/Vozac/IzmijeniLokaciju/")]
         public void IzmijeniLokaciju([FromBody]JObject jsonResult)
         {
-            //isparsiraj i username jos
-            string korisnicko = "";
-            string s = jsonResult.ToString();
-            IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
-            //string b="";
-            string grad = "";
-            string ulica = "";
-            string posta = "";
-            string broj = "";
-            foreach (var item in addresses)
+            if (jsonResult != null)
             {
-                string ssss = item.ToString().Replace("\"","");
-                if (ssss.Split(':')[0] == "city")
+                //isparsiraj i username jos
+                string korisnicko = "";
+                string s = jsonResult.ToString();
+                IList<JToken> addresses = jsonResult["jsonResult"]["address"].Children().ToList();
+                //string b="";
+                string grad = "";
+                string ulica = "";
+                string posta = "";
+                string broj = "";
+                foreach (var item in addresses)
                 {
-                    grad = ssss.Split(':')[1].Trim();
-                }else if (ssss.Split(':')[0] == "road")
-                {
-                    ulica = ssss.Split(':')[1].Trim();
+                    string ssss = item.ToString().Replace("\"", "");
+                    if (ssss.Split(':')[0] == "city")
+                    {
+                        grad = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "road")
+                    {
+                        ulica = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "postcode")
+                    {
+                        posta = ssss.Split(':')[1].Trim();
+                    }
+                    else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
+                    {
+                        broj = ssss.Split(':')[1].Trim();
+                    }
                 }
-                else if (ssss.Split(':')[0] == "postcode")
+                IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
+                //TripObject item = JsonConvert.DeserializeObject<TripObject>(jsonResult.ToString());
+                //return jsonResult;
+                string x = koordinate[0].ToString().Trim(new char[] { '{', '}' });
+                string y = koordinate[3].ToString().Trim(new char[] { '{', '}' });
+                if (broj.Trim() == "")
                 {
-                    posta = ssss.Split(':')[1].Trim();
+                    broj = "bb";
                 }
-                else if (ssss.Split(':')[0] == "house_number")//ako nema broj moram stavit bb
-                {
-                    broj = ssss.Split(':')[1].Trim();
-                }
+                Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
+                korisnicko = Get().KorisnickoIme;
+                Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korisnicko).Lokacija = lok;
             }
-            IList<JToken> koordinate = jsonResult["jsonResult"]["boundingbox"].Children().ToList();
-            //TripObject item = JsonConvert.DeserializeObject<TripObject>(jsonResult.ToString());
-            //return jsonResult;
-            string x = koordinate[0].ToString().Trim(new char[] {'{','}' });
-            string y = koordinate[3].ToString().Trim(new char[] {'{','}' });
-            if (broj.Trim() == "")
-            {
-                broj = "bb";
-            }
-            Lokacija lok = new Lokacija() { KoordinataX = x, KoordinataY = y, Adresa = new Adresa() { NaseljenoMjesto = grad, Ulica = ulica, PozivniBrojMjesta = posta, Broj = broj } };
-            korisnicko = Get().KorisnickoIme;
-            Korisnici.ListaVozaca.FirstOrDefault(v => v.KorisnickoIme == korisnicko).Lokacija = lok;
         }
 
         //"/api/Vozac/PromijeniLokaciju/"        
@@ -296,9 +309,16 @@ namespace WebAPI.Controllers
             //Musterija m = musterija;
             if (Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme) != null)
             {
+
                 int ind = Korisnici.ListaVozaca.IndexOf(Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme));
+                Automobil a = Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme).Automobil;
                 //ne postoji korisnicko ime do sad
                 vozac.Uloga = Uloge.Vozac;
+                vozac.Automobil = a;
+                vozac.Voznje = Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme).Voznje;
+                vozac.Lokacija = Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme).Lokacija;
+                vozac.Banovan = Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme).Banovan;
+                vozac.Zauzet = Korisnici.ListaVozaca.FirstOrDefault(d => vozac.KorisnickoIme == d.KorisnickoIme).Zauzet;
                 Korisnici.ListaVozaca[ind] = vozac;
                 System.Web.HttpContext.Current.Session["mojaSesija"] = vozac;
                 mess.StatusCode = HttpStatusCode.OK;
