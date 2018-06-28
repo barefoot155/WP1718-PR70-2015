@@ -1701,6 +1701,7 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
             temp += `</td>`;
             temp += `</tr>`;
         }
+
         $("#prikazPodataka").html(`<div>
     </br><b>Filtriraj po statusu:&nbsp;&nbsp;</b><select id="zaFilter">
          <option value="Bez naznake" selected>Bez naznake</option>
@@ -1762,194 +1763,193 @@ let IspisiVoznjeVozac = function (dataVoz,idVoz) {
         <tbody>${temp}        
         </tbody>
     </table>`);
-    });
-    
-    $("#odDatum").change(function () {
-        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
-            $("#table tbody tr").each(function () {
-                $(this).show();
-            });
-        } else {
-            display($("#odDatum").val(), $("#doDatum").val());
-        }
-    });
-    $("#doDatum").change(function () {
-        if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
-            $("#table tbody tr").each(function () {
-                $(this).show();
-            });
-        } else {
-            display($("#odDatum").val(), $("#doDatum").val());
-        }
-    });
-    $("#odCijena").keyup(function () {
-        //alert("promjenaaaa")
-        if ($("#doCijena").val() != ``) {
-            if ($("#odCijena").val() - $("#doCijena").val() > 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
-            } else {
-                $(this).removeAttr("class");
-                pretraga($("#odCijena").val(), $("#doCijena").val());
-            }
-        } else {
-            $(this).removeAttr("class");
-            pretraga($("#odCijena").val(), $("#doCijena").val());
-        }
+        $("th[name=sortiraj]").click(function () {
 
-    });
-    $("#odCijena").mouseup(function () {
-        //alert("miss")
-        if ($("#doCijena").val() != ``) {
-            if ($("#odCijena").val() - $("#doCijena").val() > 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
+            if ($(this.getElementsByTagName("span")).attr(`class`) == "glyphicon glyphicon-arrow-down") {
+                $(this.getElementsByTagName("span")).removeClass("glyphicon glyphicon-arrow-down");
+                $(this.getElementsByTagName("span")).toggleClass("glyphicon glyphicon-arrow-up");
             } else {
-                $(this).removeAttr("class");
-                pretraga($("#odCijena").val(), $("#doCijena").val());
+                $(this.getElementsByTagName("span")).removeClass("glyphicon glyphicon-up-down");
+                $(this.getElementsByTagName("span")).toggleClass("glyphicon glyphicon-arrow-down");
             }
-        } else {
-            $(this).removeAttr("class");
-            pretraga($("#odCijena").val(), $("#doCijena").val());
-        }
-    });
-    $("#doCijena").keyup(function () {
-        //alert("promjenaaaa")
-        if ($("#odCijena").val() != ``) {
-            if ($("#doCijena").val() - $("#odCijena").val() < 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
-            } else {
-                $(this).removeAttr("class");
-                pretraga($("#odCijena").val(), $("#doCijena").val());
-            }
-        } else {
-            $(this).removeAttr("class");
-            pretraga($("#odCijena").val(), $("#doCijena").val());
-        }
-
-    });
-    $("#doCijena").mouseup(function () {
-        //alert("miss")
-        if ($("#odCijena").val() != ``) {
-            if ($("#doCijena").val() - $("#odCijena").val() < 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
-            } else {
-                $(this).removeAttr("class");
-                pretraga($("#odCijena").val(), $("#doCijena").val());
-            }
-        } else {
-            $(this).removeAttr("class");
-            pretraga($("#odCijena").val(), $("#doCijena").val());
-        }
-    });
-    $("#odOcjena").keyup(function () {
-        //alert("promjenaaaa")
-        if ($("#doOcjena").val() != ``) {
-            if ($("#odOcjena").val() - $("#doOcjena").val() > 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
-            } else {
-                $(this).removeAttr("class");
-                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-            }
-        } else {
-            $(this).removeAttr("class");
-            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-        }
-
-    });
-    $("#odOcjena").mouseup(function () {
-        //alert("miss")
-        if ($("#doOcjena").val() != ``) {
-            if ($("#odCijena").val() - $("#doOcjena").val() > 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
-            } else {
-                $(this).removeAttr("class");
-                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-            }
-        } else {
-            $(this).removeAttr("class");
-            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-        }
-    });
-    $("#doOcjena").keyup(function () {
-        //alert("promjenaaaa")
-        if ($("#odOcjena").val() != ``) {
-            if ($("#doOcjena").val() - $("#odOcjena").val() < 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
-            } else {
-                $(this).removeAttr("class");
-                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-            }
-        } else {
-            $(this).removeAttr("class");
-            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-        }
-
-    });
-    $("#doOcjena").mouseup(function () {
-        //alert("miss")
-        if ($("#odOcjena").val() != ``) {
-            if ($("#doOcjena").val() - $("#odOcjena").val() < 0) {
-                $(this).removeAttr("class");
-                $(this).addClass("alert-danger");
-            } else {
-                $(this).removeAttr("class");
-                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-            }
-        } else {
-            $(this).removeAttr("class");
-            pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
-        }
-    });
-    $("#zaFilter").change(function () {
-        //alert($(this).val());
-        if ($(this).val() == "Bez naznake") {
-            $("#table td.col1").parent().show();
-        } else {
-            $("#table td.col1:contains('" + $(this).val() + "')").parent().show();
-            $("#table td.col1:not(:contains('" + $(this).val() + "'))").parent().hide();
-        }
-    });
-    $("th[name=sortiraj]").click(function () {
-
-        if ($(this.getElementsByTagName("span")).attr(`class`) == "glyphicon glyphicon-arrow-down") {
-            $(this.getElementsByTagName("span")).removeClass("glyphicon glyphicon-arrow-down");
-            $(this.getElementsByTagName("span")).toggleClass("glyphicon glyphicon-arrow-up");
-        } else {
-            $(this.getElementsByTagName("span")).removeClass("glyphicon glyphicon-up-down");
-            $(this.getElementsByTagName("span")).toggleClass("glyphicon glyphicon-arrow-down");
-        }
-        var table = $(this).parents('table').eq(0)
-        var rows = table.find('tr:gt(2)').toArray().sort(comparer($(this).index()))
-        this.asc = !this.asc
-        if (!this.asc) { rows = rows.reverse() }
-        for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
-    });
-    $("th[name=pocetnaLokacija]").click(function () {
-        $.get("/api/Vozac", function (vozac) {
-            var ret = data.sort(function (a, b) {
-                return ApsolutnoRastojanje(a.Lokacija.KoordinataX, a.Lokacija.KoordinataY, vozac.Lokacija.KoordinataX, vozac.Lokacija.KoordinataY) - ApsolutnoRastojanje(b.Lokacija.KoordinataX, b.Lokacija.KoordinataY, vozac.Lokacija.KoordinataX, vozac.Lokacija.KoordinataY)
-            });
-            IspisiVoznjeVozac(ret, idVoz);
+            var table = $(this).parents('table').eq(0)
+            var rows = table.find('tr:gt(2)').toArray().sort(comparer($(this).index()))
+            this.asc = !this.asc
+            if (!this.asc) { rows = rows.reverse() }
+            for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
         });
-    });
-    $("input:button[name=prihvati]").click(function () {
-        ulogaKorisnika(`2`);
-        var ppp = this.id;
-        $.get("/api/Vozac/PrihvatiVoznju/", { idVoznje: ppp, idVozaca:idVoz}, function () {
-            location.href = "Vozac.html";
+        $("th[name=pocetnaLokacija]").click(function () {
+            $.get("/api/Vozac", function (vozac) {
+                var ret = data.sort(function (a, b) {
+                    return ApsolutnoRastojanje(a.Lokacija.KoordinataX, a.Lokacija.KoordinataY, vozac.Lokacija.KoordinataX, vozac.Lokacija.KoordinataY) - ApsolutnoRastojanje(b.Lokacija.KoordinataX, b.Lokacija.KoordinataY, vozac.Lokacija.KoordinataX, vozac.Lokacija.KoordinataY)
+                });
+                IspisiVoznjeVozac(ret, idVoz);
+            });
         });
-    });
-    $("input:button[name=obradi]").click(function () {
-        ulogaKorisnika(`2`);
-        var ppp = this.id;
-        ObradjivanjeVoznjeVozac(ppp,idVoz);        
-    });
+        $("input:button[name=prihvati]").click(function () {
+            ulogaKorisnika(`2`);
+            var ppp = this.id;
+            $.get("/api/Vozac/PrihvatiVoznju/", { idVoznje: ppp, idVozaca: idVoz }, function () {
+                location.href = "Vozac.html";
+            });
+        });
+        $("input:button[name=obradi]").click(function () {
+            ulogaKorisnika(`2`);
+            var ppp = this.id;
+            ObradjivanjeVoznjeVozac(ppp, idVoz);
+        });
+        $("#odDatum").change(function () {
+            if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+                $("#table tbody tr").each(function () {
+                    $(this).show();
+                });
+            } else {
+                display($("#odDatum").val(), $("#doDatum").val());
+            }
+        });
+        $("#doDatum").change(function () {
+            if ($("#odDatum").val() == "" && $("#doDatum").val() == "") {
+                $("#table tbody tr").each(function () {
+                    $(this).show();
+                });
+            } else {
+                display($("#odDatum").val(), $("#doDatum").val());
+            }
+        });
+        $("#odCijena").keyup(function () {
+            //alert("promjenaaaa")
+            if ($("#doCijena").val() != ``) {
+                if ($("#odCijena").val() - $("#doCijena").val() > 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretraga($("#odCijena").val(), $("#doCijena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+
+        });
+        $("#odCijena").mouseup(function () {
+            //alert("miss")
+            if ($("#doCijena").val() != ``) {
+                if ($("#odCijena").val() - $("#doCijena").val() > 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretraga($("#odCijena").val(), $("#doCijena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+        });
+        $("#doCijena").keyup(function () {
+            //alert("promjenaaaa")
+            if ($("#odCijena").val() != ``) {
+                if ($("#doCijena").val() - $("#odCijena").val() < 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretraga($("#odCijena").val(), $("#doCijena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+
+        });
+        $("#doCijena").mouseup(function () {
+            //alert("miss")
+            if ($("#odCijena").val() != ``) {
+                if ($("#doCijena").val() - $("#odCijena").val() < 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretraga($("#odCijena").val(), $("#doCijena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretraga($("#odCijena").val(), $("#doCijena").val());
+            }
+        });
+        $("#odOcjena").keyup(function () {
+            //alert("promjenaaaa")
+            if ($("#doOcjena").val() != ``) {
+                if ($("#odOcjena").val() - $("#doOcjena").val() > 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+
+        });
+        $("#odOcjena").mouseup(function () {
+            //alert("miss")
+            if ($("#doOcjena").val() != ``) {
+                if ($("#odCijena").val() - $("#doOcjena").val() > 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+        });
+        $("#doOcjena").keyup(function () {
+            //alert("promjenaaaa")
+            if ($("#odOcjena").val() != ``) {
+                if ($("#doOcjena").val() - $("#odOcjena").val() < 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+
+        });
+        $("#doOcjena").mouseup(function () {
+            //alert("miss")
+            if ($("#odOcjena").val() != ``) {
+                if ($("#doOcjena").val() - $("#odOcjena").val() < 0) {
+                    $(this).removeAttr("class");
+                    $(this).addClass("alert-danger");
+                } else {
+                    $(this).removeAttr("class");
+                    pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+                }
+            } else {
+                $(this).removeAttr("class");
+                pretragaOcj($("#odOcjena").val(), $("#doOcjena").val());
+            }
+        });
+        $("#zaFilter").change(function () {
+            //alert($(this).val());
+            if ($(this).val() == "Bez naznake") {
+                $("#table td.col1").parent().show();
+            } else {
+                $("#table td.col1:contains('" + $(this).val() + "')").parent().show();
+                $("#table td.col1:not(:contains('" + $(this).val() + "'))").parent().hide();
+            }
+        });
+    }); 
 };
 
 function ApsolutnoRastojanje(x1, y1, x2, y2) {
@@ -1959,7 +1959,7 @@ function ApsolutnoRastojanje(x1, y1, x2, y2) {
     var kY2 = parseFloat(y2);
 
     var apsRastojanje = Math.pow((Math.pow((kX1 - kX2), 2) + Math.pow((kY1 - kY2), 2)), 0.5);
-    alert(apsRastojanje);
+    //alert(apsRastojanje);
     return apsRastojanje;
 };
 

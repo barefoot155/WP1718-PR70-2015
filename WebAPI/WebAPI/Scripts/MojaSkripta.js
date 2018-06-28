@@ -833,7 +833,7 @@ let IzmijeniSifru3 = function (korisnik) {
             //ispravno, sacuvaj
             $("#upozorenje2").hide();
             $("#upozorenje").hide();
-            alert(`moze`);
+            //alert(`moze`);
             $.post("/api/Vozac", { KorisnickoIme: korisnik.KorisnickoIme, Lozinka: novaUnesena, Email: korisnik.Email, Jmbg: korisnik.Jmbg, KontaktTelefon: korisnik.KontaktTelefon, Ime: korisnik.Ime, Prezime: korisnik.Prezime, Pol: korisnik.Pol }, function (data) {
                 //alert(remember);
                 //alert(data);
@@ -948,7 +948,7 @@ let pomocna = function () {
         });
     });
     $("#kreiranjeDisp").click(function () {
-        alert(jsonObjekat);
+        //alert(jsonObjekat);
         $.post("/api/Dispecer/GetLokacija/", { jsonResult: jsonObjekat }, function (data) {
             //alert(data.KoordinataX);
             $("#txtUlica").val(data.Adresa.Ulica);
@@ -960,7 +960,7 @@ let pomocna = function () {
             //location.href = uloga + `.html`;
             $.get("/api/Dispecer/VratiSlobodneVozace1/", { x: data.KoordinataX, y: data.KoordinataY, tipAuta: $("#tipAuta").val() }, function (data1) {
                 //alert(data1[0].KorisnickoIme);
-                alert(`iz geta`);
+                //alert(`iz geta`);
                 //KreiranjeVoznjeDisp(korisnik, data1);
                 var vozaci = ``;
                 

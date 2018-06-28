@@ -20,12 +20,18 @@ namespace WebAPI.Models
             {
                 case Uloge.Musterija:
                     uloga = "Musterija";
+                    Musterija m = (Musterija)HttpContext.Current.Session["mojaSesija"];
+                    if (m.Banovan)
+                        return false;
                     break;
                 case Uloge.Dispecer:
                     uloga = "Administrator";
                     break;
                 case Uloge.Vozac:
                     uloga = "Vozac";
+                    Vozac v = (Vozac)HttpContext.Current.Session["mojaSesija"];
+                    if (v.Banovan)
+                        return false;
                     break;
                 default:
                     break;

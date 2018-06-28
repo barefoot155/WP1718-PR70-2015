@@ -198,7 +198,7 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/Vozac/5
-        [MyAuthorization(Roles = "Vozac")]
+        //[MyAuthorization(Roles = "Vozac")]
         public Vozac Get()
         {
             Vozac k = (Vozac)System.Web.HttpContext.Current.Session["mojaSesija"];

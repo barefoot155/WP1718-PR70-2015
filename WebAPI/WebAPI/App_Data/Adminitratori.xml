@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfDispecer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Dispecer>
     <KorisnickoIme>admin</KorisnickoIme>
@@ -10,7 +10,43 @@
     <KontaktTelefon>06499965</KontaktTelefon>
     <Email>pera@yahoo.com</Email>
     <Uloga>Dispecer</Uloga>
-    <Voznje />
+    <Voznje>
+      <Voznja>
+        <Id>13</Id>
+        <DatumIVrijemePorudzbe>2018-06-28T07:09:47.532033</DatumIVrijemePorudzbe>
+        <Lokacija>
+          <KoordinataX>19.8507226</KoordinataX>
+          <KoordinataY>45.2544028</KoordinataY>
+          <Adresa>
+            <Ulica>Pionirska</Ulica>
+            <Broj>bb</Broj>
+            <NaseljenoMjesto>Novi Sad</NaseljenoMjesto>
+            <PozivniBrojMjesta>21101</PozivniBrojMjesta>
+          </Adresa>
+        </Lokacija>
+        <TipAutomobila>Nepoznato</TipAutomobila>
+        <Musterija>nepoznato</Musterija>
+        <Dispecer>admin</Dispecer>
+        <Vozac>vozac4</Vozac>
+        <Odrediste>
+          <KoordinataX />
+          <KoordinataY />
+          <Adresa>
+            <Ulica />
+            <Broj />
+            <NaseljenoMjesto />
+            <PozivniBrojMjesta />
+          </Adresa>
+        </Odrediste>
+        <Iznos>0</Iznos>
+        <Komentar>
+          <Opis />
+          <DatumObjave>0001-01-01T00:00:00</DatumObjave>
+          <Ocjena>Neocijenjeno</Ocjena>
+        </Komentar>
+        <StatusVoznje>Formirana</StatusVoznje>
+      </Voznja>
+    </Voznje>
   </Dispecer>
   <Dispecer>
     <KorisnickoIme>admin1</KorisnickoIme>

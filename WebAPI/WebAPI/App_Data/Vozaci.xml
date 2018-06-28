@@ -290,6 +290,41 @@
         </Komentar>
         <StatusVoznje>Prihvacena</StatusVoznje>
       </Voznja>
+      <Voznja>
+        <Id>13</Id>
+        <DatumIVrijemePorudzbe>2018-06-28T07:09:47.532033</DatumIVrijemePorudzbe>
+        <Lokacija>
+          <KoordinataX>19.8507226</KoordinataX>
+          <KoordinataY>45.2544028</KoordinataY>
+          <Adresa>
+            <Ulica>Pionirska</Ulica>
+            <Broj>bb</Broj>
+            <NaseljenoMjesto>Novi Sad</NaseljenoMjesto>
+            <PozivniBrojMjesta>21101</PozivniBrojMjesta>
+          </Adresa>
+        </Lokacija>
+        <TipAutomobila>Nepoznato</TipAutomobila>
+        <Musterija>nepoznato</Musterija>
+        <Dispecer>admin</Dispecer>
+        <Vozac>vozac4</Vozac>
+        <Odrediste>
+          <KoordinataX />
+          <KoordinataY />
+          <Adresa>
+            <Ulica />
+            <Broj />
+            <NaseljenoMjesto />
+            <PozivniBrojMjesta />
+          </Adresa>
+        </Odrediste>
+        <Iznos>0</Iznos>
+        <Komentar>
+          <Opis />
+          <DatumObjave>0001-01-01T00:00:00</DatumObjave>
+          <Ocjena>Neocijenjeno</Ocjena>
+        </Komentar>
+        <StatusVoznje>Formirana</StatusVoznje>
+      </Voznja>
     </Voznje>
     <Lokacija>
       <KoordinataX>19.855535030364987</KoordinataX>
@@ -307,7 +342,7 @@
       <BrojTaksiVozila>5</BrojTaksiVozila>
       <TipAutomobila>PutnickiAutomobil</TipAutomobila>
     </Automobil>
-    <Zauzet>false</Zauzet>
+    <Zauzet>true</Zauzet>
     <Banovan>false</Banovan>
   </Vozac>
   <Vozac>
@@ -478,13 +513,13 @@
       </Voznja>
     </Voznje>
     <Lokacija>
-      <KoordinataX>19.846104383468628</KoordinataX>
-      <KoordinataY>45.25649178261992</KoordinataY>
+      <KoordinataX>45.2557316</KoordinataX>
+      <KoordinataY>19.8468607</KoordinataY>
       <Adresa>
         <Ulica />
-        <Broj />
-        <NaseljenoMjesto />
-        <PozivniBrojMjesta />
+        <Broj>bb</Broj>
+        <NaseljenoMjesto>Novi Sad</NaseljenoMjesto>
+        <PozivniBrojMjesta>21101</PozivniBrojMjesta>
       </Adresa>
     </Lokacija>
     <Automobil>
